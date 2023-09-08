@@ -9,7 +9,7 @@
     <breadcrumb class="breadcrumb-container" />
 
     <div class="right-menu">
-      <div class="right-menu-item hover-effect hidden-xs-only" @click="showNotice">
+      <!-- <div class="right-menu-item hover-effect hidden-xs-only" @click="showNotice">
         <el-badge
           :value="100"
           :max="10"
@@ -20,7 +20,8 @@
           v-if="notifyMsg!=undefined"
         ></el-badge>
         <span class="el-icon-chat-dot-square"></span>
-      </div>
+      </div> -->
+      <notification-msg :operationLog="operationLog" :systemNotice="systemNotice" class="right-menu-item hover-effect" />
       <template v-if="device!=='mobile'">
         <search id="header-search" class="right-menu-item" />
 
@@ -38,9 +39,9 @@
           <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip>
         <langs class="right-menu-item hover-effect" />
-        <div class="right-menu-item">
+        <!-- <div class="right-menu-item">
           <span class="avatar-wrapper-span">在线人数:{{ onlineUserCount }}</span>
-        </div>
+        </div> -->
       </template>
       <div class="right-menu-item hidden-xs-only">
         <span class="avatar-wrapper-span">{{ nickName }}:{{ userName }}</span>
@@ -95,8 +96,9 @@ import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
 import Langs from "./Lang"
+import NotificationMsg from "./NotificationMsg"
 import headPic from "@/assets/image/profile/mai.png";
-import { getToken } from "@/utils/auth"
+import { getOnlineUserCount } from "@/api/monitor/online"
 
 export default {
   components: {
@@ -105,13 +107,16 @@ export default {
     Screenfull,
     SizeSelect,
     Search,
-    Langs
+    Langs,
+    NotificationMsg
   },
   data() {
     return {
       mePic: headPic,
       //userName:'',
-      notifyMsg: "",
+      notifyMsg: undefined,
+      operationLog: undefined,
+      systemNotice: undefined,
       onlineUserCount:0,
       baseHost: window.location.host,
       baseApi: process.env.VUE_APP_BASE_API,
@@ -124,17 +129,20 @@ export default {
 
     // console.log(onlineUser)
     // if (onlineUser) {
-      //let tokenId = getToken();
-      // let userId=this.$store.getters.userId;
-      // // console.log(tokenId);
-      // if (null != userId) {
-      //   this.initWebsocket(userId);
-      // }
+      let userId=this.$store.getters.userId;
+      if (null != userId) {
+        this.initWebsocket(userId);
+      }
     // }
-    var notifyCount=this.getCookie("notifyCount")//==null?websocket.GetMessage:localStorage.getItem("notifyCount");
+    //var notifyCount=this.getCookie("notifyCount")//==null?websocket.GetMessage:localStorage.getItem("notifyCount");
     //console.log(notifyCount)
-    this.notifyMsg=notifyCount;
-    this.onlineUserCount=this.getCookie("onlineUserCount");
+    //this.notifyMsg=notifyCount;
+    //this.onlineUserCount=this.getOnlineUser();//this.getCookie("onlineUserCount");
+    //this.getOnlineUser();
+  },
+  mounted(){
+    // 添加socket通知监听
+    window.addEventListener('onmessageWS', this.getSocketData)
   },
   computed: {
     ...mapGetters([
@@ -188,6 +196,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
+        //this.websocketClose();
         this.$store.dispatch('user/logout').then(() => {
           location.href = '/';
         })
@@ -209,7 +218,23 @@ export default {
     },
     websocketClose(){
       this.websocket.CloseWebscoket()
-    }
+    },
+    getOnlineUser(){
+      // return this.websocket.getOnlineUserCount();
+      getOnlineUserCount().then( (res) => {
+        this.onlineUserCount=res.data;
+      })
+    },
+    // 收到消息处理
+    getSocketData(res) {
+      console.log(res.detail)
+      // this.notifyMsg=res.detail.notifyMsg
+      this.operationLog=res.detail.operationLog
+      this.systemNotice=res.detail.systemNotice
+    },
+  },
+  destroyed: function() {
+    this.websocket.CloseWebscoket();
   }
 }
 </script>

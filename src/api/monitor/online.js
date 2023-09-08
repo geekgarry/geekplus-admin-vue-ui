@@ -16,3 +16,11 @@ export function forceLogout(tokenId) {
     method: 'delete'
   })
 }
+
+// 用户数
+export function getOnlineUserCount() {
+  return request({
+    url: '/monitor/online/count',
+    method: 'get'
+  })
+}

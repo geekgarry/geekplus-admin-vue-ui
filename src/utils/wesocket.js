@@ -1,13 +1,14 @@
-import {Notification} from 'element-ui'
+import { Notification } from 'element-ui'
 import { getToken } from './auth';
-//var url =  'ws://' + location.host + '/socket/websocket/'
-var url="wss://43.133.254.75:8443"+"/websocket/";
+import Cookies from 'js-cookie'
+//var url =  'wss://' + location.host + '/websocket/'
+var url = "wss://localhost:1443" + "/websocket/";
 var ws;
 var tt;
 var lockReconnect = false;//避免重复连接
-var clientId = getToken()//localStorage.getItem("tokenId")//缓存中取出客户端id
+var clientId = 123;//getToken()//localStorage.getItem("tokenId")//缓存中取出客户端id
 let count = 0;
-let wsMsg="";
+let wsMsg = "";
 // const getDefaultState = () => {
 //   return {
 //     notifyStatus:''
@@ -23,7 +24,7 @@ let wsMsg="";
 // }
 //连接失败3次后会自动跳转到登录页面
 const websocket = {
-  Init: function(clientId) {
+  Init: function (clientId) {
     //this.clientId = localStorage.getItem("tokenId")
     if ("WebSocket" in window) {
       ws = new WebSocket(url + clientId);
@@ -34,27 +35,27 @@ const websocket = {
       return;
     }
     if (typeof WebSocket == "undefined") {
-        this.$notify({
-          title: "提示",
-          message: "当前浏览器无法接收实时报警信息，请使用谷歌浏览器！",
-          type: "warning",
-          duration: 0,
-        });
+      this.$notify({
+        title: "提示",
+        message: "当前浏览器无法接收实时报警信息，请使用谷歌浏览器！",
+        type: "warning",
+        duration: 0,
+      });
     }
-    ws.onmessage = function(e) {
-      console.log("接受信息；",e)
-      wsMsg=e.data
+    ws.onmessage = function (e) {
+      //console.log("接受信息；", e.type)
+      wsMsg = e.data
       messageHandle(e.data)
       heartCheck.start()
     }
 
-    ws.onclose = function() {
+    ws.onclose = function () {
       console.log("连接已关闭")
       // localStorage.clear()
       console.log(count)
-      if(count <= 3&&count>0){
+      if (count <= 3 && count > 0) {
         reconnect(clientId);
-      }else {
+      } else {
         Notification({
           title: '错误',
           message: '连接已关闭',
@@ -64,16 +65,16 @@ const websocket = {
       }
     }
 
-    ws.onopen = function(e) {
-      console.log("连接成功，发送消息：",e)
-      messageHandle("ok")
+    ws.onopen = function (e) {
+      console.log("连接成功，发送消息：", e.type)
+      //messageHandle("ok")
     }
 
-    ws.onerror = function(e) {
+    ws.onerror = function (e) {
       console.log("数据传输发生错误,后台服务关闭");
-      if(count>0){
+      if (count > 0) {
         reconnect(clientId);
-      }else {
+      } else {
         Notification({
           title: '错误',
           message: '数据传输发生错误,服务关闭或网络不通!',
@@ -82,24 +83,27 @@ const websocket = {
         //localStorage.clear()
         // window.location.reload();
       }
-      messageHandle(undefined)
+      //let message = {"error": "错误"};
+      //messageHandle(JSON.stringify(message))
     }
   },
-  CloseWebscoket:function(){
-    ws.onclose()
+  CloseWebscoket: function () {
+    if (ws !== null || ws !== undefined) {
+      ws.close();
+    }
   },
   GetMessage: wsMsg,
-  Send:function(sender,reception,body,flag){
+  Send: function (sender, reception, body, flag) {
     let data = {
-      sender:sender,
-      reception:reception,
-      body:body,
-      flag:flag
+      sender: sender,
+      reception: reception,
+      body: body,
+      flag: flag
     }
-    let msg= JSON.stringify(data)
+    let msg = JSON.stringify(data)
     ws.send(msg)
   },
-  getWebSocket(){
+  getWebSocket() {
     return ws;
   },
   getStatus() {
@@ -125,39 +129,62 @@ export default websocket
 // }
 //根据消息标识做不同的处理
 function messageHandle(message) {
-  console.log("msg:",message)
-  console.log("连接失败:"+count)
-  switch (message) {
-    case '404session失效':
+  //console.log("msg", message)
+  //console.log("连接失败:"+count)
+  let obj = JSON.parse(message);
+  console.log("obj", obj)
+  switch (obj.type) {
+    case 'error':
       //关闭连接跳转登录
       ws.close();
       break;
-    case undefined :
+    case undefined:
       //连接失败
-      count++;
-      break;
-    case 'ok' :
-      //心跳消息成功
       count = 0;
       break;
+    case 'success':
+      //心跳消息成功
+      count++;
+      break;
+    case 'onlineCount':
+      //在线用户
+      // if (message.match("onlineCount:")) {
+      //   var count = message.split(":");
+      //   // localStorage.setItem("onlineUserCount",count[1]);
+      //   //Cookies.set("onlineUserCount",count[1])
+      // }
+      count++;
+      break;
+    case 'heartBeatCheck':
+      //心跳消息成功
+      // if (message.match("heartCheck:")) {
+      // }
+      count++;
+      break;
     default:
+      count++;
       //let msg = JSON.parse(message)
       //list通知其他用户现在在线的人的id,存储到onlineUser
-      if(message.match(":")){
-        var count=message.split(":");
-        // localStorage.setItem("onlineUserCount",count[1]);
-        this.setCookie("onlineUserCount",count[1])
-      }else{
-        // localStorage.setItem("notifyCount",message)
-        this.setCookie("notifyCount",message)
-      }
-      count = 0
-      heartCheck.start();
+      // localStorage.setItem("notifyCount",message)
+      //Cookies.set("notifyCount",message)
+      // 自定义全局监听事件
+      window.dispatchEvent(new CustomEvent('onmessageWS', {
+        detail: obj
+      }))
+      // Notification({
+      //   title: '消息通知',
+      //   message: message,
+      //   type: "success",
+      //   position: "bottom-right",
+      // });
+    // 重置心跳
+    // this.reset();
+    //heartCheck.start();
   }
 }
 
 function reconnect(sname) {
-  if(lockReconnect) {
+  if (lockReconnect) {
     return;
   };
   lockReconnect = true;
@@ -167,7 +194,7 @@ function reconnect(sname) {
     console.log("执行断线重连...")
     websocket.Init(sname);
     lockReconnect = false;
-  }, 5000);
+  }, 10000);
 }
 
 //心跳检测
@@ -175,21 +202,29 @@ var heartCheck = {
   timeout: 1000 * 10 * 3, //3 = 30s
   timeoutObj: null,
   serverTimeoutObj: null,
-  start: function(){
+  start: function () {
     var self = this;
     this.timeoutObj && clearTimeout(this.timeoutObj);
     this.serverTimeoutObj && clearTimeout(this.serverTimeoutObj);
-    this.timeoutObj = setTimeout(function(){
+    this.timeoutObj = setTimeout(function () {
       //这里发送一个心跳，后端收到后，返回一个心跳消息，
       //onmessage拿到返回的心跳就说明连接正常
       console.log('心跳检测...');
-      ws.send("heartCheck:"+ clientId );
-      self.serverTimeoutObj = setTimeout(function() {
-        if(ws.readyState!==1){
+      //ws.send("heartCheck:"+ clientId );
+      // 这里发送一个心跳，后端收到后，返回一个心跳消息，
+      // if (this.websocket && this.websocket.readyState == 1) { // 如果连接正常
+      // } else { // 否则重连
+      //   reconnect();
+      // }
+      let actions = { "heartBeatCheck": "123" };
+      ws.send(JSON.stringify(actions));
+
+      self.serverTimeoutObj = setTimeout(function () {
+        if (ws.readyState !== 1) {
           ws.close();
         }
       }, self.timeout);
 
-    }, this.timeout)
+    }, self.timeout)
   }
 }
