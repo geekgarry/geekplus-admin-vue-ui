@@ -227,7 +227,6 @@ export default {
     },
     // 收到消息处理
     getSocketData(res) {
-      console.log(res.detail)
       // this.notifyMsg=res.detail.notifyMsg
       this.operationLog=res.detail.operationLog
       this.systemNotice=res.detail.systemNotice

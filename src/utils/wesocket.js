@@ -1,12 +1,14 @@
 import { Notification } from 'element-ui'
-import { getToken } from './auth';
-import Cookies from 'js-cookie'
+// import { getToken } from './auth';
+// import Cookies from 'js-cookie'
+import store from '@/store';
 //var url =  'wss://' + location.host + '/websocket/'
-var url = "wss://localhost:1443" + "/websocket/";
+var urls = "wss://localhost:1443/websocket/";
+var url = "ws://localhost:1002/websocket/";
 var ws;
 var tt;
 var lockReconnect = false;//避免重复连接
-var clientId = 123;//getToken()//localStorage.getItem("tokenId")//缓存中取出客户端id
+let clientSId = 123;//getToken()//localStorage.getItem("tokenId")//缓存中取出客户端id
 let count = 0;
 let wsMsg = "";
 // const getDefaultState = () => {
@@ -27,10 +29,30 @@ const websocket = {
   Init: function (clientId) {
     //this.clientId = localStorage.getItem("tokenId")
     if ("WebSocket" in window) {
-      ws = new WebSocket(url + clientId);
-    } else if ("MozWebSocket" in window) {
-      ws = new MozWebSocket(url + clientId);
-    } else {
+      const explorer = window.navigator.userAgent
+      if (explorer.indexOf("MSIE") >= 0) {
+        // console.log("IE")  //判断是否为IE浏览器
+        ws = new WebSocket(url + clientId);
+      } else if (explorer.indexOf("Firefox") >= 0) {
+        // console.log("Firefox")  //是否为Firefox浏览器
+        ws = new WebSocket(url + clientId);
+      } else if (explorer.indexOf("Chrome") >= 0) {
+        // console.log("Chrome")  //是否为Chrome浏览器
+        ws = new WebSocket(urls + clientId);
+      } else if (explorer.indexOf("Opera") >= 0) {
+        // console.log("Opera")   //是否为Opera浏览器
+        ws = new WebSocket(urls + clientId);
+      } else if (explorer.indexOf("Safari") >= 0) {
+        // console.log("Safari")  //是否为Safari浏览器
+        ws = new WebSocket(urls + clientId);
+      } else {
+        ws = new WebSocket(url + clientId);
+      }
+    }
+    // else if ("MozWebSocket" in window) {
+    //   ws = new MozWebSocket(url + clientId);
+    // } 
+    else {
       console.log("您的浏览器不支持 WebSocket!");
       return;
     }
@@ -50,19 +72,19 @@ const websocket = {
     }
 
     ws.onclose = function () {
-      console.log("连接已关闭")
+      console.log("当前连接已关闭,还有 %d 个连接", count)
       // localStorage.clear()
-      console.log(count)
-      if (count <= 3 && count > 0) {
-        reconnect(clientId);
-      } else {
-        Notification({
-          title: '错误',
-          message: '连接已关闭',
-          type: 'error',
-        });
-        // window.location.reload();
-      }
+      //console.log(count)
+      // if (count > 0) {//count <= 3 && 
+      //   reconnect(store.getters.userId);
+      // } else {
+      //   Notification({
+      //     title: '错误',
+      //     message: '连接已关闭',
+      //     type: 'error',
+      //   });
+      //   // window.location.reload();
+      // }
     }
 
     ws.onopen = function (e) {
@@ -73,7 +95,7 @@ const websocket = {
     ws.onerror = function (e) {
       console.log("数据传输发生错误,后台服务关闭");
       if (count > 0) {
-        reconnect(clientId);
+        reconnect(store.getters.userId);
       } else {
         Notification({
           title: '错误',
@@ -88,8 +110,9 @@ const websocket = {
     }
   },
   CloseWebscoket: function () {
-    if (ws !== null || ws !== undefined) {
+    if (ws != null || ws != undefined) {
       ws.close();
+      ws = null;
     }
   },
   GetMessage: wsMsg,
@@ -143,26 +166,25 @@ function messageHandle(message) {
       count = 0;
       break;
     case 'success':
-      //心跳消息成功
-      count++;
+      //心跳消息成功heartBeat
       break;
-    case 'onlineCount':
+    case 'onlineUser':
       //在线用户
       // if (message.match("onlineCount:")) {
       //   var count = message.split(":");
       //   // localStorage.setItem("onlineUserCount",count[1]);
       //   //Cookies.set("onlineUserCount",count[1])
       // }
+      break;
+    case 'online':
+      //上线
       count++;
       break;
-    case 'heartBeatCheck':
-      //心跳消息成功
-      // if (message.match("heartCheck:")) {
-      // }
-      count++;
+    case 'offline':
+      //下线
+      count--;
       break;
     default:
-      count++;
       //let msg = JSON.parse(message)
       //list通知其他用户现在在线的人的id,存储到onlineUser
       // localStorage.setItem("notifyCount",message)
@@ -171,19 +193,19 @@ function messageHandle(message) {
       window.dispatchEvent(new CustomEvent('onmessageWS', {
         detail: obj
       }))
-      // Notification({
-      //   title: '消息通知',
-      //   message: message,
-      //   type: "success",
-      //   position: "bottom-right",
-      // });
+    // Notification({
+    //   title: '消息通知',
+    //   message: message,
+    //   type: "success",
+    //   position: "bottom-right",
+    // });
     // 重置心跳
     // this.reset();
     //heartCheck.start();
   }
 }
 
-function reconnect(sname) {
+function reconnect(sockid) {
   if (lockReconnect) {
     return;
   };
@@ -192,7 +214,7 @@ function reconnect(sname) {
   tt && clearTimeout(tt);
   tt = setTimeout(function () {
     console.log("执行断线重连...")
-    websocket.Init(sname);
+    websocket.Init(sockid);
     lockReconnect = false;
   }, 10000);
 }
@@ -210,15 +232,14 @@ var heartCheck = {
       //这里发送一个心跳，后端收到后，返回一个心跳消息，
       //onmessage拿到返回的心跳就说明连接正常
       console.log('心跳检测...');
-      //ws.send("heartCheck:"+ clientId );
+      //ws.send("heartBeat:"+ clientSId );
       // 这里发送一个心跳，后端收到后，返回一个心跳消息，
-      // if (this.websocket && this.websocket.readyState == 1) { // 如果连接正常
-      // } else { // 否则重连
-      //   reconnect();
-      // }
-      let actions = { "heartBeatCheck": "123" };
-      ws.send(JSON.stringify(actions));
-
+      if (ws && ws.readyState == 1) { // 如果连接正常
+        let actions = { "message": "heartBeat", "fromUser": store.getters.userId, "toUser": "All" };
+        ws.send(JSON.stringify(actions));
+      } else { // 否则重连
+        reconnect(store.getters.userId);
+      }
       self.serverTimeoutObj = setTimeout(function () {
         if (ws.readyState !== 1) {
           ws.close();

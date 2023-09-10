@@ -121,6 +121,7 @@ const actions = {
         }
         const avatar = data.avatar == "" ? require("@/assets/image/profile/mai.png") : process.env.VUE_APP_BASE_API + data.avatar;
         commit('SET_MENUS', menus)
+        commit('SET_PERMISSIONS', data.permsSet)
         commit('SET_USERNAME', data.userName)
         commit('SET_NICKNAME', data.nickName)
         commit('SET_USERID', data.userId)
