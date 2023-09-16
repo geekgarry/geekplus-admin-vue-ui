@@ -3,8 +3,10 @@ import { Notification } from 'element-ui'
 // import Cookies from 'js-cookie'
 import store from '@/store';
 //var url =  'wss://' + location.host + '/websocket/'
-var urls = "wss://localhost:1443/websocket/";
-var url = "ws://localhost:1002/websocket/";
+//两种连接地址ws和wss，正式上线申请证书后使用域名作为连接地址
+//利用userAgent判断浏览器使用不同连接协议
+var urls = "wss://localhost:port/websocket/";
+var url = "ws://localhost:port/websocket/";
 var ws;
 var tt;
 var lockReconnect = false;//避免重复连接
@@ -41,7 +43,7 @@ const websocket = {
         ws = new WebSocket(urls + clientId);
       } else if (explorer.indexOf("Opera") >= 0) {
         // console.log("Opera")   //是否为Opera浏览器
-        ws = new WebSocket(urls + clientId);
+        ws = new WebSocket(url + clientId);
       } else if (explorer.indexOf("Safari") >= 0) {
         // console.log("Safari")  //是否为Safari浏览器
         ws = new WebSocket(urls + clientId);

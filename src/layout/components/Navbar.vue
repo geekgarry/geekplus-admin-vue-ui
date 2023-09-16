@@ -99,6 +99,8 @@ import Langs from "./Lang"
 import NotificationMsg from "./NotificationMsg"
 import headPic from "@/assets/image/profile/mai.png";
 import { getOnlineUserCount } from "@/api/monitor/online"
+//权限检查js方法
+import {checkPermi, checkRole} from "@/utils/permission"
 
 export default {
   components: {
@@ -126,17 +128,14 @@ export default {
   created: function () {
     //从localStorage中获取用户信息,是登陆状态则能够进行webSocket重连
     // let onlineUser = localStorage.getItem("onlineUser");
-
+    let hasSomePerms=this.checkHasPermi(['system:notice:list'])||this.checkHasPermi(['system:operLog:list'])||this.checkHasPermi(['monitor:online:list']);
     // console.log(onlineUser)
-    // if (onlineUser) {
+    if (hasSomePerms) {
       let userId=this.$store.getters.userId;
       if (null != userId) {
         this.initWebsocket(userId);
       }
-    // }
-    //var notifyCount=this.getCookie("notifyCount")//==null?websocket.GetMessage:localStorage.getItem("notifyCount");
-    //console.log(notifyCount)
-    //this.notifyMsg=notifyCount;
+    }
     //this.onlineUserCount=this.getOnlineUser();//this.getCookie("onlineUserCount");
     //this.getOnlineUser();
   },
@@ -231,6 +230,10 @@ export default {
       this.operationLog=res.detail.operationLog
       this.systemNotice=res.detail.systemNotice
     },
+    //检测用户是否拥有某个权限
+    checkHasPermi(value){
+      return checkPermi(value);
+    }
   },
   destroyed: function() {
     this.websocket.CloseWebscoket();

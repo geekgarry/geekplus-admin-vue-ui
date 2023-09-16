@@ -60,6 +60,7 @@
 </template>
 
 <script>
+//权限检查js方法
 import {checkPermi, checkRole} from "@/utils/permission"
 
 export default {
