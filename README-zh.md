@@ -19,7 +19,7 @@
 ## Extra
 
 如果你想要根据用户角色来动态生成侧边栏和 router，你可以使用该分支[permission-control]()
-
+系统使用了websocket推送消息，在src/utils/websocket.js中配置wbsocket连接地址即可，根据后台的服务地址去做详细的配置
 ## 相关项目
 
 - 后端代码[geekplus-admin-springboot-api]([https://github.com/geekgarry/geekplus-admin-vue](https://github.com/geekgarry/geekplus-admin-springboot-api))

@@ -73,7 +73,7 @@ Refer to [Documentation](https://github.com/geekgarry/geekplus-admin-vue-ui) for
 If you want router permission && generate menu by user roles , you can use this branch [permission-control]()
 
 For `typescript` version, you can use [vue-typescript-admin-template](https://github.com/Armour/vue-typescript-admin-template) (Credits: [@Armour](https://github.com/Armour))
-
+The peoject uses websocket to push messages. Simply configure the wbsocket connection address in src/utils/websocket. js and perform detailed configuration based on the backend service address
 ## Related Project
 
 - [geekplus-admin-springboot-api]([https://github.com/geekgarry/geekplus-admin-vue](https://github.com/geekgarry/geekplus-admin-springboot-api))
