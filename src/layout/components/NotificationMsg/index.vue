@@ -1,6 +1,7 @@
 <template>
   <el-dropdown trigger="click" v-if="checkHasPermi(['system:notice:list'])||checkHasPermi(['system:operLog:list'])||checkHasPermi(['monitor:online:list'])" >
-    <div class="hidden-xs-only">
+    <!-- class="hidden-xs-only" -->
+    <div>
       <el-badge
         :value="100"
         :max="10"

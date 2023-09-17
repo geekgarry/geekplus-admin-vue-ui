@@ -5,8 +5,8 @@ import store from '@/store';
 //var url =  'wss://' + location.host + '/websocket/'
 //两种连接地址ws和wss，正式上线申请证书后使用域名作为连接地址
 //利用userAgent判断浏览器使用不同连接协议
-var urls = "wss://localhost:port/websocket/";
-var url = "ws://localhost:port/websocket/";
+var urls = "wss://mkapi.geekplus.xyz:8443/websocket/";
+var url = "ws://mkapi.geekplus.xyz:9002/websocket/";
 var ws;
 var tt;
 var lockReconnect = false;//避免重复连接
@@ -167,8 +167,11 @@ function messageHandle(message) {
       //连接失败
       count = 0;
       break;
-    case 'success':
+    case 'heartBeat':
       //心跳消息成功heartBeat
+      break;
+    case 'success':
+      //接受普通消息
       break;
     case 'onlineUser':
       //在线用户
@@ -202,7 +205,6 @@ function messageHandle(message) {
     //   position: "bottom-right",
     // });
     // 重置心跳
-    // this.reset();
     //heartCheck.start();
   }
 }
@@ -237,7 +239,7 @@ var heartCheck = {
       //ws.send("heartBeat:"+ clientSId );
       // 这里发送一个心跳，后端收到后，返回一个心跳消息，
       if (ws && ws.readyState == 1) { // 如果连接正常
-        let actions = { "message": "heartBeat", "fromUser": store.getters.userId, "toUser": "All" };
+        let actions = { "type": "heartBeat", "message": "heatBeat", "fromUser": store.getters.userId, "toUser": store.getters.userId };
         ws.send(JSON.stringify(actions));
       } else { // 否则重连
         reconnect(store.getters.userId);
