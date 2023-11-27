@@ -42,12 +42,7 @@
         <el-button type="primary">选取文件</el-button>
       </el-tooltip>
     </el-upload>
-    <div
-      class="editor"
-      id="quill-editor"
-      ref="editor"
-      :style="styles"
-    ></div>
+    <div class="editor" id="quill-editor" ref="editor" :style="styles"></div>
     <!-- <quill-editor
       class="editor"
       ref="editor"
@@ -121,7 +116,7 @@ class FileBlot extends Link {
 FileBlot.blotName = 'link'
 FileBlot.tagName = 'A'
 Quill.register(FileBlot)
-let fontList=['songti', 'SimSun', 'SimHei', 'Microsoft-YaHei', 'KaiTi', 'FangSong'].concat(Quill.import('formats/font').whitelist)
+let fontList = ['songti', 'SimSun', 'SimHei', 'Microsoft-YaHei', 'KaiTi', 'FangSong'].concat(Quill.import('formats/font').whitelist)
 import { uploadFile, deleteFile } from "@/api/common";
 export default {
   name: "Editor",
@@ -191,7 +186,7 @@ export default {
             },
           },
           clipboard: {
-              matchVisual: false
+            matchVisual: false
           },
           // 调整图片大小
           imageResize: {
@@ -252,7 +247,6 @@ export default {
     this.Quill = null;
   },
   methods: {
-    
     init() {
       const editor = this.$refs.editor;
       this.Quill = new Quill(editor, this.options);
@@ -271,7 +265,7 @@ export default {
       this.Quill.on("selection-change", (range, oldRange, source) => {
         if (!range) {
           //代表失去焦点事件
-          this.$emit("onEditorBlur",range, oldRange, source);
+          this.$emit("onEditorBlur", range, oldRange, source);
           // this.$emit("blur", this.Quill);
           //console.log("失去焦点")
           //this.onEditorBlur();
@@ -442,35 +436,55 @@ export default {
     },
     // 失去焦点触发事件
     onEditorBlur() {
-      let tempImageList = [];
+      //所有的我的网站图片
+      let allMyWebImageArray= new Array();
+      //console.log("失去焦点！！！");
+      //初始的所有的图片
+      let allTempImageArray = [];
       //this.allImageList = [];
+      //删除的图片
       let deleteImages = [];
+      //在修改后的所有图片
+      let allTempImageList=new Array();
       let length = document.querySelectorAll(".ql-editor img").length;
       if (length) {
         let images = document.querySelectorAll(".ql-editor img");
         images.forEach((item) => {
-          tempImageList.push({ filePath: this.getServerFilePath(item.src) });
+          allTempImageArray.push({ filePath: this.getServerFilePath(item.src) });
+          //var reg=RegExp(/geekplus.xyz/) match(reg)
+          if (item.src.indexOf("geekplus.xyz") != -1) {// search("")!=-1 includes("geekplus.xyz")==true
+            allMyWebImageArray.push({ filePath: this.getServerFilePath(item.src) });
+          }
         });
       }
-      deleteImages = this.allImageList.filter((item) => {
-        return tempImageList.every((e) => e.filePath != item.filePath);
-        //return tempImageList.indexOf(item) === -1
-      });
-      // console.log(tempImageList);
-      // console.log(this.allImageList);
-      // console.log(deleteImages);
-      if (deleteImages.length > 0) {
-        this.removeFileList(deleteImages);
+      if (allMyWebImageArray.length != 0) {
+        deleteImages = this.allImageList.filter((item) => {
+          return allTempImageArray.every((e) => e.filePath != item.filePath);
+          //return allTempImageArray.indexOf(item) === -1
+        });
+        // console.log(allTempImageArray);
+        // console.log(this.allImageList);
+        // console.log(deleteImages);
+        if (deleteImages.length > 0) {
+          this.removeFileList(deleteImages);
+        }
+        allTempImageList = this.allImageList.filter((item) => {
+          return deleteImages.every((e) => e.filePath != item.filePath);
+        });
       }
-      let allTempImg = this.allImageList.filter((item) => {
-        return deleteImages.every((e) => e.filePath != item.filePath);
-      });
       // console.log(deleteImages);
-      // console.log(allTempImg);
-      this.allImageList = allTempImg;
+      // console.log(allTempImageList);
+      this.allImageList = allTempImageList;
     },
     // 获得焦点触发事件
-    onEditorFocus() {},
+    onEditorFocus() {
+      // let tempImageArray = new Array();
+      // let imageArray = document.querySelectorAll(".ql-editor img");
+      // imageArray.forEach((item) => {
+      //   tempImageArray.push({ filePath: this.getServerFilePath(item.src) });
+      // })
+      // this.allImageList = tempImageArray;
+    },
     // 上传成功
     handleSuccess() {
       this.$refs.uploadImageFileRef.clearFiles();
@@ -619,7 +633,7 @@ export default {
       //console.log(file)
       this.uploadFileToFile(formData);
     },
-    uploadImageFileToFile(formData){
+    uploadImageFileToFile(formData) {
       uploadFile(formData)
         .then((response) => {
           //console.log(response);
@@ -637,7 +651,7 @@ export default {
           let length = this.Quill.getSelection().index; //光标位置
           // 插入图片地址
           this.Quill.insertEmbed(length, "image", imageUrl);
-          this.Quill.insertText(length+1, "\r\n",true);
+          this.Quill.insertText(length + 1, "\r\n", true);
           // 光标后移一位
           this.Quill.setSelection(length + 2);
           // this.content += url
@@ -652,9 +666,9 @@ export default {
             type: "error",
             showClose: true,
           });
-      });
+        });
     },
-    uploadFileToFile(formData){
+    uploadFileToFile(formData) {
       uploadFile(formData)
         .then((response) => {
           //console.log(response);
@@ -673,7 +687,7 @@ export default {
           let length = this.Quill.getSelection().index; //光标位置
           // 插入图片地址
           //this.Quill.insertEmbed(length, "image", imageUrl);
-          this.Quill.insertEmbed(length, 'link', {href: fileUrl, innerText: originalFileName})
+          this.Quill.insertEmbed(length, 'link', { href: fileUrl, innerText: originalFileName })
           // this.Quill.insertText(length, "\r\n",true);
           // 光标后移一位
           this.Quill.setSelection(length + 1);
@@ -689,7 +703,7 @@ export default {
             type: "error",
             showClose: true,
           });
-      });
+        });
     },
   },
 };

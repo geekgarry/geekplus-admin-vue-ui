@@ -46,12 +46,22 @@ import "tinymce/plugins/autoresize";
 import "tinymce/plugins/paste";
 import "tinymce/plugins/print";
 import "tinymce/plugins/quickbars";
-import "tinymce/plugins/emoticons";
 import "tinymce/plugins/bbcode";
 import "tinymce/plugins/tabfocus";
+import "tinymce/plugins/toc";
+import "tinymce/plugins/fullpage";
+import "tinymce/plugins/importcss";
+import "tinymce/plugins/legacyoutput";
+import "tinymce/plugins/emoticons";
 // 扩展插件
-// import "../assets/tinymce/plugins/lineheight/plugin";
-// import "../assets/tinymce/plugins/bdmap/plugin";
+import "/public/tinymce/plugins/formatpainter";
+import "/public/tinymce/plugins/lineheight";
+import "/public/tinymce/plugins/letterspacing";
+import "/public/tinymce/plugins/layout";
+import "/public/tinymce/plugins/upfile";
+import "/public/tinymce/plugins/attachment";
+import "/public/tinymce/plugins/importword";
+import "/public/tinymce/plugins/indent2em";
 
 import { uploadFile, deleteFile } from "@/api/geekplus/articles";
 export default {
@@ -66,6 +76,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    articleTitle: {
+      type: String,
+      default: "",
+    }
   },
   data() {
     let self = this  // 加上这一句就OK了
@@ -73,6 +87,7 @@ export default {
       content: this.value,
       //fileList: [],
       allImageList: [],
+      allMyWebImageSize: -1,
       baseHost: window.location.host,
       baseApi: process.env.VUE_APP_BASE_API,
       init: {
@@ -81,8 +96,8 @@ export default {
         // auto_focus: 'element1',
         language: "zh_CN", //语言类型
         skin_url: "/tinymce/skins/ui/oxide",
-        height: 900, //编辑器高度
-        min_height: 410,
+        height: 680, //编辑器高度
+        min_height: 380,
         // min_width: 700,
         highlight_on_focus: true,
         // contextmenu_never_use_native: true,//5.0.1
@@ -91,7 +106,7 @@ export default {
         // content_style: "p {margin: 2px 0;}",
         init_instance_callback: (editor) => {
           // 更改元素为Div
-          editor.execCommand("mceInsertContent", false, "<p></p>");
+          //editor.execCommand("mceInsertContent", false, "<p></p>");
         },
         browser_spellcheck: true, // 拼写检查
         // elementpath: false, //禁用编辑器底部的状态栏
@@ -113,16 +128,21 @@ export default {
           a: "background", // 链接禁用背景样式
         },
         plugins:
-          "image link code codesample table lists wordcount autosave save autolink insertdatetime preview media fullscreen quickbars print template", //就可以增加上面引入的插件，加入下面这一行就可以在toolbar栏显示相应插件。
+          "image link code codesample table lists wordcount autosave save autolink insertdatetime upfile attachment " +
+          "preview media fullscreen quickbars print template paste visualchars emoticons textpattern formatpainter", //就可以增加上面引入的插件，加入下面这一行就可以在toolbar栏显示相应插件。
         branding: false, //是否禁用“Powered by TinyMCE”
         toolbar: [
+          {
+            name: "restoredraft",
+            items: ["restoredraft", "save", "paste"]
+          },
           {
             name: "history",
             items: ["undo", "redo"],
           },
           {
             name: "styles",
-            items: ["styleselect"],
+            items: ["styleselect", "visualchars", "insertdatetime"],
           },
           {
             name: "code",
@@ -130,11 +150,11 @@ export default {
           },
           {
             name: "formatting",
-            items: ["bold", "italic", "underline", "strikethrough"],
+            items: ["bold", "italic", "underline", "strikethrough", "removeformat"],
           },
           {
             name: "fonts",
-            items: ["fontselect", "fontsizeselect"],
+            items: ["fontselect", "fontsizeselect", "formatpainter"],
           },
           {
             name: "colors",
@@ -145,8 +165,8 @@ export default {
           //   items: ["insertfile"]
           // },
           {
-            name: "media&link",
-            items: ["link", "image", "media"],
+            name: "link",
+            items: ["link", "image", "media", "upfile", "attachment"],
           },
           {
             name: "alignment",
@@ -170,7 +190,7 @@ export default {
           },
           {
             name: "tools",
-            items: ["preview", "print", "fullscreen"],
+            items: ["preview", "print", "emoticons", "fullscreen"],
           },
         ],
         //toolbar: "undo redo | fontselect fontsizeselect link autolink lineheight | forecolor backcolor | bold italic underline strikethrough | alignleft aligncenter alignright alignjustify | image imagetools | code | h1 h2 h3 h4 h5 blockquote table numlist bullist outdent indent preview fullscreen", //工具栏
@@ -181,10 +201,26 @@ export default {
         //     items: 'bold italic underline | superscript subscript'
         //     }
         // },
+        emoticons_database_url: '/tinymce/plugins/emoticons/js/emojis.js',
         toolbar_mode: "sliding",
         toolbar_sticky: true,
         paste_data_images: true, // 允许粘贴图像
+        paste_enable_default_filters: false,
+        paste_merge_formats: true,
+        smart_paste: false,  // note: default value for smart_paste is true
+        image_file_types: 'jpeg,jpg,jpe,jfi,jfif,png,gif,bmp,svg,webp,heif,heifs,heic,heics,avci,avcs,avif,avifs',
         image_caption: true,
+        file_picker_callback: function (callback, value, meta) {
+
+        },
+        paste_preprocess: function (plugin, args) {
+          //console.log("粘贴预处理内容：" + args.content);
+        },
+        paste_postprocess: function (plugin, args) {
+          // console.log("粘贴的内容：");
+          // console.log(args)
+          //args.node.setAttribute('id', 'hello');
+        },
         images_upload_handler: (blobInfo, success, failure, progress) => {
           this.uploadFile(blobInfo, success, failure);
         },
@@ -245,6 +281,7 @@ export default {
              **下面的操作没有触发
              **/
             self.focusOutEditor();
+            // console.log("离开焦点")
           });
           editor.on("focus", function () {
             /**
@@ -253,7 +290,87 @@ export default {
              **下面的操作没有触发
              **/
             self.focusOnEditor();
+            // console.log("聚焦焦点")
           });
+          editor.on("paste", function (e) {
+            if (
+              e.clipboardData &&
+              e.clipboardData.files &&
+              e.clipboardData.files.length
+            ) {
+              e.preventDefault();
+              [].forEach.call(e.clipboardData.files, (file) => {
+                console.log("图片类型：" + file.type)
+                if (!file.type.match(/^image\/(gif|jpe?g|a?png|svg|webp|bmp|vnd\\.microsoft\\.icon)/i)) {
+                  return;
+                }
+                const formData = new FormData();
+                formData.append("file", file);
+                let resultImageUrl = self.uploadImageFileToFile(formData);
+                var imgAlt = self.articleTitle;
+                //console.log(imgAlt)
+                resultImageUrl.then(res => {
+                  //console.log(res);
+                  //self.insertHtmlAtCaret('<img src="' + res + '" alt="hhhhhh" >');
+                  tinymce.activeEditor.execCommand('mceInsertContent', false, '<img src="' + res + '" alt="' + imgAlt + '" >');
+                  //editor.insertContent('<img src="' + res + '" alt="'+imgAlt+'" >');
+                })
+                // this.$axios
+                //   .post(`${process.env.VUE_APP_BASE_API}/file/upload`, formData)
+                //   .then((res) => {
+                //     console.log(res);
+                //     if (res.data.code == 200) {
+                //       console.log(res.data.data.src);
+                //       let length = this.Quill.getSelection().index; //光标位置
+                //       // 插入图片地址
+                //       this.Quill.insertEmbed(length, "image", res.data.data.url);
+                //       // 光标后移一位
+                //       this.Quill.setSelection(length + 1);
+                //     } else {
+                //     }
+                //   });
+              });
+            }
+            // // console.log("打印粘贴内容")
+            // // console.log(e)
+            // if (!(e.clipboardData && e.clipboardData.items)) {
+            //   return;
+            // }
+            // let items = e.clipboardData && e.clipboardData.items;
+            // // if (e.clipboardData && e.clipboardData.files && e.clipboardData.files.length){
+            // // }
+            // //阻止默认行为即不让剪贴板内容在div中显示出来
+            // e.preventDefault();
+            // for (var i = 0, len = items.length; i < len; i++) {
+            //   var item = items[i];
+            //   if (item.kind === "string") {
+            //     item.getAsString(function (str) {
+            //       //tinymce.activeEditor.execCommand('mceInsertContent', false, str);
+            //       editor.insertContent(str);
+            //     })
+            //   } else if (item.kind === "file") {
+            //     var blob = item.getAsFile();
+            //     //console.log(blob);
+            //     if (blob.size === 0) {
+            //       return;
+            //     }
+            //     var formData = new FormData();
+            //     formData.append("file", blob);
+            //     let resultImageUrl = self.uploadImageFileToFile(formData);
+            //     var imgAlt=self.articleTitle;
+            //     //console.log(imgAlt)
+            //     resultImageUrl.then(res=> {
+            //       //console.log(res);
+            //       //self.insertHtmlAtCaret('<img src="' + res + '" alt="hhhhhh" >');
+            //       tinymce.activeEditor.execCommand('mceInsertContent', false, '<img src="' + res + '" alt="'+imgAlt+'" >');
+            //       //editor.insertContent('<img src="' + res + '" alt="'+imgAlt+'" >');
+            //     })
+            //     // editor.insertContent(
+            //     // '<img src="'+imgUrl+'" alt="图片" >'
+            //     // );
+            //   }
+            // }
+          })
           // 自定义toolbar按钮，需要在toolbar添加
           editor.ui.registry.addButton("testBtn", {
             text: `按钮文字`,
@@ -282,13 +399,13 @@ export default {
       // if (this.isInit) {
       // this.isInit = false;
       //this.getContent();
-        // this.$nextTick(() => {
-          // const editor = tinymce.get("tinymce");
-          //// editor.activeEditor.getContent()
-          // editor.setContent(newValue);
-          // this.content = editor.getContent();
-          // console.log(editor.getContent())
-        // });
+      // this.$nextTick(() => {
+      // const editor = tinymce.get("tinymce");
+      //// editor.activeEditor.getContent()
+      // editor.setContent(newValue);
+      // this.content = editor.getContent();
+      // console.log(editor.getContent())
+      // });
       // }
       this.content = newValue;
     },
@@ -301,8 +418,11 @@ export default {
     // tinymce.setup((editor) => {
     // });
     tinymce.init({});
+    //let imageArray = tinymce.dom.DomQuery("img").toArray();
     this.$nextTick(() => {
-      var tinymceEditor = document.getElementById("tinymce");
+      //document.addEventListener("paste", function (e) {
+      //let items = (event.clipboardData || window.clipboardData).items;
+      //});
       //   this.keepLastIndex(
       //     ifra.contentWindow.document.getElementById("tinymce")
       //   );
@@ -323,9 +443,49 @@ export default {
     //         callback('movie.mp4', {source2: 'alt.ogg', poster: 'image.jpg'});
     //     }
     // },
+    addAllImagesList(editorBody) {
+      let imageArray = editorBody.querySelectorAll("img");
+      imageArray.forEach((item) => {
+        this.allImageList.push({ filePath: this.getServerFilePath(item.src) });
+      });
+    },
     getContent() {
       var cnt = tinymce.editors["tinymce"].getContent();
       // console.log(cnt);
+    },
+    async uploadImageFileToFile(formData) {
+      return uploadFile(formData).then((response) => {
+        //console.log(response);
+        var serverUrl = response.url;
+        let uploadSuccess = {};
+        const imageUrl = "https://www.geekplus.xyz" + this.baseApi + serverUrl;
+        // this.$message({
+        //   message: "上传" + response.msg,
+        //   type: "success",
+        // });
+        // 获取光标所在位置
+        //let quill = this.$refs.editor.quill;
+        // 获取光标所在位置
+        //let length = tinymce.getSelection().index; //光标位置
+        // 插入图片地址
+        //tinymce.insertEmbed(length, "image", imageUrl);
+        //tinymce.insertText(length + 1, "\r\n", true);
+        // 光标后移一位
+        //tinymce.setSelection(length + 2);
+        // this.content += url
+        uploadSuccess = { filePath: serverUrl };
+        this.allImageList.push(uploadSuccess);
+        // this.$refs.uploadImageFileRef.clearFiles();
+        return imageUrl;
+      })
+        .catch((error) => {
+          //console.log(error);
+          this.$message({
+            message: error.msg,
+            type: "error",
+            showClose: true,
+          });
+        });
     },
     //自定义上传函数
     uploadFile(blobInfo, success, failure, progress) {
@@ -359,40 +519,124 @@ export default {
           });
         });
     },
+    ///编辑框失去焦点事件
     focusOutEditor() {
       // console.log("失去焦点");
-      let tempImageList = [];
+      //所有的我的网站图片
+      let allMyWebImageArray = new Array();
+      //初始的所有的图片
+      let allTempImageArray = [];
       //this.allImageList = [];
+      //删除的图片
       let deleteImages = [];
-      let length = document.querySelectorAll(".ql-editor img").length;
-      if (length) {
-        let images = document.querySelectorAll(".ql-editor img");
-        images.forEach((item) => {
-          tempImageList.push({ filePath: this.getServerFilePath(item.src) });
+      //在修改后的所有图片
+      let allTempImageList = new Array();
+      //document.querySelectorAll("p img").length;
+      // console.log(tinymce.activeEditor.getContent());
+      //console.log(tinymce.activeEditor.getContainer());
+      //console.log(tinymce.activeEditor.getBody().querySelectorAll("img"));
+      //console.log(tinymce.activeEditor.getContentAreaContainer())
+      let imagesList = tinymce.activeEditor.getBody().querySelectorAll("img");
+      if (imagesList.length) {
+        imagesList.forEach((item) => {
+          allTempImageArray.push({ filePath: this.getServerFilePath(item.src) });
+          var reg = RegExp(/geekplus.xyz/)
+          if (item.src.match(reg)) {//indexOf("") search("") includes("geekplus.xyz")
+            allMyWebImageArray.push({ filePath: this.getServerFilePath(item.src) });
+          }
         });
       }
-      deleteImages = this.allImageList.filter((item) => {
-        return tempImageList.every((e) => e.filePath != item.filePath);
-        //return tempImageList.indexOf(item) === -1
-      });
-      // console.log(tempImageList);
-      // console.log(this.allImageList);
-      // console.log(deleteImages);
-      if (deleteImages.length > 0) {
-        this.removeFileList(deleteImages);
+      this.allImageList = allTempImageArray;
+      if (allMyWebImageArray.length != 0) {
+        deleteImages = this.allImageList.filter((item) => {
+          return allTempImageArray.every((e) => e.filePath != item.filePath);
+          //return allTempImageArray.indexOf(item) === -1
+        });
+        // console.log(allTempImageArray);
+        // console.log(this.allImageList);
+        // console.log(deleteImages);
+        if (deleteImages.length > 0) {
+          this.removeFileList(deleteImages);
+        }
+        allTempImageList = this.allImageList.filter((item) => {
+          return deleteImages.every((e) => e.filePath != item.filePath);
+        });
+        // console.log(deleteImages);
+        // console.log(allTempImageList);
       }
-      let allTempImg = this.allImageList.filter((item) => {
-        return deleteImages.every((e) => e.filePath != item.filePath);
-      });
-      // console.log(deleteImages);
-      // console.log(allTempImg);
-      this.allImageList = allTempImg;
+      //this.allImageList = allTempImageList;
+      // console.log(this.allImageList)
     },
+    //编辑框获得焦点事件
     focusOnEditor() {
-      // console.log("得到焦点");
+      // 1. 将 Array 数组转化为 Set 对象
+      //const set = new Set(this.list)
+      // 2. 调用 Set 对象的 delete 方法，移除对应的元素
+      //set.delete(this.kw)
+      // 3. 调用 Set 对象的 add 方法，向 Set 中添加元素
+      //set.add(this.kw)
+      // 4. 将 Set 对象转化为 Array 数组
+      //this.list= Array.from(set)
+      // let tempImageArray = new Array();
+      // // // console.log("得到焦点");
+      // let imageArray = tinymce.activeEditor.getBody().querySelectorAll("img");
+      // imageArray.forEach((item) => {
+      //   tempImageArray.push({ filePath: this.getServerFilePath(item.src) });
+      // });
+      // this.allImageList = tempImageArray;
     },
+    removeFileList(imgs) {
+      //let filePath={filePaths:JSON.stringify(imgs)};
+      deleteFile(JSON.stringify(imgs))
+        .then((response) => {
+          this.$message({
+            message: response.msg,
+            type: "success",
+          });
+        })
+        .catch((error) => {
+          this.$message({
+            message: error,
+            type: "error",
+            duration: 4000,
+          });
+        });
+    },
+    getServerFilePath(filePath) {
+      return filePath.replace(
+        "https://www.geekplus.xyz" + this.baseApi, ""
+      );
+    },
+    //插入元素方法
+    insertHtmlAtCaret(childElement) {
+      var selection, range;
+      if (window.getSelection) { // IE11 and non-IE
+        selection = window.getSelection();
+        if (selection.getRangeAt && selection.rangeCount) {
+          range = selection.getRangeAt(0);
+          range.deleteContents();
+          var el = document.createElement("div");
+          el.appendChild(childElement);
+          // document.createDocumentFragment() 创建一个新的空白的文档片段
+          var frag = document.createDocumentFragment(), node, lastNode;
+          while ((node = el.firstChild)) {
+            lastNode = frag.appendChild(node);
+          }
+          range.insertNode(frag);
+          if (lastNode) {
+            range = range.cloneRange();
+            range.setStartAfter(lastNode);
+            range.collapse(true);
+            selection.removeAllRanges();
+            selection.addRange(range);
+          }
+        }
+      } else if (document.selection && document.selection.type != "Control") { // IE < 9
+        //document.selection.createRange().pasteHTML(html);
+      }
+    }
   },
-  destroyed() {},
+  destroyed() { },
 };
 </script>
 
