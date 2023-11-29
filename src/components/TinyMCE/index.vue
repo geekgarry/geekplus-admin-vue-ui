@@ -53,6 +53,7 @@ import "tinymce/plugins/fullpage";
 import "tinymce/plugins/importcss";
 import "tinymce/plugins/legacyoutput";
 import "tinymce/plugins/emoticons";
+import "tinymce/plugins/anchor";
 // 扩展插件
 import "/public/tinymce/plugins/formatpainter";
 import "/public/tinymce/plugins/lineheight";
@@ -63,7 +64,7 @@ import "/public/tinymce/plugins/attachment";
 import "/public/tinymce/plugins/importword";
 import "/public/tinymce/plugins/indent2em";
 
-import { uploadFile, deleteFile } from "@/api/geekplus/articles";
+import { uploadFileForArticle, deleteFile, deleteFileList } from "@/api/common";
 export default {
   name: "TinyEditor",
   components: { Editor },
@@ -127,9 +128,15 @@ export default {
           "*": "color font-size", //全局无效样式
           a: "background", // 链接禁用背景样式
         },
+        charmap_append: [
+          [0x2615, 'morning coffee'],
+          [0x2600, 'sun'],
+          [0x2601, 'cloud'],
+        ],
         plugins:
           "image link code codesample table lists wordcount autosave save autolink insertdatetime upfile attachment " +
-          "preview media fullscreen quickbars print template paste visualchars emoticons textpattern formatpainter", //就可以增加上面引入的插件，加入下面这一行就可以在toolbar栏显示相应插件。
+          "preview media fullscreen quickbars print template paste visualchars emoticons textpattern formatpainter legacyoutput " +
+          "searchreplace toc charmap", //就可以增加上面引入的插件，加入下面这一行就可以在toolbar栏显示相应插件。
         branding: false, //是否禁用“Powered by TinyMCE”
         toolbar: [
           {
@@ -166,7 +173,7 @@ export default {
           // },
           {
             name: "link",
-            items: ["link", "image", "media", "upfile", "attachment"],
+            items: ["link", "image", "media", "upfile"],//, "attachment"
           },
           {
             name: "alignment",
@@ -178,7 +185,7 @@ export default {
           },
           {
             name: "blockquote",
-            items: ["blockquote"],
+            items: ["blockquote", "anchor", "searchreplace"],
           },
           {
             name: "table",
@@ -202,17 +209,63 @@ export default {
         //     }
         // },
         emoticons_database_url: '/tinymce/plugins/emoticons/js/emojis.js',
+        //attachment_max_size: 100 * 1024 * 1024,
         toolbar_mode: "sliding",
         toolbar_sticky: true,
         paste_data_images: true, // 允许粘贴图像
         paste_enable_default_filters: false,
         paste_merge_formats: true,
         smart_paste: false,  // note: default value for smart_paste is true
-        image_file_types: 'jpeg,jpg,jpe,jfi,jfif,png,gif,bmp,svg,webp,heif,heifs,heic,heics,avci,avcs,avif,avifs',
+        image_file_types: "jpeg,jpg,jpe,jfi,jfif,png,gif,bmp,svg,webp,heif,heifs,heic,heics,avci,avcs,avif,avifs",
         image_caption: true,
+        //自定义上传文件，文件选择函数
         file_picker_callback: function (callback, value, meta) {
-
+          //文件分类
+          var filetype = ".pdf, .txt, .zip, .rar, .7z, .doc, .docx, .xls, .xlsx, .ppt, .pptx, .mp3, .mp4, .avi, .mov, "+
+              ".3gp, .flv, .f4v, .mpg, .mpeg, .m2p, .mkv, .wav .ape, .aac, .flac";
+          //后端接收上传文件的地址
+          var upurl = '/demo/upfile.php';
+          //为不同插件指定文件类型及后端地址
+          switch (meta.filetype) {
+            // case 'image':
+            //   filetype = '.jpg, .jpeg, .png, .gif';
+            //   upurl = 'upimg.php';
+            //   break;
+            case 'media':
+              filetype = '.mp3, .mp4, .avi, .mov, .3gp, .flv, .f4v, .mpg, .mpeg, .m2p, .mkv, .wav .ape, .flac';
+              //self.uploadFileEvent(filetype)
+              //callback("https://www.geekplus.xyz", { text: 'myMedia' });
+              break;
+            case 'file':
+              filetype = '.pdf, .txt, .zip, .rar, .7z, .doc, .docx, .xls, .xlsx, .ppt, .pptx';
+              //self.uploadFileEvent(filetype)
+              //callback("https://www.geekplus.xyz", { text: 'myFile' });
+              break;
+            default:
+              break;
+          }
+          //模拟出一个input用于添加本地文件
+          var input = document.createElement('input');
+          input.setAttribute('type', 'file');
+          input.setAttribute('accept', filetype);
+          input.click();
+          input.onchange = function () {
+            var file = this.files[0];
+            //this.formData.append("file", file.file);
+            //console.log(file.file, "上传图片文件");
+            //const imageUrl = 上传七牛云后返回来的一串在线链接
+            let formData = new FormData();
+            formData.append("file", file); //this.fileList[0].raw);//拿到存在fileList的文件存放到formData中
+            //下面数据是我自己设置的数据,可自行添加数据到formData(使用键值对方式存储)
+            // 解析上传的文件
+            //let file = this.fileList[0]
+            //console.log(file)
+            self.uploadFileToFile(formData).then((res) => {
+              callback(res.fileUrl, { text: res.fileName });
+            })
+          }
         },
+        file_picker_types: 'file media',//'file image media'
         paste_preprocess: function (plugin, args) {
           //console.log("粘贴预处理内容：" + args.content);
         },
@@ -222,7 +275,7 @@ export default {
           //args.node.setAttribute('id', 'hello');
         },
         images_upload_handler: (blobInfo, success, failure, progress) => {
-          this.uploadFile(blobInfo, success, failure);
+          this.uploadImageFile(blobInfo, success, failure);
         },
         // file_picker_callback: function(callback, value, meta) {
         //   // Provide file and text for the link dialog
@@ -300,19 +353,19 @@ export default {
             ) {
               e.preventDefault();
               [].forEach.call(e.clipboardData.files, (file) => {
-                console.log("图片类型：" + file.type)
+                //console.log("图片类型：" + file.type)
                 if (!file.type.match(/^image\/(gif|jpe?g|a?png|svg|webp|bmp|vnd\\.microsoft\\.icon)/i)) {
                   return;
                 }
                 const formData = new FormData();
                 formData.append("file", file);
-                let resultImageUrl = self.uploadImageFileToFile(formData);
+                let resultFileUrl = self.uploadFileToFile(formData);
                 var imgAlt = self.articleTitle;
                 //console.log(imgAlt)
-                resultImageUrl.then(res => {
+                resultFileUrl.then(res => {
                   //console.log(res);
                   //self.insertHtmlAtCaret('<img src="' + res + '" alt="hhhhhh" >');
-                  tinymce.activeEditor.execCommand('mceInsertContent', false, '<img src="' + res + '" alt="' + imgAlt + '" >');
+                  tinymce.activeEditor.execCommand('mceInsertContent', false, '<img src="' + res.fileUrl + '" alt="' + imgAlt + '" >');
                   //editor.insertContent('<img src="' + res + '" alt="'+imgAlt+'" >');
                 })
                 // this.$axios
@@ -356,14 +409,14 @@ export default {
             //     }
             //     var formData = new FormData();
             //     formData.append("file", blob);
-            //     let resultImageUrl = self.uploadImageFileToFile(formData);
+            //     let resultFileUrl = self.uploadFileToFile(formData);
             //     var imgAlt=self.articleTitle;
             //     //console.log(imgAlt)
-            //     resultImageUrl.then(res=> {
+            //     resultFileUrl.then(res=> {
             //       //console.log(res);
-            //       //self.insertHtmlAtCaret('<img src="' + res + '" alt="hhhhhh" >');
-            //       tinymce.activeEditor.execCommand('mceInsertContent', false, '<img src="' + res + '" alt="'+imgAlt+'" >');
-            //       //editor.insertContent('<img src="' + res + '" alt="'+imgAlt+'" >');
+            //       //self.insertHtmlAtCaret('<img src="' + res.fileUrl + '" alt="hhhhhh" >');
+            //       tinymce.activeEditor.execCommand('mceInsertContent', false, '<img src="' + res.fileUrl + '" alt="'+imgAlt+'" >');
+            //       //editor.insertContent('<img src="' + res.fileUrl + '" alt="'+imgAlt+'" >');
             //     })
             //     // editor.insertContent(
             //     // '<img src="'+imgUrl+'" alt="图片" >'
@@ -453,45 +506,11 @@ export default {
       var cnt = tinymce.editors["tinymce"].getContent();
       // console.log(cnt);
     },
-    async uploadImageFileToFile(formData) {
-      return uploadFile(formData).then((response) => {
-        //console.log(response);
-        var serverUrl = response.url;
-        let uploadSuccess = {};
-        const imageUrl = "https://www.geekplus.xyz" + this.baseApi + serverUrl;
-        // this.$message({
-        //   message: "上传" + response.msg,
-        //   type: "success",
-        // });
-        // 获取光标所在位置
-        //let quill = this.$refs.editor.quill;
-        // 获取光标所在位置
-        //let length = tinymce.getSelection().index; //光标位置
-        // 插入图片地址
-        //tinymce.insertEmbed(length, "image", imageUrl);
-        //tinymce.insertText(length + 1, "\r\n", true);
-        // 光标后移一位
-        //tinymce.setSelection(length + 2);
-        // this.content += url
-        uploadSuccess = { filePath: serverUrl };
-        this.allImageList.push(uploadSuccess);
-        // this.$refs.uploadImageFileRef.clearFiles();
-        return imageUrl;
-      })
-        .catch((error) => {
-          //console.log(error);
-          this.$message({
-            message: error.msg,
-            type: "error",
-            showClose: true,
-          });
-        });
-    },
     //自定义上传函数
-    uploadFile(blobInfo, success, failure, progress) {
+    uploadImageFile(blobInfo, success, failure, progress) {
       let formData = new FormData();
       formData.append("file", blobInfo.blob());
-      uploadFile(formData)
+      uploadFileForArticle(formData)
         .then((response) => {
           //console.log(response);
           var serverUrl = response.url;
@@ -537,19 +556,18 @@ export default {
       //console.log(tinymce.activeEditor.getBody().querySelectorAll("img"));
       //console.log(tinymce.activeEditor.getContentAreaContainer())
       let imagesList = tinymce.activeEditor.getBody().querySelectorAll("img");
-      if (imagesList.length) {
+      if (imagesList.length != 0) {
         imagesList.forEach((item) => {
-          allTempImageArray.push({ filePath: this.getServerFilePath(item.src) });
+          //allTempImageArray.push({ filePath: this.getServerFilePath(item.src) });
           var reg = RegExp(/geekplus.xyz/)
           if (item.src.match(reg)) {//indexOf("") search("") includes("geekplus.xyz")
             allMyWebImageArray.push({ filePath: this.getServerFilePath(item.src) });
           }
         });
       }
-      this.allImageList = allTempImageArray;
-      if (allMyWebImageArray.length != 0) {
+      if (this.allImageList.length != 0) {
         deleteImages = this.allImageList.filter((item) => {
-          return allTempImageArray.every((e) => e.filePath != item.filePath);
+          return allMyWebImageArray.every((e) => e.filePath != item.filePath);
           //return allTempImageArray.indexOf(item) === -1
         });
         // console.log(allTempImageArray);
@@ -565,10 +583,12 @@ export default {
         // console.log(allTempImageList);
       }
       //this.allImageList = allTempImageList;
+      //this.allImageList = allMyWebImageArray;//allTempImageArray;
       // console.log(this.allImageList)
     },
     //编辑框获得焦点事件
     focusOnEditor() {
+      // console.log("得到焦点");
       // 1. 将 Array 数组转化为 Set 对象
       //const set = new Set(this.list)
       // 2. 调用 Set 对象的 delete 方法，移除对应的元素
@@ -578,29 +598,101 @@ export default {
       // 4. 将 Set 对象转化为 Array 数组
       //this.list= Array.from(set)
       // let tempImageArray = new Array();
-      // // // console.log("得到焦点");
+
       // let imageArray = tinymce.activeEditor.getBody().querySelectorAll("img");
       // imageArray.forEach((item) => {
       //   tempImageArray.push({ filePath: this.getServerFilePath(item.src) });
       // });
       // this.allImageList = tempImageArray;
+      let tempImageArray = new Array();
+      let imageArray = tinymce.activeEditor.getBody().querySelectorAll("img");
+      if (imageArray.length != 0) {
+        imageArray.forEach((item) => {
+          //tempImageArray.push({ filePath: this.getServerFilePath(item.src) });
+          var reg = RegExp(/geekplus.xyz/)
+          if (item.src.match(reg)) {//indexOf("") search("") includes("geekplus.xyz")
+            tempImageArray.push({ filePath: this.getServerFilePath(item.src) });
+          }
+        });
+      }
+      this.allImageList = tempImageArray;
     },
-    removeFileList(imgs) {
-      //let filePath={filePaths:JSON.stringify(imgs)};
-      deleteFile(JSON.stringify(imgs))
+    //通用上传事件
+    async uploadFileToFile(formData) {
+      return uploadFileForArticle(formData)
         .then((response) => {
-          this.$message({
-            message: response.msg,
-            type: "success",
-          });
+          //console.log(response);
+          var serverUrl = response.url;
+          let uploadSuccess = {};
+          const fileUrl =
+            "https://www.geekplus.xyz" + this.baseApi + serverUrl;
+          const originalFileName = response.originalFileName;
+          // this.$message({
+          //   message: "上传" + response.msg,
+          //   type: "success",
+          // });
+          
+          // 获取光标所在位置
+          //let quill = this.$refs.editor.quill;
+          // 获取光标所在位置
+          // let length = this.Quill.getSelection().index; //光标位置
+          // 插入图片地址
+          //this.Quill.insertEmbed(length, "image", imageUrl);
+          // this.Quill.insertEmbed(length, 'link', { href: fileUrl, innerText: originalFileName })
+          // this.Quill.insertText(length, "\r\n",true);
+          // 光标后移一位
+          // this.Quill.setSelection(length + 1);
+          // this.content += url
+          uploadSuccess = { filePath: serverUrl };
+          this.allImageList.push(uploadSuccess);
+          // this.$refs.uploadFileRef.clearFiles();
+          let responseBody = { fileUrl: fileUrl, fileName: originalFileName };
+          return responseBody;
         })
         .catch((error) => {
+          //console.log(error);
           this.$message({
-            message: error,
+            message: error.msg,
             type: "error",
-            duration: 4000,
+            showClose: true,
           });
         });
+    },
+    //删除操作
+    removeFileList(imgs) {
+      //let filePath={filePaths:JSON.stringify(imgs)};
+      if (imgs.length == 1) {
+        deleteFileList(imgs)
+          .then((response) => {
+            this.$message({
+              message: response.msg,
+              type: "success",
+            });
+          })
+          .catch((error) => {
+            this.$message({
+              message: error,
+              type: "error",
+              duration: 4000,
+            });
+          });
+      } else if (imgs.length > 1) {
+        var imgPath = imgs[0].filePath;
+        deleteFile(imgPath)
+          .then((response) => {
+            this.$message({
+              message: response.msg,
+              type: "success",
+            });
+          })
+          .catch((error) => {
+            this.$message({
+              message: error,
+              type: "error",
+              duration: 4000,
+            });
+          });
+      }
     },
     getServerFilePath(filePath) {
       return filePath.replace(

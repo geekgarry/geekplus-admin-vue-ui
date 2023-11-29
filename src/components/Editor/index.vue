@@ -117,7 +117,7 @@ FileBlot.blotName = 'link'
 FileBlot.tagName = 'A'
 Quill.register(FileBlot)
 let fontList = ['songti', 'SimSun', 'SimHei', 'Microsoft-YaHei', 'KaiTi', 'FangSong'].concat(Quill.import('formats/font').whitelist)
-import { uploadFile, deleteFile } from "@/api/common";
+import { uploadFileForArticle, deleteFile, deleteFileList } from "@/api/common";
 export default {
   name: "Editor",
   components: {
@@ -411,29 +411,6 @@ export default {
         tip.setAttribute("title", item.title);
       }
     },
-    removeFileList(imgs) {
-      //let filePath={filePaths:JSON.stringify(imgs)};
-      deleteFile(JSON.stringify(imgs))
-        .then((response) => {
-          this.$message({
-            message: response.msg,
-            type: "success",
-          });
-        })
-        .catch((error) => {
-          this.$message({
-            message: error,
-            type: "error",
-            duration: 4000,
-          });
-        });
-    },
-    getServerFilePath(filePath) {
-      return filePath.replace(
-        "https://www.geekplus.xyz" + process.env.VUE_APP_BASE_API,
-        ""
-      );
-    },
     // 失去焦点触发事件
     onEditorBlur() {
       //所有的我的网站图片
@@ -446,20 +423,19 @@ export default {
       let deleteImages = [];
       //在修改后的所有图片
       let allTempImageList=new Array();
-      let length = document.querySelectorAll(".ql-editor img").length;
-      if (length) {
-        let images = document.querySelectorAll(".ql-editor img");
-        images.forEach((item) => {
-          allTempImageArray.push({ filePath: this.getServerFilePath(item.src) });
+      let imageArray = document.querySelectorAll(".ql-editor img");
+      if (imageArray.length != 0) {
+        imageArray.forEach((item) => {
+          // allTempImageArray.push({ filePath: this.getServerFilePath(item.src) });
           //var reg=RegExp(/geekplus.xyz/) match(reg)
           if (item.src.indexOf("geekplus.xyz") != -1) {// search("")!=-1 includes("geekplus.xyz")==true
             allMyWebImageArray.push({ filePath: this.getServerFilePath(item.src) });
           }
         });
       }
-      if (allMyWebImageArray.length != 0) {
+      if (this.allImageList.length != 0) {
         deleteImages = this.allImageList.filter((item) => {
-          return allTempImageArray.every((e) => e.filePath != item.filePath);
+          return allMyWebImageArray.every((e) => e.filePath != item.filePath);
           //return allTempImageArray.indexOf(item) === -1
         });
         // console.log(allTempImageArray);
@@ -474,16 +450,65 @@ export default {
       }
       // console.log(deleteImages);
       // console.log(allTempImageList);
-      this.allImageList = allTempImageList;
+      // this.allImageList = allTempImageList;
     },
     // 获得焦点触发事件
     onEditorFocus() {
-      // let tempImageArray = new Array();
-      // let imageArray = document.querySelectorAll(".ql-editor img");
-      // imageArray.forEach((item) => {
-      //   tempImageArray.push({ filePath: this.getServerFilePath(item.src) });
-      // })
-      // this.allImageList = tempImageArray;
+      //console.log("得到焦点！！！")
+      let tempImageArray = new Array();
+      let imageArray = document.querySelectorAll(".ql-editor img");
+      if (imageArray.length!=0) {
+        imageArray.forEach((item) => {
+          //tempImageArray.push({ filePath: this.getServerFilePath(item.src) });
+          var reg = RegExp(/geekplus.xyz/)
+          if (item.src.match(reg)) {//indexOf("") search("") includes("geekplus.xyz")
+            tempImageArray.push({ filePath: this.getServerFilePath(item.src) });
+          }
+        });
+      }
+      this.allImageList = tempImageArray;
+    },
+    //删除操作
+    removeFileList(imgs) {
+      //let filePath={filePaths:JSON.stringify(imgs)};
+      if(imgs.length==1){
+        deleteFileList(imgs)
+        .then((response) => {
+          this.$message({
+            message: response.msg,
+            type: "success",
+          });
+        })
+        .catch((error) => {
+          this.$message({
+            message: error,
+            type: "error",
+            duration: 4000,
+          });
+        });
+      }else if(imgs.length>1) {
+        var imgPath=imgs[0].filePath;
+        deleteFile(imgPath)
+        .then((response) => {
+          this.$message({
+            message: response.msg,
+            type: "success",
+          });
+        })
+        .catch((error) => {
+          this.$message({
+            message: error,
+            type: "error",
+            duration: 4000,
+          });
+        });
+      }
+    },
+    getServerFilePath(filePath) {
+      return filePath.replace(
+        "https://www.geekplus.xyz" + process.env.VUE_APP_BASE_API,
+        ""
+      );
     },
     // 上传成功
     handleSuccess() {
@@ -633,8 +658,9 @@ export default {
       //console.log(file)
       this.uploadFileToFile(formData);
     },
+    //上传图片文件
     uploadImageFileToFile(formData) {
-      uploadFile(formData)
+      uploadFileForArticle(formData)
         .then((response) => {
           //console.log(response);
           var serverUrl = response.url;
@@ -668,8 +694,9 @@ export default {
           });
         });
     },
+    //上传资源文件
     uploadFileToFile(formData) {
-      uploadFile(formData)
+      uploadFileForArticle(formData)
         .then((response) => {
           //console.log(response);
           var serverUrl = response.url;

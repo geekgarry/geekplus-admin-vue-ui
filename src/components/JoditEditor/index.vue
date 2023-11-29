@@ -9,7 +9,7 @@
 <script>
 import "jodit/build/jodit.min.css";
 import { Jodit } from "jodit";
-import { uploadFile, deleteFile } from "@/api/geekplus/articles";
+import { uploadFileForArticle, deleteFile, deleteFileList } from "@/api/common";
 
 export default {
   name: "JoditEditor",
