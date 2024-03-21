@@ -214,13 +214,12 @@
           <!-- <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag> -->
           <!-- <span>{{ scope.row.status == 0 ? "正常使用" : "暂停禁用" }}</span> -->
           <el-switch
-            v-if="scope.row.userId !== 1 && scope.row.userId !== loginUserId"
+            :disabled="scope.row.userId === 1 || scope.row.userId === loginUserId"
             v-model="scope.row.status"
             active-value="0"
             inactive-value="1"
             @change="handleStatusChange(scope.row)"
           ></el-switch>
-          <span v-else></span>
         </template>
       </el-table-column>
       <el-table-column
@@ -243,6 +242,7 @@
       >
         <template slot-scope="scope">
           <el-button
+            v-if="scope.row.userId !== 1 || loginUserId === 1"
             size="mini"
             type="text"
             icon="el-icon-edit"
@@ -258,6 +258,7 @@
             >删除</el-button
           >
           <el-button
+            v-if="scope.row.userId !== 1 || loginUserId === 1"
             size="mini"
             type="text"
             icon="el-icon-key"
@@ -290,7 +291,7 @@
 
     <!-- 添加或修改参数配置对话框 -->
     <el-dialog :title="title" :visible.sync="open" width="600px" append-to-body>
-      <el-form ref="form" :model="form" :rules="rules" label-width="80px">
+      <el-form ref="form" :model="form" :rules="rules" label-width="80px" :disabled="isUpdate && form.userId === 1 && loginUserId !== 1">
         <el-row>
           <el-col :span="12">
             <el-form-item label="用户昵称" prop="nickName">
@@ -370,8 +371,8 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="状态" prop="status">
-              <el-radio-group v-model="form.status">
+            <el-form-item label="状态" prop="status" >
+              <el-radio-group v-model="form.status" :disabled="isUpdate && (form.userId === 1 || form.userId === loginUserId)">
                 <!-- <el-radio
                   v-for="dict in statusOptions"
                   :key="dict.dictValue"
@@ -442,7 +443,7 @@
       </div>
     </el-dialog>
 
-    <!--工作经验的列表-->
+    <!--XXX列表-->
     <!-- <el-dialog
       :title="title"
       :visible.sync="worklistopen"
@@ -572,7 +573,8 @@ export default {
             trigger: "blur"
           }
         ]
-      }
+      },
+      isUpdate:false,
     };
   },
   created() {
@@ -694,6 +696,7 @@ export default {
     handleAdd() {
       this.reset();
       this.open = true;
+      this.isUpdate = false;
       this.title = "添加用户";
       this.getListRoles();
     },
@@ -717,6 +720,7 @@ export default {
       this.getListDeptOptions();
       this.getListRoles();
       const userId = { userId: row.userId || this.ids[0] };
+      this.isUpdate = true;
       getUser(userId).then(response => {
         // console.log(response)
         this.form = response.data;
