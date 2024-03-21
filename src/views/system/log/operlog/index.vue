@@ -247,8 +247,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="操作状态：">
-              <div v-if="form.status === 0">正常</div>
-              <div v-else-if="form.status === 1">失败</div>
+              {{ statusFormat(form) }}
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -355,6 +354,9 @@ export default {
         case 502:
           statusMsg='网关错误';
           break;
+        default:
+          statusMsg='其它';
+          break;
       }
       return statusMsg;
       //return this.selectDictLabel(this.statusOptions, row.status);
@@ -367,34 +369,34 @@ export default {
           businessTypeMsg='其它';
           break;
         case 1:
-          businessTypeMsg='新增数据';
+          businessTypeMsg='新增';
           break;
         case 2:
-          businessTypeMsg='修改数据';
+          businessTypeMsg='修改';
           break;
         case 3:
-          businessTypeMsg='删除数据';
+          businessTypeMsg='删除';
           break;
         case 4:
-          businessTypeMsg='系统授权';
+          businessTypeMsg='系统';
           break;
         case 5:
-          businessTypeMsg='导出数据';
+          businessTypeMsg='导出';
           break;
         case 6:
-          businessTypeMsg='导入数据';
+          businessTypeMsg='导入';
           break;
         case 7:
-          businessTypeMsg='强制推出';
+          businessTypeMsg='强退';
           break;
         case 8:
           businessTypeMsg='生成代码';
           break;
         case 9:
-          businessTypeMsg='清空数据';
+          businessTypeMsg='清除';
           break;
         case 10:
-          businessTypeMsg='查询数据';
+          businessTypeMsg='查询';
           break;
       }
       return businessTypeMsg;
