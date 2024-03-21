@@ -332,11 +332,73 @@ export default {
     },
     // 操作日志状态字典翻译
     statusFormat(row, column) {
-      return this.selectDictLabel(this.statusOptions, row.status);
+      var statusMsg;
+      switch(row.status){
+        case 200:
+          statusMsg='操作成功';
+          break;
+        case 400:
+          statusMsg='请求无效';
+          break;
+        case 403:
+          statusMsg='禁止访问';
+          break;
+        case 404:
+          statusMsg='资源不存在';
+          break;
+        case 500:
+          statusMsg='内部服务器错误';
+          break;
+        case 501:
+          statusMsg='未实现错误';
+          break;
+        case 502:
+          statusMsg='网关错误';
+          break;
+      }
+      return statusMsg;
+      //return this.selectDictLabel(this.statusOptions, row.status);
     },
     // 操作日志类型字典翻译
     typeFormat(row, column) {
-      return this.selectDictLabel(this.typeOptions, row.businessType);
+      var businessTypeMsg;
+      switch(row.businessType){
+        case 0:
+          businessTypeMsg='其它';
+          break;
+        case 1:
+          businessTypeMsg='新增数据';
+          break;
+        case 2:
+          businessTypeMsg='修改数据';
+          break;
+        case 3:
+          businessTypeMsg='删除数据';
+          break;
+        case 4:
+          businessTypeMsg='系统授权';
+          break;
+        case 5:
+          businessTypeMsg='导出数据';
+          break;
+        case 6:
+          businessTypeMsg='导入数据';
+          break;
+        case 7:
+          businessTypeMsg='强制推出';
+          break;
+        case 8:
+          businessTypeMsg='生成代码';
+          break;
+        case 9:
+          businessTypeMsg='清空数据';
+          break;
+        case 10:
+          businessTypeMsg='查询数据';
+          break;
+      }
+      return businessTypeMsg;
+      //return this.selectDictLabel(this.typeOptions, row.businessType);
     },
     /** 搜索按钮操作 */
     handleQuery() {
