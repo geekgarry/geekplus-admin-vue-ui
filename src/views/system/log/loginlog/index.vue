@@ -92,7 +92,7 @@
       <el-table-column label="登录地点" align="center" prop="loginLocation" :show-overflow-tooltip="true" />
       <el-table-column label="浏览器" align="center" prop="logBrowser" />
       <el-table-column label="操作系统" align="center" prop="logSystem" />
-      <el-table-column label="登录状态" align="center" prop="logType" :formatter="statusFormat" />
+      <el-table-column label="登录状态" align="center" prop="logType" :formatter="loginStatusFormat" />
       <el-table-column label="操作信息" align="center" prop="logMsg" />
       <el-table-column label="登录日期" align="center" prop="logTime" width="180">
         <template slot-scope="scope">
@@ -162,8 +162,22 @@ export default {
       );
     },
     // 登录状态字典翻译
-    statusFormat(row, column) {
-      return this.selectDictLabel(this.statusOptions, row.status);
+    loginStatusFormat(row, column) {
+      //return this.selectDictLabel(this.statusOptions, row.logType);
+      let loginType = row.logType;
+      var stateMsg;
+      switch (loginType) {
+        case 0:
+          stateMsg = '失败';//;'<span style="color: #cf1616;">失败</span>';
+          break;
+        case 1:
+          stateMsg = '成功';//'<span style="color: #2247cb;">成功</span>';
+          break;
+        default:
+          stateMsg = '其它';//'<span style="color: #1b8f33;">其它</span>';
+          break;
+      }
+      return stateMsg;
     },
     /** 搜索按钮操作 */
     handleQuery() {
