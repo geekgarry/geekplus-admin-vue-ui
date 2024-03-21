@@ -185,10 +185,11 @@
           <span>{{ scope.row.nickName }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="用户类型" width="110" align="center">
-        <template slot-scope="scope">
-          {{ scope.row.userType }}
-        </template>
+      <el-table-column label="用户类型" width="110" align="center" prop="userType" :formatter="userTypeFormat">
+        <!-- <template slot-scope="scope">
+          <span v-if="scope.row.userType == 1">系统管理员</span>
+          <span v-if="scope.row.userType == 2">用户开发者</span>
+        </template> -->
       </el-table-column>
       <el-table-column label="邮箱" align="center">
         <template slot-scope="scope">
@@ -205,7 +206,7 @@
       </el-table-column>
       <el-table-column
         class-name="status-col"
-        label="状态"
+        label="账号禁停"
         width="110"
         align="center"
       >
@@ -213,11 +214,13 @@
           <!-- <el-tag :type="scope.row.status | statusFilter">{{ scope.row.status }}</el-tag> -->
           <!-- <span>{{ scope.row.status == 0 ? "正常使用" : "暂停禁用" }}</span> -->
           <el-switch
+            v-if="scope.row.userId !== 1 && scope.row.userId !== loginUserId"
             v-model="scope.row.status"
             active-value="0"
             inactive-value="1"
             @change="handleStatusChange(scope.row)"
           ></el-switch>
+          <span v-else></span>
         </template>
       </el-table-column>
       <el-table-column
@@ -394,6 +397,9 @@
                 ></el-option> -->
                 <el-option label="管理" value="1"></el-option>
                 <el-option label="普通" value="2"></el-option>
+                <el-option label="测试" value="3"></el-option>
+                <el-option label="开发" value="4"></el-option>
+                <el-option label="其他" value="5"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -593,6 +599,27 @@ export default {
       deptTreeSelect().then(res => {
         this.deptOptions = res.data
       })
+    },
+    userTypeFormat(row){
+      var userTypeName;
+      switch(row.userType){
+        case '1':
+          userTypeName = "系统管理员";
+          break;
+        case '2':
+          userTypeName = "普通用户";
+          break;
+        case '3':
+          userTypeName = "测试用户";
+          break;
+        case '4':
+          userTypeName = "开发者";
+          break;
+        default:
+          userTypeName = "其他用户";
+          break;
+      }
+      return userTypeName;
     },
     /** 转换部门数据结构 */
     normalizer(node) {
