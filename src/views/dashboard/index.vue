@@ -423,7 +423,6 @@
             <el-collapse-item title="v2.2.0 - 2020-03-18">
               <ol>
                 <li>系统监控新增定时任务功能</li>
-                <li>添加一个打包Web工程bat</li>
                 <li>修复页签鼠标滚轮按下的时候，可以关闭不可关闭的tag</li>
                 <li>修复点击退出登录有时会无提示问题</li>
                 <li>修复防重复提交注解无效问题</li>
@@ -436,17 +435,13 @@
                 <li>导入表单击行数据时选中对应的复选框</li>
                 <li>批量替换表前缀逻辑调整</li>
                 <li>固定重定向路径表达式</li>
-                <li>升级element-ui版本到2.13.0</li>
                 <li>操作日志排序调整</li>
-                <li>修复charts切换侧边栏或者缩放窗口显示bug</li>
                 <li>其他细节优化</li>
               </ol>
             </el-collapse-item>
 
             <el-collapse-item title="v2.1.0 - 2020-02-24">
               <ol>
-                <li>新增表单构建</li>
-                <li>代码生成支持树表结构</li>
                 <li>新增用户导入</li>
                 <li>修复动态加载路由页面刷新问题</li>
                 <li>修复地址开关无效问题</li>
@@ -461,7 +456,7 @@
                 <li>修复表格时间为空出现的异常</li>
                 <li>添加Jackson日期反序列化时区配置</li>
                 <li>调整根据用户权限加载菜单数据树形结构</li>
-                <li>调整成功登陆不恢复按钮，防止多次点击</li>
+                <li>调整成功登陆不恢复按钮，防止多次点击和后端重复登录调用</li>
                 <li>修改用户个人资料同步缓存信息</li>
                 <li>修复页面同时出现el-upload和Editor不显示处理</li>
                 <li>修复在角色管理页修改菜单权限偶尔未选中问题</li>
@@ -546,6 +541,7 @@
 import 'echarts/map/js/china';
 
 import { listNotice, getNotice } from "@/api/system/notice";
+import { getViewCount } from "@/api/system/log/operlog";
 import { getQRCodeImg } from "@/api/common"
 import { mapGetters } from 'vuex'
 
@@ -572,20 +568,65 @@ export default {
       },
       qrCodeText: '',
       qrCodeImg: '',
+      webViewData: [
+        { name: "北京", value: 17 },
+        { name: '天津', value: 12 },
+        { name: '上海', value: 15 },
+        { name: '重庆', value: 15 },
+        { name: '河北', value: 15 },
+        { name: '河南', value: 15 },
+        { name: '云南', value: 5 },
+        { name: '辽宁', value: 15 },
+        { name: '黑龙江', value: 15 },
+        { name: '湖南', value: 2 },
+        { name: '安徽', value: 15 },
+        { name: '山东', value: 15 },
+        { name: '新疆', value: 3 },
+        { name: '江苏', value: 3 },
+        { name: '浙江', value: 9 },
+        { name: '江西', value: 15 },
+        { name: '湖北', value: 4 },
+        { name: '广西', value: 4 },
+        { name: '甘肃', value: 10 },
+        { name: '山西', value: 15 },
+        { name: '内蒙古', value: 15 },
+        { name: '陕西', value: 9 },
+        { name: '吉林', value: 8 },
+        { name: '福建', value: 9 },
+        { name: '贵州', value: 9 },
+        { name: '广东', value: 8 },
+        { name: '青海', value: 3 },
+        { name: '西藏', value: 9 },
+        { name: '四川', value: 0 },
+        { name: '宁夏', value: 15 },
+        { name: '海南', value: 7 },
+        { name: '台湾', value: 4 },
+        { name: '香港', value: 4 },
+        { name: '澳门', value: 3 }
+      ]
     }
   },
   created() {
     this.getNoticeList();
     //this.init()
   },
-  mounted() {
-    this.initCharts()
+  async mounted() {
+    await this.getSysOperLog();
+    //this.initCharts()
   },
   methods: {
     getNoticeList() {
       listNotice(this.queryParams).then((res) => {
         this.noticeList = res.rows
       })
+    },
+    getWebViewList(res){
+      this.webViewData=res.data;
+      this.initCharts();
+    },
+    async getSysOperLog(){
+      let _this=this;
+      await getViewCount().then(_this.getWebViewList)
     },
     getQRCodeImg() {
       getQRCodeImg(this.qrCodeText).then((res) => {
@@ -630,51 +671,18 @@ export default {
               borderWidth: 2
             }
           },
-          data: [
-            { name: '北京', value: 17 },
-            { name: '天津', value: 12 },
-            { name: '上海', value: 15 },
-            { name: '重庆', value: 15 },
-            { name: '河北', value: 15 },
-            { name: '河南', value: 15 },
-            { name: '云南', value: 5 },
-            { name: '辽宁', value: 15 },
-            { name: '黑龙江', value: 15 },
-            { name: '湖南', value: 2 },
-            { name: '安徽', value: 15 },
-            { name: '山东', value: 15 },
-            { name: '新疆', value: 3 },
-            { name: '江苏', value: 3 },
-            { name: '浙江', value: 9 },
-            { name: '江西', value: 15 },
-            { name: '湖北', value: 4 },
-            { name: '广西', value: 4 },
-            { name: '甘肃', value: 10 },
-            { name: '山西', value: 15 },
-            { name: '内蒙古', value: 15 },
-            { name: '陕西', value: 9 },
-            { name: '吉林', value: 8 },
-            { name: '福建', value: 9 },
-            { name: '贵州', value: 9 },
-            { name: '广东', value: 8 },
-            { name: '青海', value: 3 },
-            { name: '西藏', value: 9 },
-            { name: '四川', value: 0 },
-            { name: '宁夏', value: 15 },
-            { name: '海南', value: 7 },
-            { name: '台湾', value: 4 },
-            { name: '香港', value: 4 },
-            { name: '澳门', value: 3 }
-          ]
+          data: this.webViewData
         }],
         visualMap: [{
           type: 'piecewise',
           show: true,
           pieces: [
-            { min: 0, max: 4 },
-            { min: 5, max: 9 },
-            { min: 10, max: 14 },
-            { min: 14 },
+            { min: 0, max: 50 },
+            { min: 50, max: 100 },
+            { min: 100, max: 1000 },
+            { min: 1000, max: 5000 },
+            { min: 5000, max: 10000 },
+            { min: 10000}
           ],
           textStyle: {
             color: '#828994'
@@ -690,6 +698,8 @@ export default {
               '#70b4ff',
               '#61a7ff',
               '#4d90f2',
+              '#3988f7',
+              '#2e81f5'
             ]
           },
         }],
