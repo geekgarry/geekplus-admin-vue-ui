@@ -9,6 +9,14 @@ export function listOperLog(query) {
   })
 }
 
+// 查询所有操作日志列表
+export function getViewCount() {
+  return request({
+    url: '/sys/operateLog/getViewCount',
+    method: 'get'
+  })
+}
+
 // 删除操作日志
 export function delOperlog(operId) {
   return request({
