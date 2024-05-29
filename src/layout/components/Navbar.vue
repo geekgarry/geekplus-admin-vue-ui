@@ -79,12 +79,18 @@
           <!-- <el-dropdown-item @click.native="lang = true">
             <span>语言设置</span>
           </el-dropdown-item> -->
+          <el-dropdown-item @click.native="onAiChatBot=true">
+            <span><i class="el-icon-chat-dot-round"></i>AI助手</span>
+          </el-dropdown-item>
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;"><i class="el-icon-switch-button"></i>退出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+    <el-dialog :visible.sync="onAiChatBot" title="AI聊天助手" width="85%" append-to-body>
+      <chatbot></chatbot>
+    </el-dialog>
   </div>
 </template>
 
@@ -97,8 +103,10 @@ import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
 import Langs from "./Lang"
 import NotificationMsg from "./NotificationMsg"
+import ChatBot from "@/views/tool/chatbot"//引入AI助手组件
 import headPic from "@/assets/image/profile/mai.png";
 import { getOnlineUserCount } from "@/api/monitor/online"
+import chatbot from './../../views/tool/chatbot/index.vue'
 //权限检查js方法
 import {checkPermi, checkRole} from "@/utils/permission"
 
@@ -110,7 +118,9 @@ export default {
     SizeSelect,
     Search,
     Langs,
-    NotificationMsg
+    NotificationMsg,
+    ChatBot,
+    chatbot
   },
   data() {
     return {
@@ -122,7 +132,8 @@ export default {
       onlineUserCount:0,
       baseHost: window.location.host,
       baseApi: process.env.VUE_APP_BASE_API,
-      prefixUrl: process.env.VUE_APP_BASE_API
+      prefixUrl: process.env.VUE_APP_BASE_API,
+      onAiChatBot: false,
     };
   },
   created: function () {
