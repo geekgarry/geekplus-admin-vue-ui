@@ -667,12 +667,12 @@ export default {
             //let html = converter.makeHtml(markdown); // 将Markdown转换为HTML
             let html = marked.parse(markdown); // 将Markdown转换为HTML
             // 使用正则表达式替换掉一个或多个换行符，后面跟着一个或多个空行，只保留单个换行符
-            html = html.replace(/(?:\n[\s\uFEFF\xA0]*){2,}/g, '\n'); //{2,}表示超过2替换
-            if (/[a-zA-Z]/.test(html) && /[\u4e00-\u9fa5]/.test(html)) {
-                html = html.replace(/[ | ]*\n/g, ''); //去除行尾空白
-            } else if (/[\u4e00-\u9fa5]/.test(html)) {
-                html = html.replace(/[ | ]*\n/g, ''); //去除行尾空白
-            }
+            html = html.replace(/(?:\n[\s\uFEFF\xA0]*){3,}/g, '\n'); //{3,}表示超过3替换
+            // if (/[a-zA-Z]/.test(html) && /[\u4e00-\u9fa5]/.test(html)) {
+            //     html = html.replace(/[ | ]*\n/g, ''); //去除行尾空白
+            // } else if (/[\u4e00-\u9fa5]/.test(html)) {
+            //     html = html.replace(/[ | ]*\n/g, ''); //去除行尾空白
+            // }
             //html = html.replace(/<\/?[^>]*>/g, ''); //去除HTML tag
             //html = html.replace(/[ | ]*\n/g, ''); //去除行尾空白
             //html = html.replace(/\n[\s| | ]*\r/g,''); //去除多余空行
@@ -795,11 +795,9 @@ body{
 }
 
 .listChatItemL .pcChatTextSpan {
-    /*color:#252020;
+    color:#252020;
     border-color: mediumaquamarine;
-    background-color: #66CEAA;*/
-    background-color: var(--color-article-container, #353434);
-    color: var(--color-article-container-content-text, #d3d1d1);
+    background-color: #66CEAA;
     border-radius: 5px;
     padding: 5px;
     overflow-x: scroll;
