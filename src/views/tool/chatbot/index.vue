@@ -14,7 +14,8 @@
                             <div><i class="el-icon-info" @click="openMsg"></i></div>
                         </div>
                         <div class="bigChatBox" id="bigChatBox" :style="{height: chatBoxHeight+ 'px'}">
-                            <div v-for="(item, index) in list" v-bind:key="index" class="listChatMsg" :style="{textAlign: item.align}">
+                            <!-- :style="{textAlign: item.align}" -->
+                            <div v-for="(item, index) in list" v-bind:key="index" class="listChatMsg" >
                                 <span class="listChatItemL" v-if="item && item.align == 'left'">
                                       <span><img
                                         class="chatUserIcon"
@@ -84,7 +85,8 @@
                 border-bottom: var(--color-border-4, #c5c5c5) 1px solid;
                 ">AI聊天助手</div>
             <div class="bigChatBox" id="bigChatBox">
-                <div v-for="(item, index) in list" :key="index" class="listChatMsg" :style="{textAlign: item.align}">
+                <!-- :style="{textAlign: item.align}" -->
+                <div v-for="(item, index) in list" :key="index" class="listChatMsg" >
                     <span class="listChatItemL" v-if="item && item.align == 'left'">
                                 <img
                                   class="chatUserIcon"
