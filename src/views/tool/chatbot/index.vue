@@ -15,7 +15,7 @@
                         </div>
                         <div class="bigChatBox" id="bigChatBox" :style="{height: chatBoxHeight+ 'px'}">
                             <!-- :style="{textAlign: item.align}" -->
-                            <div v-for="(item, index) in list" v-bind:key="index" class="listChatMsg" >
+                            <div v-for="(item, index) in msgList" v-bind:key="index" class="listChatMsg" >
                                 <span class="listChatItemL" v-if="item && item.align == 'left'">
                                       <span><img
                                         class="chatUserIcon"
@@ -86,7 +86,7 @@
                 ">AI聊天助手</div>
             <div class="bigChatBox" id="bigChatBox">
                 <!-- :style="{textAlign: item.align}" -->
-                <div v-for="(item, index) in list" :key="index" class="listChatMsg" >
+                <div v-for="(item, index) in msgList" :key="index" class="listChatMsg" >
                     <span class="listChatItemL" v-if="item && item.align == 'left'">
                                 <img
                                   class="chatUserIcon"
@@ -130,7 +130,7 @@ export default {
         return {
             visible: false,
             inputChat: "",
-            list: [], //聊天消息的list
+            msgList: [], //聊天消息的list
             loading: false,
             chatbtndisplay: true,
             chatdisplay: false,
@@ -150,10 +150,14 @@ export default {
             textAudio: null,
             isTextVoice: false, //是否语音朗读
             openAiKey: '',
+            userName: "guest"
         };
     },
     //data:{},
     created: function() {
+        if(this.$store.state.user.userName){
+            this.userName=this.$store.state.user.userName;
+        }
         this.getHistoryMag("You");
         //this.startTTS("你好！请问现在是什么时间！");
         document.addEventListener("keydown", (e) => {
@@ -228,7 +232,7 @@ export default {
             console.log(this.inputChat, "发送信息");
             if (this.inputChat !== "") {
                 this.loading = true;
-                await this.list.push({ align: "right", text: this.inputChat });
+                await this.msgList.push({ align: "right", text: this.inputChat });
                 await this.scrollTop11();
                 this.getMsg();
                 this.inputChat = "";
@@ -247,7 +251,7 @@ export default {
                         link: "",
                         type: '0'
                     };
-                    await this.list.push(listMsg);
+                    await this.msgList.push(listMsg);
                     await this.scrollTop11();
                     this.loading = false;
                 }, 1000);
@@ -263,7 +267,7 @@ export default {
                         link: "",
                         type: '0'
                     };
-                    await this.list.push(listMsg);
+                    await this.msgList.push(listMsg);
                     await this.scrollTop11();
                     this.loading = false;
                 }, 1000);
@@ -304,7 +308,7 @@ export default {
                     if(this.isTextVoice===true){
                       this.startTTS(msg);
                     }
-                    await this.list.push(listMsg);
+                    await this.msgList.push(listMsg);
                     await this.scrollTop11();
                   }
                   this.loading = false;
@@ -316,7 +320,7 @@ export default {
                 } */
                 // axios.post("/AIBot/getGeminiContent", //google gemini
                 //         { username: "You", data: this.inputChat })
-                geminiAI({ username: "You", data: this.inputChat })
+                geminiAI({ username: this.userName, data: this.inputChat })
                     .then(async (response) => {
                         //console.log(response);
                         //if (response.code == 200) {
@@ -350,7 +354,7 @@ export default {
                             if (this.isTextVoice === true) {
                                 this.startTTS(msg);
                             }
-                            await this.list.push(listMsg);
+                            await this.msgList.push(listMsg);
                             await this.scrollTop11();
                         //}
                         this.loading = false;
@@ -364,7 +368,7 @@ export default {
         //获取用户的历史聊天记录
         getHistoryMag(username) {
             //axios.get("/AIBot/getHistoryMessage?username=You")
-            getHistoryMessage({username:"You"})
+            getHistoryMessage({username: this.userName})
                 .then(async (response) => {
                     //console.log(response.data)
                     let msglist = response.data;
@@ -658,7 +662,7 @@ export default {
             var len = msgArr.length;
             for (var i = 0; i < len; i++) {
                 var temp = JSON.parse(msgArr[i]);
-                this.list.push(temp);
+                this.msgList.push(temp);
             }
             //return msgArr;
         },
@@ -679,6 +683,13 @@ export default {
             //html = html.replace(/&nbsp;/ig, ''); //去掉&nbsp;
             //html = html.replace(/&nbsp/ig, '');
             return html;
+        },
+        getChatDateTime() {
+            let now = new Date(),
+            y = now.getFullYear(),
+            m = now.getMonth() + 1,
+            d = now.getDate();
+            return y + "-" + (m < 10 ? "0" + m : m) + "-" + (d < 10 ? "0" + d : d) + " " + now.toTimeString().substring(0, 8);
         }
     }
 }
@@ -746,6 +757,7 @@ body{
 .listChatMsg {
     font-size: 16px;
     font-weight: 500;
+    margin: 8px auto;
 }
 
 .listChatItemL {
