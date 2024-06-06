@@ -122,7 +122,7 @@
 //import axios from 'axios'
 import Recorder from 'js-audio-recorder'
 // import { marked } from "marked"
-import {getchatgpt, chatgpttest, geminiAI, getHistoryMessage} from "@/api/chatbot/chatbot"
+import {getchatgpt, chatgpttest, geminiAI, geminiAIChat, getHistoryMessage} from "@/api/chatbot/chatbot"
 
 export default {
     name: "ChatBot",
@@ -131,6 +131,7 @@ export default {
             visible: false,
             inputChat: "",
             msgList: [], //聊天消息的list
+            historyMsgStr: "", //历史聊天记录
             loading: false,
             chatbtndisplay: true,
             chatdisplay: false,
@@ -149,6 +150,7 @@ export default {
             recordingTxt: "语音",
             textAudio: null,
             isTextVoice: false, //是否语音朗读
+            isHistory: false, //是否采用有历史记忆的聊天
             openAiKey: '',
             userName: "guest"
         };
@@ -244,39 +246,43 @@ export default {
                 /*
                  * 模拟信息返回
                  */
-                setTimeout(async () => {
-                    let listMsg = {
-                        align: "left",
-                        text: "已关闭语音功能",
-                        link: "",
-                        type: '0'
-                    };
-                    await this.msgList.push(listMsg);
-                    await this.scrollTop11();
-                    this.loading = false;
-                }, 1000);
+                // setTimeout(async () => {
+                //     let listMsg = {
+                //         align: "left",
+                //         text: "已关闭语音功能",
+                //         link: "",
+                //         type: '0'
+                //     };
+                //     await this.msgList.push(listMsg);
+                //     await this.scrollTop11();
+                //     this.loading = false;
+                // }, 1000);
             } else if (this.inputChat === "开启语音") {
                 this.isTextVoice = true
                 /*
                  * 模拟信息返回
                  */
-                setTimeout(async () => {
-                    let listMsg = {
-                        align: "left",
-                        text: "已开启语音功能",
-                        link: "",
-                        type: '0'
-                    };
-                    await this.msgList.push(listMsg);
-                    await this.scrollTop11();
-                    this.loading = false;
-                }, 1000);
+                // setTimeout(async () => {
+                //     let listMsg = {
+                //         align: "left",
+                //         text: "已开启语音功能",
+                //         link: "",
+                //         type: '0'
+                //     };
+                //     await this.msgList.push(listMsg);
+                //     await this.scrollTop11();
+                //     this.loading = false;
+                // }, 1000);
             } else if (this.inputChat === "停止语音" || this.inputChat === "停止播放" || this.inputChat === "暂停播放" || this.inputChat === "暂停" || this.inputChat === "pause") {
                 this.pauseTextAudio();
                 this.loading = false;
             } else if (this.inputChat === "继续语音" || this.inputChat === "继续播放" || this.inputChat === "继续" || this.inputChat === "play") {
                 this.playTextAudio();
                 this.loading = false;
+            } else if(this.inputChat === "聊天模式"|| this.inputChat === "开启对话模式" || this.inputChat === "开启记忆对话" || this.inputChat === "对话模式"){
+                this.isHistory=true;
+            } else if(this.inputChat === "取消历史记忆"|| this.inputChat === "关闭对话模式" || this.inputChat === "关闭记忆对话"){
+                this.isHistory=false;
             } else {
                 /** if(this.openAiKey==''||this.openAiKey==null){
                   this.$message({message:'请先输入你的openAiKey',type:'error',duration:2500})
@@ -320,7 +326,8 @@ export default {
                 } */
                 // axios.post("/AIBot/getGeminiContent", //google gemini
                 //         { username: "You", data: this.inputChat })
-                geminiAI({ username: this.userName, data: this.inputChat })
+                if(this.isHistory === false){
+                    geminiAI({ username: this.userName, chatData: this.inputChat })
                     .then(async (response) => {
                         //console.log(response);
                         //if (response.code == 200) {
@@ -363,6 +370,51 @@ export default {
                         console.log(error);
                         this.loading = false;
                     });
+                } else {
+                    geminiAIChat({ username: this.userName, chatData: this.inputChat, preChatData: this.chatHistoryToJson(this.msgList) })
+                    .then(async (response) => {
+                        //console.log(response);
+                        //if (response.code == 200) {
+                        //console.log("返回响应信息")
+                        //console.log(response.data)
+                        let msg = "消息";
+                        let msgtype = "0"
+                        if (response.status && response.status == 500) {
+                            msg = "返回信息错误可能由于以下原因:\n1.你发送的信息中包含不安全和不合法的内容！（如色情，暴力，恐怖，或是违反互联网一般行为规范和道德法律等）。\n2.你的服务因为一些原因无法完成请求过程，也许是网络问题，也许是服务器出现服务过载或超时延迟。\n3.由于服务器出现未知原因导致数据无法安全传递";
+                            msgtype = "0";
+                        }
+                        if (response.code == 500) {
+                            msg = "返回信息错误可能由于以下原因:\n1.你发送的信息中包含不安全和不合法的内容！（如色情，暴力，恐怖，或是违反互联网一般行为规范和道德法律等）。\n2.你的服务因为一些原因无法完成请求过程，也许是网络问题，也许是服务器出现服务过载或超时延迟。\n3.由于服务器出现未知原因导致数据无法安全传递";
+                            msgtype = "0";
+                        } else if (response.code == 200) {
+                            // 自行处理需要的数据
+                            msg = response.data.msg_data.trim();
+                            msgtype = response.data.msg_type;
+                        }
+                        let listMsg = {
+                            align: "left",
+                            text: msg,
+                            link: "",
+                            type: msgtype
+                            //time: response.data.msg_date_time
+                        };
+                        if (this.isTextVoice === true) {
+                            this.startTTS(msg);
+                        }
+                        await this.msgList.push(listMsg);
+                        await this.scrollTop11();
+                        //}
+                        this.loading = false;
+                    })
+                    .catch(function(error) {
+                        console.log(error);
+                        // this.$message({
+                        //     message: error.msg,
+                        //     type: "error",
+                        // });
+                        this.loading = false;
+                    });
+                }
             }
         },
         //获取用户的历史聊天记录
@@ -516,6 +568,7 @@ export default {
         },
         //开始文字转语音
         startTTS(text) {
+            const baseUrl = process.env.VUE_APP_BASE_API
             // 调用语音合成接口
             // 参数含义请参考 https://ai.baidu.com/docs#/TTS-API/41ac79a6
             /*axios
@@ -543,7 +596,8 @@ export default {
               console.log(error);
             });*/
             var that = this;
-            var url = "https://tsn.baidu.com/text2audio?tex=" + text + "&lan=zh&cuid=c211ccc3407c45038492e623bb358524&ctp=1&tok=24.e3cd3b426636b471a2f288cebadca276.2592000.1719346650.282335-30837213";
+            //var url = "https://tsn.baidu.com/text2audio?tex=" + text + "&lan=zh&cuid=c211ccc3407c45038492e623bb358524&ctp=1&tok=24.e3cd3b426636b471a2f288cebadca276.2592000.1719346650.282335-30837213";
+            var url = baseUrl + "/translate/ttsZH_CN?ttsText="+text;
             //var textAudio;
             that.textAudio = new Audio();
             that.textAudio.onloadeddata = function() {
@@ -665,6 +719,22 @@ export default {
                 this.msgList.push(temp);
             }
             //return msgArr;
+        },
+        //遍历聊天记录数组，把里面的每一条json字符串转为json对象
+        chatHistoryToJson(msgArr) {
+            let tempMessage = "";
+            var len = msgArr.length;
+            for (var i = 0; i < len; i++) {
+                // var temp = JSON.parse(msgArr[i]);
+                // this.msgList.push(temp);
+                if(msgArr[i].align=="right"){
+                    tempMessage += "{'role': 'user','parts': [{'text': '"+msgArr[i].text+"'}]},";
+                } else if(msgArr[i].align=="left"){
+                    tempMessage += "{'role': 'model','parts': [{'text': '"+msgArr[i].text+"'}]},";
+                }
+            }
+            //this.historyMsgStr=tempMessage;
+            return tempMessage;
         },
         // 定义一个函数，将Markdown转换为HTML，并去除多余的空行
         markdownToHtmlWithoutExtraLines(markdown) {

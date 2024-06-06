@@ -36,6 +36,15 @@ export function geminiAI(data) {
   })
 }
 
+//调用Google Gemini AI的接口,采用对话模式
+export function geminiAIChat(data) {
+  return request({
+    url: '/AIBot/getGeminiChat',
+    method: 'post',
+    data: data
+  })
+}
+
 //上传录音文件
 export function uploadVoiceBlob(data) {
   return request({
