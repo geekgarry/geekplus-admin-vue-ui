@@ -15,27 +15,27 @@
                         </div>
                         <div class="bigChatBox" id="bigChatBox" :style="{height: chatBoxHeight+ 'px'}">
                             <!-- :style="{textAlign: item.align}" -->
-                            <div v-for="(item, index) in msgList" v-bind:key="index" class="listChatMsg" >
+                            <div v-for="(item, index) in msgList" v-bind:key="index" class="listChatMsg">
                                 <span class="listChatItemL" v-if="item && item.align == 'left'">
-                                      <span><img
-                                        class="chatUserIcon"
-                                        src="https://www.geekplus.xyz/imgs/logo.png"
-                                        alt="极客普拉斯" />
-                                      </span>
+                                          <span><img
+                                            class="chatUserIcon"
+                                            src="https://www.geekplus.xyz/imgs/logo.png"
+                                            alt="极客普拉斯" />
+                                          </span>
                                 <span class="listChatItemContent" v-if="item && item.link == ''">
-                                        <span v-html="markdownToHtmlWithoutExtraLines(item.text)"></span>
+                                            <span v-html="markdownToHtmlWithoutExtraLines(item.text)"></span>
                                 <!-- v-if="item.type=='1'" <span v-if="item.type=='0'" v-text="item.text">{{item.text}}</span> -->
                                 </span>
                                 <span class="listChatItemContent" v-if="item && item.link">: <a :href="item.link" target="_blank" >{{item.text}}</a></span
-                                      >
-                                    </span>
+                                          >
+                                        </span>
                                 <span class="listChatItemR" v-if="item && item.align == 'right'">
-                                      <span class="listChatItemContent">{{item.text}}</span>
+                                          <span class="listChatItemContent">{{item.text}}</span>
                                 <span><img
-                                        class="chatUserIcon"
-                                        src="https://www.geekplus.xyz/imgs/mai.png"
-                                        alt="麦壳" />
-                                      </span>
+                                            class="chatUserIcon"
+                                            src="https://www.geekplus.xyz/imgs/mai.png"
+                                            alt="麦壳" />
+                                          </span>
                                 </span>
                             </div>
                         </div>
@@ -44,20 +44,20 @@
                                 <el-col :span="24">
                                     <div class="chatBoxFooterBtn">
                                         <span><el-button 
-                                          type="primary"
-                                          @click="startAndStopRecording" >{{recordingTxt}}
-                                        </el-button>
-                                        </span>
+                                              type="primary"
+                                              @click="startAndStopRecording" >{{recordingTxt}}
+                                            </el-button>
+                                            </span>
                                         <el-input placeholder="请输入聊天内容" v-model="inputChat" class="input-with-chatgpt" clearable :autofocus="true" type="text" resize="none" :autosize="{ minRows: 1.3, maxRows: 8 ,maxCols:18, }">
                                         </el-input>
                                         <span><el-button
-                                          :loading="loading"
-                                          @keydown.enter.native="handleMsg"
-                                          slot="append"
-                                          type="primary"
-                                          @click="handleMsg"
-                                          >发送</el-button
-                                        ></span>
+                                              :loading="loading"
+                                              @keydown.enter.native="handleMsg"
+                                              slot="append"
+                                              type="primary"
+                                              @click="handleMsg"
+                                              >发送</el-button
+                                            ></span>
     
                                     </div>
                                 </el-col>
@@ -75,42 +75,42 @@
         <el-row v-show="chatbtndisplay" type="flex" :gutter="10" justify="center">
             <el-col :sm="2" :md="4" :lg="4" :xl="6"></el-col>
             <el-col :xs="24" :sm="20" :md="16" :lg="16" :xl="12">
-            <div style="
-                margin: 0 auto;
-                text-align: center;
-                line-height: normal;
-                padding: 5px 0;
-                font-size: initial;
-                color: var(--color-article-container-text-1, #696969);
-                border-bottom: var(--color-border-4, #c5c5c5) 1px solid;
-                ">AI聊天助手</div>
-            <div class="bigChatBox" id="bigChatBox">
-                <!-- :style="{textAlign: item.align}" -->
-                <div v-for="(item, index) in msgList" :key="index" class="listChatMsg" >
-                    <span class="listChatItemL" v-if="item && item.align == 'left'">
-                                <img
-                                  class="chatUserIcon"
-                                  src="https://www.geekplus.xyz/imgs/logo.png"
-                                  alt="极客普拉斯"
-                                />
-                                <span class="pcChatTextSpan" v-if="item && item.link == ''" >
-                                  <span v-html="markdownToHtmlWithoutExtraLines(item.text)"></span>
-                    <!--v-if="item.type=='1'"  <span v-if="item.type=='0'" v-text="item.text">{{item.text}}</span> -->
-                    </span>
-                    <span class="pcChatTextSpan" v-if="item && item.link">: <a :href="item.link" target="_blank" >{{item.text}}</a></span
-                                >
-                              </span>
-                    <span class="listChatItemR" v-if="item && item.align == 'right'">
-                                <span class="pcChatTextSpan">{{item.text}}</span>
-                    <img class="chatUserIcon" src="https://www.geekplus.xyz/imgs/mai.png" alt="麦壳" />
-                    </span>
+                <div style="
+                    margin: 0 auto;
+                    text-align: center;
+                    line-height: normal;
+                    padding: 5px 0;
+                    font-size: initial;
+                    color: var(--color-article-container-text-1, #696969);
+                    border-bottom: var(--color-border-4, #c5c5c5) 1px solid;
+                    ">AI聊天助手</div>
+                <div class="bigChatBox" id="bigChatBox">
+                    <!-- :style="{textAlign: item.align}" -->
+                    <div v-for="(item, index) in msgList" :key="index" class="listChatMsg">
+                        <span class="listChatItemL" v-if="item && item.align == 'left'">
+                                    <img
+                                      class="chatUserIcon"
+                                      src="https://www.geekplus.xyz/imgs/logo.png"
+                                      alt="极客普拉斯"
+                                    />
+                                    <span class="pcChatTextSpan" v-if="item && item.link == ''" >
+                                      <span v-html="markdownToHtmlWithoutExtraLines(item.text)"></span>
+                        <!--v-if="item.type=='1'"  <span v-if="item.type=='0'" v-text="item.text">{{item.text}}</span> -->
+                        </span>
+                        <span class="pcChatTextSpan" v-if="item && item.link">: <a :href="item.link" target="_blank" >{{item.text}}</a></span
+                                    >
+                                  </span>
+                        <span class="listChatItemR" v-if="item && item.align == 'right'">
+                                    <span class="pcChatTextSpan">{{item.text}}</span>
+                        <img class="chatUserIcon" src="https://www.geekplus.xyz/imgs/mai.png" alt="麦壳" />
+                        </span>
+                    </div>
                 </div>
-            </div>
-            <div style="margin-top: 15px">
-                <el-input placeholder="请输入聊天内容" v-model="inputChat" class="input-with-select" clearable :autofocus="true" type="text">
-                    <el-button :loading="loading" @keydown.enter.native="handleMsg" slot="append" type="primary" @click="handleMsg">发送</el-button>
-                </el-input>
-            </div>
+                <div style="margin-top: 15px">
+                    <el-input placeholder="请输入聊天内容" v-model="inputChat" class="input-with-select" clearable :autofocus="true" type="text">
+                        <el-button :loading="loading" @keydown.enter.native="handleMsg" slot="append" type="primary" @click="handleMsg">发送</el-button>
+                    </el-input>
+                </div>
             </el-col>
             <el-col :sm="2" :md="4" :lg="4" :xl="6"></el-col>
         </el-row>
@@ -122,7 +122,7 @@
 //import axios from 'axios'
 import Recorder from 'js-audio-recorder'
 // import { marked } from "marked"
-import {getchatgpt, chatgpttest, geminiAI, geminiAIChat, getHistoryMessage} from "@/api/chatbot/chatbot"
+import { getchatgpt, chatgpttest, geminiAI, geminiAIChat, getHistoryMessage } from "@/api/chatbot/chatbot"
 
 export default {
     name: "ChatBot",
@@ -157,8 +157,8 @@ export default {
     },
     //data:{},
     created: function() {
-        if(this.$store.state.user.userName){
-            this.userName=this.$store.state.user.userName;
+        if (this.$store.state.user.userName) {
+            this.userName = this.$store.state.user.userName;
         }
         this.getHistoryMag("You");
         //this.startTTS("你好！请问现在是什么时间！");
@@ -180,7 +180,7 @@ export default {
             this.chatdisplay = false;
         }
         //document.getElementById("bigChatBox").offsetHeight = (this.fullHeight - 100) + "px";
-        this.chatBoxHeight=this.fullHeight - 100;
+        this.chatBoxHeight = this.fullHeight - 100;
     },
     mounted() {
         const that = this
@@ -202,7 +202,7 @@ export default {
                 }
                 console.log("页面高度：" + that.windowHeight)
                 //document.getElementById("bigChatBox").offsetHeight = (that.windowHeight - 100) + "px";
-                that.chatBoxHeight=that.windowHeight - 100;
+                that.chatBoxHeight = that.windowHeight - 100;
             })()
         };
     },
@@ -232,17 +232,11 @@ export default {
         },
         async handleMsg() {
             console.log(this.inputChat, "发送信息");
-            if (this.inputChat !== "") {
-                this.loading = true;
-                await this.msgList.push({ align: "right", text: this.inputChat });
-                await this.scrollTop11();
-                this.getMsg();
-                this.inputChat = "";
-            }
-        },
-        getMsg() {
             if (this.inputChat === "关闭语音") {
-                this.isTextVoice = false
+                this.isTextVoice = false;
+                this.loading = false;
+                this.inputChat = "";
+                this.msgSuccess("关闭语音回复");
                 /*
                  * 模拟信息返回
                  */
@@ -258,7 +252,10 @@ export default {
                 //     this.loading = false;
                 // }, 1000);
             } else if (this.inputChat === "开启语音") {
-                this.isTextVoice = true
+                this.isTextVoice = true;
+                this.loading = false;
+                this.inputChat = "";
+                this.msgSuccess("开启语音回复");
                 /*
                  * 模拟信息返回
                  */
@@ -276,15 +273,33 @@ export default {
             } else if (this.inputChat === "停止语音" || this.inputChat === "停止播放" || this.inputChat === "暂停播放" || this.inputChat === "暂停" || this.inputChat === "pause") {
                 this.pauseTextAudio();
                 this.loading = false;
+                this.inputChat = "";
+                this.msgSuccess("停止播放语音");
             } else if (this.inputChat === "继续语音" || this.inputChat === "继续播放" || this.inputChat === "继续" || this.inputChat === "play") {
                 this.playTextAudio();
                 this.loading = false;
-            } else if(this.inputChat === "聊天模式"|| this.inputChat === "开启对话模式" || this.inputChat === "开启记忆对话" || this.inputChat === "对话模式"){
-                this.isHistory=true;
-            } else if(this.inputChat === "取消历史记忆"|| this.inputChat === "关闭对话模式" || this.inputChat === "关闭记忆对话"){
-                this.isHistory=false;
-            } else {
-                /** if(this.openAiKey==''||this.openAiKey==null){
+                this.inputChat = "";
+                this.msgSuccess("再次播放语音");
+            } else if (this.inputChat === "聊天模式" || this.inputChat === "开启对话模式" || this.inputChat === "开启记忆对话" || this.inputChat === "对话模式") {
+                this.isHistory = true;
+                this.loading = false;
+                this.inputChat = "";
+                this.msgSuccess("打开聊天对话模式");
+            } else if (this.inputChat === "取消历史记忆" || this.inputChat === "关闭对话模式" || this.inputChat === "关闭记忆对话") {
+                this.isHistory = false;
+                this.loading = false;
+                this.inputChat = "";
+                this.msgSuccess("关闭聊天对话模式");
+            } else if (this.inputChat !== "") {
+                this.loading = true;
+                await this.msgList.push({ align: "right", text: this.inputChat });
+                await this.scrollTop11();
+                this.getMsg();
+                this.inputChat = "";
+            }
+        },
+        getMsg() {
+            /** if(this.openAiKey==''||this.openAiKey==null){
                   this.$message({message:'请先输入你的openAiKey',type:'error',duration:2500})
                 }else{
                   // 处理自己的接口请求 返回需要的数据
@@ -324,45 +339,45 @@ export default {
                   this.loading = false;
                   });
                 } */
-                // axios.post("/AIBot/getGeminiContent", //google gemini
-                //         { username: "You", data: this.inputChat })
-                if(this.isHistory === false){
-                    geminiAI({ username: this.userName, chatData: this.inputChat })
+            // axios.post("/AIBot/getGeminiContent", //google gemini
+            let chatPrompt = { username: this.userName, chatData: this.inputChat };
+            if (this.isHistory === false) {
+                geminiAI({ username: this.userName, chatData: this.inputChat })
                     .then(async (response) => {
                         //console.log(response);
                         //if (response.code == 200) {
-                            //console.log("返回响应信息")
-                            //console.log(response.data)
-                            let msg = "消息";
-                            let msgtype = "0"
-                            if(response.status&&response.status == 500) {
-                                msg = "返回信息错误可能由于以下原因:\n1.你发送的信息中包含不安全和不合法的内容！（如色情，暴力，恐怖，或是违反互联网一般行为规范和道德法律等）。\n2.你的服务因为一些原因无法完成请求过程，也许是网络问题，也许是服务器出现服务过载或超时延迟。\n3.由于服务器出现未知原因导致数据无法安全传递";
-                                msgtype = "0";
-                            }
-                            if (response.code == 500) {
-                                msg = "返回信息错误可能由于以下原因:\n1.你发送的信息中包含不安全和不合法的内容！（如色情，暴力，恐怖，或是违反互联网一般行为规范和道德法律等）。\n2.你的服务因为一些原因无法完成请求过程，也许是网络问题，也许是服务器出现服务过载或超时延迟。\n3.由于服务器出现未知原因导致数据无法安全传递";
-                                msgtype = "0";
-                            } else if (response.code == 200) {
-                                // 自行处理需要的数据
-                                msg = response.data.msg_data.trim();
-                                msgtype = response.data.msg_type;
-                            }
-                            let listMsg = {
-                                align: "left",
-                                text: msg,
-                                link: "",
-                                type: msgtype
-                            };
-                            /**if (msg.flag == 1) {
-                            const splitMsg = msg.answer.split("：");
-                            listMsg.text = splitMsg[0];
-                            listMsg.link = splitMsg[1];
-                            }*/
-                            if (this.isTextVoice === true) {
-                                this.startTTS(msg);
-                            }
-                            await this.msgList.push(listMsg);
-                            await this.scrollTop11();
+                        //console.log("返回响应信息")
+                        //console.log(response.data)
+                        let msg = "消息";
+                        let msgtype = "0"
+                        if (response.status && response.status == 500) {
+                            msg = "返回信息错误可能由于以下原因:\n1.你发送的信息中包含不安全和不合法的内容！（如色情，暴力，恐怖，或是违反互联网一般行为规范和道德法律等）。\n2.你的服务因为一些原因无法完成请求过程，也许是网络问题，也许是服务器出现服务过载或超时延迟。\n3.由于服务器出现未知原因导致数据无法安全传递";
+                            msgtype = "0";
+                        }
+                        if (response.code == 500) {
+                            msg = "返回信息错误可能由于以下原因:\n1.你发送的信息中包含不安全和不合法的内容！（如色情，暴力，恐怖，或是违反互联网一般行为规范和道德法律等）。\n2.你的服务因为一些原因无法完成请求过程，也许是网络问题，也许是服务器出现服务过载或超时延迟。\n3.由于服务器出现未知原因导致数据无法安全传递";
+                            msgtype = "0";
+                        } else if (response.code == 200) {
+                            // 自行处理需要的数据
+                            msg = response.data.msg_data.trim();
+                            msgtype = response.data.msg_type;
+                        }
+                        let listMsg = {
+                            align: "left",
+                            text: msg,
+                            link: "",
+                            type: msgtype
+                        };
+                        /**if (msg.flag == 1) {
+                        const splitMsg = msg.answer.split("：");
+                        listMsg.text = splitMsg[0];
+                        listMsg.link = splitMsg[1];
+                        }*/
+                        if (this.isTextVoice === true) {
+                            this.startTTS(msg);
+                        }
+                        await this.msgList.push(listMsg);
+                        await this.scrollTop11();
                         //}
                         this.loading = false;
                     })
@@ -370,8 +385,8 @@ export default {
                         console.log(error);
                         this.loading = false;
                     });
-                } else {
-                    geminiAIChat({ username: this.userName, chatData: this.inputChat, preChatData: this.chatHistoryToJson(this.msgList) })
+            } else {
+                geminiAIChat({ username: this.userName, chatData: this.inputChat, preChatData: this.chatHistoryToJson(this.msgList) })
                     .then(async (response) => {
                         //console.log(response);
                         //if (response.code == 200) {
@@ -414,13 +429,16 @@ export default {
                         // });
                         this.loading = false;
                     });
-                }
             }
+        },
+        //请求AI模型
+        geminiAIChat() {
+
         },
         //获取用户的历史聊天记录
         getHistoryMag(username) {
             //axios.get("/AIBot/getHistoryMessage?username=You")
-            getHistoryMessage({username: this.userName})
+            getHistoryMessage({ username: this.userName })
                 .then(async (response) => {
                     //console.log(response.data)
                     let msglist = response.data;
@@ -597,7 +615,7 @@ export default {
             });*/
             var that = this;
             //var url = "https://tsn.baidu.com/text2audio?tex=" + text + "&lan=zh&cuid=c211ccc3407c45038492e623bb358524&ctp=1&tok=24.e3cd3b426636b471a2f288cebadca276.2592000.1719346650.282335-30837213";
-            var url = baseUrl + "/translate/ttsZH_CN?ttsText="+text;
+            var url = baseUrl + "/translate/ttsChinese?ttsText=" + text;
             //var textAudio;
             that.textAudio = new Audio();
             that.textAudio.onloadeddata = function() {
@@ -727,10 +745,10 @@ export default {
             for (var i = 0; i < len; i++) {
                 // var temp = JSON.parse(msgArr[i]);
                 // this.msgList.push(temp);
-                if(msgArr[i].align=="right"){
-                    tempMessage += "{'role': 'user','parts': [{'text': '"+msgArr[i].text+"'}]},";
-                } else if(msgArr[i].align=="left"){
-                    tempMessage += "{'role': 'model','parts': [{'text': '"+msgArr[i].text+"'}]},";
+                if (msgArr[i].align == "right") {
+                    tempMessage += "{'role': 'user','parts': [{'text': '" + msgArr[i].text + "'}]},";
+                } else if (msgArr[i].align == "left") {
+                    tempMessage += "{'role': 'model','parts': [{'text': '" + msgArr[i].text + "'}]},";
                 }
             }
             //this.historyMsgStr=tempMessage;
@@ -756,9 +774,9 @@ export default {
         },
         getChatDateTime() {
             let now = new Date(),
-            y = now.getFullYear(),
-            m = now.getMonth() + 1,
-            d = now.getDate();
+                y = now.getFullYear(),
+                m = now.getMonth() + 1,
+                d = now.getDate();
             return y + "-" + (m < 10 ? "0" + m : m) + "-" + (d < 10 ? "0" + d : d) + " " + now.toTimeString().substring(0, 8);
         }
     }
@@ -782,16 +800,18 @@ export default {
       }
     } */
 
-body{
+body {
     background-color: rgba(239, 239, 239, 0.98);
     margin: 0;
     padding: 0;
 }
+
 #app {
     margin: 0 auto;
     padding: 0;
     overflow-x: hidden;
 }
+
 .chatBoxHeader {
     height: 40px;
     line-height: 40px;
@@ -820,7 +840,7 @@ body{
     padding: 0 2px;
 }
 
-.bigChatBox::-webkit-scrollbar{
+.bigChatBox::-webkit-scrollbar {
     display: none;
 }
 
@@ -877,7 +897,7 @@ body{
 }
 
 .listChatItemL .pcChatTextSpan {
-    color:#252020;
+    color: #252020;
     border-color: mediumaquamarine;
     background-color: #66CEAA;
     border-radius: 5px;
@@ -894,7 +914,7 @@ body{
 .listChatItemR .pcChatTextSpan {
     background-color: #8ab3ca;
     border-radius: 5px;
-    color:#252020;
+    color: #252020;
     padding: 5px;
     display: inline-flex;
     align-items: center;
