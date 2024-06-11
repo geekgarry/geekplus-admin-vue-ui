@@ -83,7 +83,7 @@
                     font-size: initial;
                     color: var(--color-article-container-text-1, #696969);
                     border-bottom: var(--color-border-4, #c5c5c5) 1px solid;
-                    ">AI聊天助手</div>
+                    " @click="refreshChat">AI聊天助手</div>
                 <div class="bigChatBox" id="bigChatBox">
                     <!-- :style="{textAlign: item.align}" -->
                     <div v-for="(item, index) in msgList" :key="index" class="listChatMsg">
@@ -121,7 +121,8 @@
 <script>
 //import axios from 'axios'
 import Recorder from 'js-audio-recorder'
-// import { marked } from "marked"
+// import { marked } from 'marked';//5.1.2(可用)和6.0.0
+const marked = require('marked');//5.1.2(可用)和6.0.0
 import { getchatgpt, chatgpttest, geminiAI, geminiAIChat, getHistoryMessage } from "@/api/chatbot/chatbot"
 
 export default {
@@ -130,6 +131,7 @@ export default {
         return {
             visible: false,
             inputChat: "",
+            preChatData: "",//历史聊天数据
             msgList: [], //聊天消息的list
             historyMsgStr: "", //历史聊天记录
             loading: false,
@@ -150,7 +152,7 @@ export default {
             recordingTxt: "语音",
             textAudio: null,
             isTextVoice: false, //是否语音朗读
-            isHistory: false, //是否采用有历史记忆的聊天
+            isHistory: true, //是否采用有历史记忆的聊天
             openAiKey: '',
             userName: "guest"
         };
@@ -160,7 +162,7 @@ export default {
         if (this.$store.state.user.userName) {
             this.userName = this.$store.state.user.userName;
         }
-        this.getHistoryMag("You");
+        this.getHistoryMag();
         //this.startTTS("你好！请问现在是什么时间！");
         document.addEventListener("keydown", (e) => {
             let key = window.event.keyCode;
@@ -224,6 +226,9 @@ export default {
         }
     },
     methods: {
+        refreshChat(){
+            this.getHistoryMag();
+        },
         visible11() {
             this.visible = true;
             this.$nextTick(() => {
@@ -270,28 +275,29 @@ export default {
                 //     await this.scrollTop11();
                 //     this.loading = false;
                 // }, 1000);
-            } else if (this.inputChat === "停止语音" || this.inputChat === "停止播放" || this.inputChat === "暂停播放" || this.inputChat === "暂停" || this.inputChat === "pause") {
+            } else if (this.inputChat === "停止语音" || this.inputChat === "停止播放" || this.inputChat === "暂停播放" || this.inputChat === "暂停语音回复" || this.inputChat === "pause") {
                 this.pauseTextAudio();
                 this.loading = false;
                 this.inputChat = "";
                 this.msgSuccess("停止播放语音");
-            } else if (this.inputChat === "继续语音" || this.inputChat === "继续播放" || this.inputChat === "继续" || this.inputChat === "play") {
+            } else if (this.inputChat === "继续语音" || this.inputChat === "继续播放" || this.inputChat === "回复语音播放" || this.inputChat === "play") {
                 this.playTextAudio();
                 this.loading = false;
                 this.inputChat = "";
                 this.msgSuccess("再次播放语音");
-            } else if (this.inputChat === "聊天模式" || this.inputChat === "开启对话模式" || this.inputChat === "开启记忆对话" || this.inputChat === "对话模式") {
+            } else if (this.inputChat === "聊天模式" || this.inputChat === "开启聊天模式" || this.inputChat === "开启对话模式" || this.inputChat === "开启记忆对话" || this.inputChat === "对话模式") {
                 this.isHistory = true;
                 this.loading = false;
                 this.inputChat = "";
                 this.msgSuccess("打开聊天对话模式");
-            } else if (this.inputChat === "取消历史记忆" || this.inputChat === "关闭对话模式" || this.inputChat === "关闭记忆对话") {
+            } else if (this.inputChat === "取消历史记忆" || this.inputChat === "关闭对话模式" || this.inputChat === "关闭聊天模式" || this.inputChat === "关闭记忆对话") {
                 this.isHistory = false;
                 this.loading = false;
                 this.inputChat = "";
                 this.msgSuccess("关闭聊天对话模式");
             } else if (this.inputChat !== "") {
                 this.loading = true;
+                this.chatHistoryToJson(this.msgList);
                 await this.msgList.push({ align: "right", text: this.inputChat });
                 await this.scrollTop11();
                 this.getMsg();
@@ -386,7 +392,7 @@ export default {
                         this.loading = false;
                     });
             } else {
-                geminiAIChat({ username: this.userName, chatData: this.inputChat, preChatData: this.chatHistoryToJson(this.msgList) })
+                geminiAIChat({ username: this.userName, chatData: this.inputChat, preChatData: this.preChatData })
                     .then(async (response) => {
                         //console.log(response);
                         //if (response.code == 200) {
@@ -436,7 +442,7 @@ export default {
 
         },
         //获取用户的历史聊天记录
-        getHistoryMag(username) {
+        getHistoryMag() {
             //axios.get("/AIBot/getHistoryMessage?username=You")
             getHistoryMessage({ username: this.userName })
                 .then(async (response) => {
@@ -742,17 +748,19 @@ export default {
         chatHistoryToJson(msgArr) {
             let tempMessage = "";
             var len = msgArr.length;
-            for (var i = 0; i < len; i++) {
-                // var temp = JSON.parse(msgArr[i]);
-                // this.msgList.push(temp);
-                if (msgArr[i].align == "right") {
-                    tempMessage += "{'role': 'user','parts': [{'text': '" + msgArr[i].text + "'}]},";
-                } else if (msgArr[i].align == "left") {
-                    tempMessage += "{'role': 'model','parts': [{'text': '" + msgArr[i].text + "'}]},";
+            if(len > 0) {
+                for (var i = 0; i < len; i++) {
+                    // var temp = JSON.parse(msgArr[i]);
+                    // this.msgList.push(temp);
+                    if (msgArr[i].align == "right") {
+                        tempMessage += "{'role': 'user','parts': [{'text': '" + msgArr[i].text + "'}]},";
+                    } else if (msgArr[i].align == "left") {
+                        tempMessage += "{'role': 'model','parts': [{'text': '" + msgArr[i].text + "'}]},";
+                    }
                 }
             }
             //this.historyMsgStr=tempMessage;
-            return tempMessage;
+            this.preChatData = tempMessage;
         },
         // 定义一个函数，将Markdown转换为HTML，并去除多余的空行
         markdownToHtmlWithoutExtraLines(markdown) {
@@ -777,7 +785,8 @@ export default {
                 y = now.getFullYear(),
                 m = now.getMonth() + 1,
                 d = now.getDate();
-            return y + "-" + (m < 10 ? "0" + m : m) + "-" + (d < 10 ? "0" + d : d) + " " + now.toTimeString().substring(0, 8);
+            let dateTimeStr = y + "-" + (m < 10 ? "0" + m : m) + "-" + (d < 10 ? "0" + d : d) + " " + now.toTimeString().substring(0, 8);
+            return this.dateTimeAgo(dateTimeStr);
         }
     }
 }
