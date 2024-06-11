@@ -133,7 +133,7 @@ export default {
             inputChat: "",
             preChatData: "",//历史聊天数据
             msgList: [], //聊天消息的list
-            historyMsgStr: "", //历史聊天记录
+            historyMsgData: "", //历史聊天记录
             loading: false,
             chatbtndisplay: true,
             chatdisplay: false,
@@ -746,21 +746,25 @@ export default {
         },
         //遍历聊天记录数组，把里面的每一条json字符串转为json对象
         chatHistoryToJson(msgArr) {
-            let tempMessage = "";
+            let tempMessage = "";//[];
             var len = msgArr.length;
             if(len > 0) {
                 for (var i = 0; i < len; i++) {
                     // var temp = JSON.parse(msgArr[i]);
                     // this.msgList.push(temp);
                     if (msgArr[i].align == "right") {
-                        tempMessage += "{'role': 'user','parts': [{'text': '" + msgArr[i].text + "'}]},";
+                        //tempMessage.push({role: "user", parts: [{text: msgArr[i].text}]});
+                        //tempMessage += "{\"role\": \"user\",\"parts\": [{\"text\": \"" + msgArr[i].text + "\"}]},";
+                        tempMessage += JSON.stringify({role: "user", parts: [{text: msgArr[i].text}]})+",";
                     } else if (msgArr[i].align == "left") {
-                        tempMessage += "{'role': 'model','parts': [{'text': '" + msgArr[i].text + "'}]},";
+                        //tempMessage.push({role: "model", parts: [{text: msgArr[i].text}]});
+                        //tempMessage += "{\"role\": \"model\",\"parts\": [{\"text\": \"" + msgArr[i].text + "\"}]},";
+                        tempMessage += JSON.stringify({role: "model", parts: [{text: msgArr[i].text}]})+",";
                     }
                 }
             }
-            //this.historyMsgStr=tempMessage;
             this.preChatData = tempMessage;
+            //this.preChatData = JSON.stringify(tempMessage);
         },
         // 定义一个函数，将Markdown转换为HTML，并去除多余的空行
         markdownToHtmlWithoutExtraLines(markdown) {
