@@ -53,16 +53,6 @@ export const constantRoutes = [
     hidden: true
   },
   {
-    path: '/404',
-    component: () => import('@/views/error/404'),
-    hidden: true
-  },
-  {
-    path: '/401',
-    component: (resolve) => require(['@/views/error/401'], resolve),
-    hidden: true
-  },
-  {
     path: '',
     component: Layout,
     redirect: 'dashboard',
@@ -105,6 +95,16 @@ export const constantRoutes = [
   {
     path:'/chatBot',
     component: (resolve) => require(['@/views/tool/chatbot'], resolve),
+    hidden: true
+  },
+  {
+    path: '/404',
+    component: () => import('@/views/error/404'),
+    hidden: true
+  },
+  {
+    path: '/401',
+    component: (resolve) => require(['@/views/error/401'], resolve),
     hidden: true
   },
   // {
