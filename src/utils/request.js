@@ -15,10 +15,14 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
   config => {
-    // do something before request is sent
     // 是否需要设置 token store.getters.token
+    //这里是判断isToken的true/false：首先获取headers判断是否存在，假定不存在则为空对象{}，此时取isToken不存在，为空。此时===false的判断就永远为false；
+    //而最后getToken() && isToken的判断取决于getToken()=true则为true，否则为false
+    //下面是假定config.headers存在：如果设置了headers.isToken=false,此时===false判断为true，下面的getToken() && !isToken就永远为false；
+    //如果设置了headers.isToken=true，此时===false判断为false，所以getToken() && !isToken的判断取决于getToken()=true则判断为true，否则为false
     const isToken = (config.headers || {}).isToken === false
-    if (getToken()) {
+    //判断是否需要将cookie值加上请求头，开启验证授权访问，这里isToken是在apiJS文件中写的请求头headers:{'isToken':true/false}
+    if (getToken() && !isToken) {
       // let each request carry token
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation

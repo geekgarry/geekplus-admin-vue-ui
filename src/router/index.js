@@ -102,6 +102,11 @@ export const constantRoutes = [
     component: (resolve) => require(['@/views/covid19Data/chinaEchart'], resolve),
     hidden: true
   },
+  {
+    path:'/chatBot',
+    component: (resolve) => require(['@/views/tool/chatbot'], resolve),
+    hidden: true
+  },
   // {
   //   path: '/example',
   //   component: Layout,
