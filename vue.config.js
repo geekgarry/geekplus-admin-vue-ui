@@ -41,14 +41,24 @@ module.exports = {
     proxy: {
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
-        target: `http://127.0.0.1:8081/`,
+        target: `http://127.0.0.1:8081`,//后端URI地址
         ws: false, // 这里把ws代理给关闭
         changeOrigin: true,
         // proxyTimeout: 11000,
         pathRewrite: {
           ['^' + process.env.VUE_APP_BASE_API]: ''
         }
-      }
+      },
+      // 再配置后端资源的跨域代理访问，/profile为后端配置静态资源映射的虚拟路径，
+      // 配置了之后就不用在访问后端文件资源是需要带上之前配置的process.env.VUE_APP_BASE_API代理api头
+      // 我这里是跟随我后端的WebMVC配置的静态资源映射里的统一的资源访问地址
+      '/profile': {
+        target: `http://127.0.0.1:8081`,//后端URI地址
+        changeOrigin: true,
+        pathRewrite: {
+          '^/profile': '/profile'
+        }
+      },
       // "/api": {
       //     target: "https://api.url",
       //     changeOrigin: true,

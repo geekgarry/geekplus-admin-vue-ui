@@ -93,7 +93,6 @@ export default {
       allMyWebImageSize: -1,
       baseHost: window.location.host,
       baseApi: process.env.VUE_APP_BASE_API,
-      baseFrontWebApi: "/geekplus-api",//这里用到的基础/xxx-api前缀是为前端用户访问的/xxx-api，所以必须和前端一致，和后端系统的process.env.VUE_APP_BASE_API一致
       init: {
         language_url: "/tinymce/langs/zh_CN.js", // 语言包位置，因为放在public下所以可以省略public
         selector: "#tinymce", //tinymce的id
@@ -552,16 +551,15 @@ export default {
       uploadFileForArticle(formData)
         .then((response) => {
           //console.log(response);
-          var serverUrl = response.url;
+          const serverUrl = response.url;
           let uploadSuccess = {};
-          const imageUrl = this.baseFrontWebApi + serverUrl;
           // this.$message({
           //   message: "上传" + response.msg,
           //   type: "success",
           // });
           // 获取返回的图片路径，固定格式为：{location:url}
-          // let getImgUrl = { location: imageUrl };
-          success(imageUrl);
+          // let getImgUrl = { location: serverUrl };
+          success(serverUrl);
           // this.content += url
           uploadSuccess = { filePath: serverUrl };
           //每次上传一个图片文件
@@ -591,11 +589,11 @@ export default {
       let imagesList = tinymce.activeEditor.getBody().querySelectorAll("img");
       if (imagesList.length != 0) {
         imagesList.forEach((item) => {
-          //allTempImageArray.push({ filePath: this.getServerFilePath(item.src) });
+          //allTempImageArray.push({ filePath: item.src });
           //var reg = RegExp(/xxxx.xxx/)
           //indexOf("") search("") includes("xxxx.xxx")
           //if (item.src.match(reg)) {}
-          allMyWebImageArray.push({ filePath: this.getServerFilePath(item.src) });
+          allMyWebImageArray.push({ filePath: item.src });
         });
       }
       //比较，每次上传后添加的所有照片数组或编辑重新获得编辑框所有的照片数组与失去焦点后重新计算的所有照片
@@ -627,7 +625,7 @@ export default {
 
       // let imageArray = tinymce.activeEditor.getBody().querySelectorAll("img");
       // imageArray.forEach((item) => {
-      //   tempImageArray.push({ filePath: this.getServerFilePath(item.src) });
+      //   tempImageArray.push({ filePath: item.src });
       // });
       // this.allImageList = tempImageArray;
       //编辑框获得焦点后，重新计算获得所有照片数组
@@ -635,11 +633,11 @@ export default {
       let imageArray = tinymce.activeEditor.getBody().querySelectorAll("img");
       if (imageArray.length != 0) {
         imageArray.forEach((item) => {
-          //tempImageArray.push({ filePath: this.getServerFilePath(item.src) });
+          //tempImageArray.push({ filePath: item.src });
           // var reg = RegExp(/xxxx.xxx/)
           //indexOf("") search("") includes("xxxx.xxx")
           // if (item.src.match(reg)) {}
-          tempImageArray.push({ filePath: this.getServerFilePath(item.src) });
+          tempImageArray.push({ filePath: item.src });
         });
       }
       this.allImageList = tempImageArray;
@@ -649,9 +647,8 @@ export default {
       return uploadFileForArticle(formData)
         .then((response) => {
           //console.log(response);
-          var serverUrl = response.url;
+          const serverUrl = response.url;
           let uploadSuccess = {};
-          const fileUrl = this.baseFrontWebApi + serverUrl;
           const originalFileName = response.originalFileName;
           // this.$message({
           //   message: "上传" + response.msg,
@@ -672,7 +669,7 @@ export default {
           uploadSuccess = { filePath: serverUrl };
           this.allImageList.push(uploadSuccess);
           // this.$refs.uploadFileRef.clearFiles();
-          let responseBody = { fileUrl: fileUrl, fileName: originalFileName };
+          let responseBody = { fileUrl: serverUrl, fileName: originalFileName };
           return responseBody;
         })
         .catch((error) => {
@@ -719,9 +716,6 @@ export default {
             });
           });
       }
-    },
-    getServerFilePath(filePath) {
-      return filePath.replace(this.baseFrontWebApi, "");
     },
     //插入元素方法
     insertHtmlAtCaret(childElement) {

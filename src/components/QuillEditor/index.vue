@@ -212,7 +212,6 @@ export default {
       fileList: [],
       baseHost: window.location.host,
       baseApi: process.env.VUE_APP_BASE_API, //这里就是网站自身跨域的/api
-      baseFrontWebApi: "/geekplus-api",//这里用到的基础/xxx-api前缀是为前端用户访问的/xxx-api，所以必须和前端一致，和后端系统的process.env.VUE_APP_BASE_API一致
       allImageList: [],
     };
   },
@@ -428,11 +427,11 @@ export default {
       let imageArray = document.querySelectorAll(".ql-editor img");
       if (imageArray.length != 0) {
         imageArray.forEach((item) => {
-          // allTempImageArray.push({ filePath: this.getServerFilePath(item.src) });
+          // allTempImageArray.push({ filePath: item.src });
           //var reg=RegExp(/xxxx.xxx/) match(reg)
           // search("")!=-1 includes("xxxx.xxx")==true
           // if (item.src.indexOf("xxxx.xxx") != -1) {}
-          allMyWebImageArray.push({ filePath: this.getServerFilePath(item.src) });
+          allMyWebImageArray.push({ filePath: item.src });
         });
       }
       // 开始判断所有照片文件集是否为0，比较所有照片文件数组和编辑框失去焦点时的所有照片文件数组
@@ -457,11 +456,11 @@ export default {
       let imageArray = document.querySelectorAll(".ql-editor img");
       if (imageArray.length!=0) {
         imageArray.forEach((item) => {
-          // tempImageArray.push({ filePath: this.getServerFilePath(item.src) });
+          // tempImageArray.push({ filePath: item.src });
           // var reg = RegExp(/xxxx.xxx/)
           //indexOf("") search("") includes("xxxx.xxx")
           // if (item.src.match(reg)) {}
-          tempImageArray.push({ filePath: this.getServerFilePath(item.src) });
+          tempImageArray.push({ filePath: item.src });
         });
       }
       this.allImageList = tempImageArray;
@@ -501,9 +500,6 @@ export default {
           });
         });
       }
-    },
-    getServerFilePath(filePath) {
-      return filePath.replace(this.baseFrontWebApi,"");
     },
     // 上传成功
     handleSuccess() {
@@ -658,9 +654,8 @@ export default {
       uploadFileForArticle(formData)
         .then((response) => {
           //console.log(response);
-          var serverUrl = response.url;
+          const serverUrl = response.url;
           let uploadSuccess = {};
-          const imageUrl = this.baseFrontWebApi + serverUrl;
           // this.$message({
           //   message: "上传" + response.msg,
           //   type: "success",
@@ -670,7 +665,7 @@ export default {
           // 获取光标所在位置
           let length = this.Quill.getSelection().index; //光标位置
           // 插入图片地址
-          this.Quill.insertEmbed(length, "image", imageUrl);
+          this.Quill.insertEmbed(length, "image", serverUrl);
           this.Quill.insertText(length + 1, "\r\n", true);
           // 光标后移一位
           this.Quill.setSelection(length + 2);
@@ -693,9 +688,8 @@ export default {
       uploadFileForArticle(formData)
         .then((response) => {
           //console.log(response);
-          var serverUrl = response.url;
+          const serverUrl = response.url;
           //let uploadSuccess = {};
-          const fileUrl = this.baseFrontWebApi + serverUrl;
           const originalFileName = response.originalFileName;
           // this.$message({
           //   message: "上传" + response.msg,
@@ -707,7 +701,7 @@ export default {
           let length = this.Quill.getSelection().index; //光标位置
           // 插入图片地址
           //this.Quill.insertEmbed(length, "image", imageUrl);
-          this.Quill.insertEmbed(length, 'link', { href: fileUrl, innerText: originalFileName })
+          this.Quill.insertEmbed(length, 'link', { href: serverUrl, innerText: originalFileName })
           // this.Quill.insertText(length, "\r\n",true);
           // 光标后移一位
           this.Quill.setSelection(length + 1);

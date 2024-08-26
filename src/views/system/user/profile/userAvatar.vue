@@ -144,7 +144,9 @@ export default {
       })
       //this.msgSuccess("在线浏览选择头像")
     },
-    //把服务器获取的图片路径拼接成公网地址
+    // 把服务器获取的图片路径拼接成公网地址，因为跨域代理后访问后端资源需要带上跨域设置的那个API前缀头
+    // 如果单独再设置了后端资源跨域代理，则可以不用如此，这里这样是为了防止没有设置后端资源的跨域代理
+    // 后端资源的跨域代理请看vue.config.js，看设置了API跨域代理之外，是否还有一个资源代理
     localImgToWebImg(imgList) {
       var len = imgList.length;
       let resultArr = new Array();
