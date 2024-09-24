@@ -68,17 +68,16 @@ const mutations = {
 const actions = {
   // user login
   login({ commit }, userInfo) {
-    const { username, password, validateCode, validateKey,rememberMe } = userInfo
+    const { username, password, validateCode, validateKey, rememberMe } = userInfo
     return new Promise((resolve, reject) => {
       login(userInfo).then(response => {
         const { data } = response
         commit('SET_TOKEN', data.token)
         commit('SET_USERNAME', data.userName)
-        // commit('SET_NICKNAME', data.nickName)
+        commit('SET_NICKNAME', data.nickName)
         // commit('SET_USERID', data.userId)
         // commit('SET_AVATAR', data.avatar)
-        localStorage.setItem("tokenId", data.token + ":" + data.userName)
-        localStorage.setItem("onlineUser", data.userName)
+        // localStorage.setItem("userName", data.userName)
         //console.log(data);
         setToken(data.token)
         resolve()

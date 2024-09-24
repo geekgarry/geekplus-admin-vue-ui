@@ -20,9 +20,9 @@
               @keyup.enter.native="handleQuery"
             />
           </el-form-item>
-          <el-form-item label="手机号码" prop="phonenumber">
+          <el-form-item label="手机号码" prop="phoneNumber">
             <el-input
-              v-model="queryParams.phonenumber"
+              v-model="queryParams.phoneNumber"
               placeholder="请输入手机号码"
               clearable
               size="small"
@@ -164,7 +164,7 @@
       </el-table-column>
       <el-table-column label="性别" align="center">
         <template slot-scope="scope">
-          {{ scope.row.gender == 1 ? "男" : "女" }}
+          {{ scope.row.gender == 0 ? "男" : "女" }}
         </template>
       </el-table-column>
       <!-- <el-table-column
@@ -249,9 +249,9 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="手机号码" prop="phonenumber">
+            <el-form-item label="手机号码" prop="phoneNumber">
               <el-input
-                v-model="form.phonenumber"
+                v-model="form.phoneNumber"
                 placeholder="请输入手机号码"
                 maxlength="11"
               />

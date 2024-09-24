@@ -17,9 +17,9 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="手机号码" prop="phonenumber">
+      <el-form-item label="手机号码" prop="phoneNumber">
         <el-input
-          v-model="queryParams.phonenumber"
+          v-model="queryParams.phoneNumber"
           placeholder="请输入手机号码"
           clearable
           size="small"
@@ -186,10 +186,12 @@
         </template>
       </el-table-column>
       <el-table-column label="用户类型" width="110" align="center" prop="userType" :formatter="userTypeFormat">
-        <!-- <template slot-scope="scope">
+        <template slot-scope="scope">
           <span v-if="scope.row.userType == 1">系统管理员</span>
-          <span v-if="scope.row.userType == 2">用户开发者</span>
-        </template> -->
+          <span v-if="scope.row.userType == 2">普通人员</span>
+          <span v-if="scope.row.userType == 3">网站管理员</span>
+          <span v-if="scope.row.userType == 4">开发人员</span>
+        </template>
       </el-table-column>
       <el-table-column label="邮箱" align="center">
         <template slot-scope="scope">
@@ -312,9 +314,9 @@
         </el-row>
         <el-row>
           <el-col :span="12">
-            <el-form-item label="手机号码" prop="phoneunmber">
+            <el-form-item label="手机号码" prop="phoneNumber">
               <el-input
-                v-model="form.phoneunmber"
+                v-model="form.phoneNumber"
                 placeholder="请输入手机号码"
                 maxlength="11"
               />
@@ -523,7 +525,7 @@ export default {
         pageNum: 1,
         pageSize: 10,
         userName: undefined,
-        phonenumber: undefined,
+        phoneNumber: undefined,
         status: undefined,
         email: undefined
       },
@@ -565,7 +567,7 @@ export default {
             trigger: ["blur", "change"]
           }
         ],
-        phonenumber: [
+        phoneNumber: [
           { required: true, message: "手机号码不能为空", trigger: "blur" },
           {
             pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
@@ -660,7 +662,7 @@ export default {
         nickName: undefined,
         password: undefined,
         userType: undefined,
-        phonenumber: undefined,
+        phoneNumber: undefined,
         email: undefined,
         gender: undefined,
         avatar: undefined,

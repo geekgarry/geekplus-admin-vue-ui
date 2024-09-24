@@ -24,16 +24,15 @@ service.interceptors.request.use(
     //判断是否需要将cookie值加上请求头，开启验证授权访问，这里isToken是在apiJS文件中写的请求头headers:{'isToken':true/false}
     if (getToken() && !isToken) {
       // let each request carry token
-      // ['X-Token'] is a custom headers key
+      // ['Plus-Token'] is a custom headers key
       // please modify it according to the actual situation
-      // config.headers['X-Token'] = getToken()
       config.headers['Plus-Token'] = getToken() //'Bearer ' +  让每个请求携带自定义token 请根据实际情况自行修改
     }
     return config
   },
   error => {
     // do something with request error
-    console.log(error) // for debug
+    // console.log(error) // for debug
     Message.error("请求超时！！！");
     return Promise.reject(error)
   }
@@ -54,12 +53,11 @@ service.interceptors.response.use(
   response => {
     const res = response.data
 
-    const plusToken = response.headers['plus-token'];
-    // console.log(response.headers['plus-token'])
-    if(plusToken){
-      //store.commit('SET_TOKEN',plusToken);
-      setToken(plusToken)
-    }
+    // const plusToken = response.headers['plus-token'];
+    // if(plusToken){
+    //   //store.commit('SET_TOKEN',plusToken);
+    //   setToken(plusToken)
+    // }
 
     const status = response.status
     const message = res.msg || errorCode[status] || errorCode['default']
@@ -80,7 +78,7 @@ service.interceptors.response.use(
           // location.href = '/index';
         })
       })
-    } else if (res.code === 400 || res.code === 404 || res.code === 405 || res.code === 409 || res.code === 415 || res.code === 500 || res.code=== 501) {
+    } else if (res.code === 400 || res.code === 404 || res.code === 209 || res.code === 409 || res.code === 415 || res.code === 500 || res.code=== 501) {
       // if the custom code is not 20000, it is judged as an error.
       Message({
         message: message,
@@ -93,7 +91,7 @@ service.interceptors.response.use(
     }
   },
   error => {
-    console.log('err' + error) // for debug
+    //console.log('err' + error) // for debug
     let { message } = error;
     if (message == "Network Error") {
       message = "后端接口连接异常";

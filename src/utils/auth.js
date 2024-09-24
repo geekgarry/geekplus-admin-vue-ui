@@ -1,14 +1,14 @@
 import Cookies from 'js-cookie'
 import { encrypt, decrypt, encryptLg, decryptLg } from '@/utils/jsencrypt'
 
-const TokenKey = 'gp_token'
+const TokenKey = 'Plus-Token'
 
 export function getToken() {
-  return decryptLg(Cookies.get(TokenKey))
+  return Cookies.get(TokenKey)
 }
 
 export function setToken(token) {
-  return Cookies.set(TokenKey, encryptLg(token))
+  return Cookies.set(TokenKey, token)
 }
 
 export function removeToken() {

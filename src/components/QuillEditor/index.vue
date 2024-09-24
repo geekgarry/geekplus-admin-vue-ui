@@ -210,7 +210,8 @@ export default {
         readOnly: false,
       },
       fileList: [],
-      baseHost: window.location.host,
+      webProtocol: window.location.protocol, //取得网站的协议头部
+      baseHost: window.location.host, //取得网站的地址
       baseApi: process.env.VUE_APP_BASE_API, //这里就是网站自身跨域的/api
       allImageList: [],
     };
@@ -430,8 +431,14 @@ export default {
           // allTempImageArray.push({ filePath: item.src });
           //var reg=RegExp(/xxxx.xxx/) match(reg)
           // search("")!=-1 includes("xxxx.xxx")==true
-          // if (item.src.indexOf("xxxx.xxx") != -1) {}
-          allMyWebImageArray.push({ filePath: item.src });
+          //如果包含我们固定的本站域名，也就是管理系统所在的网站的全域名xxx.xxx.com
+          if (item.src.indexOf(this.baseHost) != -1) {
+            allMyWebImageArray.push({ filePath: this.getReplaceUrl(item.src) });
+          }else if(!this.isUrlSimpleValid(item.src)){
+            //判断如果没有包含我们固定的网站，又不符合一个文件资源url时，这里就是指item.src为/xxx/xxx/xxx.png
+            allMyWebImageArray.push({ filePath: this.getReplaceUrl(item.src) });
+            item.src = this.getServerUrl(item.src);
+          }
         });
       }
       // 开始判断所有照片文件集是否为0，比较所有照片文件数组和编辑框失去焦点时的所有照片文件数组
@@ -452,15 +459,22 @@ export default {
     // 获得焦点触发事件
     onEditorFocus() {
       //console.log("得到焦点！！！")
+      //编辑框获得焦点后，重新计算获得所有照片数组
       let tempImageArray = new Array();
       let imageArray = document.querySelectorAll(".ql-editor img");
       if (imageArray.length!=0) {
         imageArray.forEach((item) => {
           // tempImageArray.push({ filePath: item.src });
-          // var reg = RegExp(/xxxx.xxx/)
+          var reg = RegExp(this.baseHost);
           //indexOf("") search("") includes("xxxx.xxx")
-          // if (item.src.match(reg)) {}
-          tempImageArray.push({ filePath: item.src });
+          //如果包含我们固定的本站域名，也就是管理系统所在的网站的全域名xxx.xxx.com
+          if (item.src.match(reg)) {
+            tempImageArray.push({ filePath: this.getReplaceUrl(item.src) });
+          }else if(!this.isUrlSimpleValid(item.src)){
+            //判断如果没有包含我们固定的网站，又不符合一个文件资源url时，这里就是指item.src为/xxx/xxx/xxx.png
+            tempImageArray.push({ filePath: this.getReplaceUrl(item.src) });
+            item.src = this.getServerUrl(item.src);
+          }
         });
       }
       this.allImageList = tempImageArray;
@@ -655,7 +669,8 @@ export default {
         .then((response) => {
           //console.log(response);
           const serverUrl = response.url;
-          let uploadSuccess = {};
+          const fileUrl = this.getServerUrl(serverUrl);
+          var uploadSuccess = {};
           // this.$message({
           //   message: "上传" + response.msg,
           //   type: "success",
@@ -665,7 +680,7 @@ export default {
           // 获取光标所在位置
           let length = this.Quill.getSelection().index; //光标位置
           // 插入图片地址
-          this.Quill.insertEmbed(length, "image", serverUrl);
+          this.Quill.insertEmbed(length, "image", fileUrl);
           this.Quill.insertText(length + 1, "\r\n", true);
           // 光标后移一位
           this.Quill.setSelection(length + 2);
@@ -689,7 +704,8 @@ export default {
         .then((response) => {
           //console.log(response);
           const serverUrl = response.url;
-          //let uploadSuccess = {};
+          const fileUrl = this.getServerUrl(serverUrl);
+          // var uploadSuccess = {};
           const originalFileName = response.originalFileName;
           // this.$message({
           //   message: "上传" + response.msg,
@@ -701,13 +717,13 @@ export default {
           let length = this.Quill.getSelection().index; //光标位置
           // 插入图片地址
           //this.Quill.insertEmbed(length, "image", imageUrl);
-          this.Quill.insertEmbed(length, 'link', { href: serverUrl, innerText: originalFileName })
+          this.Quill.insertEmbed(length, 'link', { href: fileUrl, innerText: originalFileName })
           // this.Quill.insertText(length, "\r\n",true);
           // 光标后移一位
           this.Quill.setSelection(length + 1);
           // this.content += url
-          //uploadSuccess = { filePath: serverUrl };
-          //this.allImageList.push(uploadSuccess);
+          // uploadSuccess = { filePath: serverUrl };
+          // this.allImageList.push(uploadSuccess);
           this.$refs.uploadFileRef.clearFiles();
         })
         .catch((error) => {
@@ -719,6 +735,31 @@ export default {
           });
         });
     },
+    //替换文件资源网址
+    getReplaceUrl(url){
+      return url.replace(this.webProtocol+this.baseHost, "");
+    },
+    //拼接文件资源网址
+    getServerUrl(url){
+      return this.webProtocol+this.baseHost+url;
+    },
+    //检测是否是网址URL的样式结构，并没有详细检测是否规范化，例如www.fff，/file/xx/xx.img等也会被认为是一个url
+    isValidUrl(url) {
+      // const regex = /^(?:https?:\/\/|ftp:\/\/)?[^\.]+\.[^\s\/$.?#].[^\s]*$/;//判断http和ftp
+      const regex = /^(?:https?:\/\/)?[^\.]+\.[^\s\/$.?#].[^\s]*$/;
+      return regex.test(url);
+    },
+    //检测网址，只是基本判断是否符合一个规范网址url的结构，和上面不同，这里网址里只要有类似xxx.com等结构都符合
+    isUrlSimpleValid(url) {
+      var regex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
+      return regex.test(url);
+    },
+    //匹配url，获取匹配到的一级域名
+    matchTLD(domain) {
+      const tldRegex = /[^.]+\.[^.]+$/;
+      const match = domain.match(tldRegex);
+      return match ? match[0] : null;
+    }
   },
 };
 </script>

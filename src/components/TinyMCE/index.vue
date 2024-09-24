@@ -91,7 +91,8 @@ export default {
       //fileList: [],
       allImageList: [],
       allMyWebImageSize: -1,
-      baseHost: window.location.host,
+      webProtocol: window.location.protocol, //取得网站的协议头部
+      baseHost: window.location.host, //取得网站的地址
       baseApi: process.env.VUE_APP_BASE_API,
       init: {
         language_url: "/tinymce/langs/zh_CN.js", // 语言包位置，因为放在public下所以可以省略public
@@ -544,37 +545,6 @@ export default {
       var cnt = tinymce.editors["tinymce"].getContent();
       // console.log(cnt);
     },
-    //自定义上传函数
-    uploadImageFile(blobInfo, success, failure, progress) {
-      let formData = new FormData();
-      formData.append("file", blobInfo.blob());
-      uploadFileForArticle(formData)
-        .then((response) => {
-          //console.log(response);
-          const serverUrl = response.url;
-          let uploadSuccess = {};
-          // this.$message({
-          //   message: "上传" + response.msg,
-          //   type: "success",
-          // });
-          // 获取返回的图片路径，固定格式为：{location:url}
-          // let getImgUrl = { location: serverUrl };
-          success(serverUrl);
-          // this.content += url
-          uploadSuccess = { filePath: serverUrl };
-          //每次上传一个图片文件
-          this.allImageList.push(uploadSuccess);
-        })
-        .catch((error) => {
-          //console.log(error);
-          failure("Invalid JSON: " + error.msg);
-          this.$message({
-            message: error.msg,
-            type: "error",
-            showClose: true,
-          });
-        });
-    },
     ///编辑框失去焦点事件
     focusOutEditor() {
       // console.log("失去焦点");
@@ -590,10 +560,16 @@ export default {
       if (imagesList.length != 0) {
         imagesList.forEach((item) => {
           //allTempImageArray.push({ filePath: item.src });
-          //var reg = RegExp(/xxxx.xxx/)
+          var reg = RegExp(this.baseHost)
           //indexOf("") search("") includes("xxxx.xxx")
-          //if (item.src.match(reg)) {}
-          allMyWebImageArray.push({ filePath: item.src });
+          //如果包含我们固定的本站域名，也就是管理系统所在的网站的全域名xxx.xxx.com
+          if (item.src.match(reg)) {
+            allMyWebImageArray.push({ filePath: this.getReplaceUrl(item.src) });
+          }else if(!this.isUrlSimpleValid(item.src)){
+            //判断如果没有包含我们固定的网站，又不符合一个文件资源url时，这里就是指item.src为/xxx/xxx/xxx.png
+            allMyWebImageArray.push({ filePath: this.getReplaceUrl(item.src) });
+            item.src = this.getServerUrl(item.src);
+          }
         });
       }
       //比较，每次上传后添加的所有照片数组或编辑重新获得编辑框所有的照片数组与失去焦点后重新计算的所有照片
@@ -621,26 +597,52 @@ export default {
       //set.add(this.kw)
       // 4. 将 Set 对象转化为 Array 数组
       //this.list= Array.from(set)
-      // let tempImageArray = new Array();
-
-      // let imageArray = tinymce.activeEditor.getBody().querySelectorAll("img");
-      // imageArray.forEach((item) => {
-      //   tempImageArray.push({ filePath: item.src });
-      // });
-      // this.allImageList = tempImageArray;
+      
       //编辑框获得焦点后，重新计算获得所有照片数组
       let tempImageArray = new Array();
       let imageArray = tinymce.activeEditor.getBody().querySelectorAll("img");
       if (imageArray.length != 0) {
         imageArray.forEach((item) => {
           //tempImageArray.push({ filePath: item.src });
-          // var reg = RegExp(/xxxx.xxx/)
+          var reg = RegExp(this.baseHost)
           //indexOf("") search("") includes("xxxx.xxx")
-          // if (item.src.match(reg)) {}
-          tempImageArray.push({ filePath: item.src });
+          //如果包含我们固定的本站域名，也就是管理系统所在的网站的全域名xxx.xxx.com
+          if (item.src.match(reg)) {
+            tempImageArray.push({ filePath: this.getReplaceUrl(item.src) });
+          }else if(!this.isUrlSimpleValid(item.src)){
+            //判断如果没有包含我们固定的网站，又不符合一个文件资源url时，这里就是指item.src为/xxx/xxx/xxx.png
+            tempImageArray.push({ filePath: this.getReplaceUrl(item.src) });
+            item.src = this.getServerUrl(item.src);
+          }
         });
       }
       this.allImageList = tempImageArray;
+    },
+    //自定义上传函数
+    uploadImageFile(blobInfo, success, failure, progress) {
+      let formData = new FormData();
+      formData.append("file", blobInfo.blob());
+      uploadFileForArticle(formData)
+        .then((response) => {
+          //console.log(response);
+          const serverUrl = response.url;
+          const fileUrl = this.getServerUrl(serverUrl);
+          var uploadSuccess = {};
+          // 获取返回的图片路径，固定格式为：{location:url}
+          success(fileUrl);//返回最后的完整上传文件的URL包括网站地址
+          uploadSuccess = { filePath: serverUrl };
+          //每次上传一个图片文件
+          this.allImageList.push(uploadSuccess);
+        })
+        .catch((error) => {
+          //console.log(error);
+          failure("Invalid JSON: " + error.msg);
+          this.$message({
+            message: error.msg,
+            type: "error",
+            showClose: true,
+          });
+        });
     },
     //通用上传事件
     async uploadFileToFile(formData) {
@@ -648,28 +650,13 @@ export default {
         .then((response) => {
           //console.log(response);
           const serverUrl = response.url;
-          let uploadSuccess = {};
+          const fileUrl = this.getServerUrl(serverUrl);
+          // var uploadSuccess = {};
           const originalFileName = response.originalFileName;
-          // this.$message({
-          //   message: "上传" + response.msg,
-          //   type: "success",
-          // });
-          
-          // 获取光标所在位置
-          //let quill = this.$refs.editor.quill;
-          // 获取光标所在位置
-          // let length = this.Quill.getSelection().index; //光标位置
-          // 插入图片地址
-          //this.Quill.insertEmbed(length, "image", imageUrl);
-          // this.Quill.insertEmbed(length, 'link', { href: fileUrl, innerText: originalFileName })
-          // this.Quill.insertText(length, "\r\n",true);
-          // 光标后移一位
-          // this.Quill.setSelection(length + 1);
-          // this.content += url
-          uploadSuccess = { filePath: serverUrl };
-          this.allImageList.push(uploadSuccess);
+          // uploadSuccess = { filePath: serverUrl };
+          // this.allImageList.push(uploadSuccess);
           // this.$refs.uploadFileRef.clearFiles();
-          let responseBody = { fileUrl: serverUrl, fileName: originalFileName };
+          var responseBody = { fileUrl: fileUrl, fileName: originalFileName };
           return responseBody;
         })
         .catch((error) => {
@@ -744,6 +731,31 @@ export default {
       } else if (document.selection && document.selection.type != "Control") { // IE < 9
         //document.selection.createRange().pasteHTML(html);
       }
+    },
+    //替换文件资源网址
+    getReplaceUrl(url){
+      return url.replace(this.webProtocol+this.baseHost, "");
+    },
+    //拼接文件资源网址
+    getServerUrl(url){
+      return this.webProtocol+this.baseHost+url;
+    },
+    //检测是否是网址URL的样式结构，并没有详细检测是否规范化，例如www.fff，/file/xx/xx.img等也会被认为是一个url
+    isValidUrl(url) {
+      // const regex = /^(?:https?:\/\/|ftp:\/\/)?[^\.]+\.[^\s\/$.?#].[^\s]*$/;//判断http和ftp
+      const regex = /^(?:https?:\/\/)?[^\.]+\.[^\s\/$.?#].[^\s]*$/;
+      return regex.test(url);
+    },
+    //检测网址，只是基本判断是否符合一个规范网址url的结构，和上面不同，这里网址里只要有类似xxx.com等结构都符合
+    isUrlSimpleValid(url) {
+      var regex = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/;
+      return regex.test(url);
+    },
+    //匹配url，获取匹配到的一级域名
+    matchTLD(domain) {
+      const tldRegex = /[^.]+\.[^.]+$/;
+      const match = domain.match(tldRegex);
+      return match ? match[0] : null;
     }
   },
   destroyed() { },
