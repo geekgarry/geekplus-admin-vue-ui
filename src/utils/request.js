@@ -53,7 +53,8 @@ service.interceptors.response.use(
   response => {
     const res = response.data
 
-    // const plusToken = response.headers['plus-token'];
+    //续期token放在响应header中返回，和直接cookie返回实现一样的效果，但是cookie有可能会出现不支持的情况
+    // const plusToken = response.headers['Plus-Token'];
     // if(plusToken){
     //   //store.commit('SET_TOKEN',plusToken);
     //   setToken(plusToken)
