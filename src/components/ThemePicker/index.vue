@@ -97,8 +97,8 @@ export default {
     },
 
     changeThemeColor(val){
-      Cookies.set("theme-color",val);
-      // console.log(Cookies.get("theme-color"));
+      // Cookies.set("theme-color",val);
+      localStorage.setItem("theme-color", val);
     },
 
     getCSSString(url, variable) {

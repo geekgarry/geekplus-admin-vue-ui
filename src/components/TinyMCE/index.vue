@@ -597,7 +597,7 @@ export default {
       //set.add(this.kw)
       // 4. 将 Set 对象转化为 Array 数组
       //this.list= Array.from(set)
-      
+
       //编辑框获得焦点后，重新计算获得所有照片数组
       let tempImageArray = new Array();
       let imageArray = tinymce.activeEditor.getBody().querySelectorAll("img");
@@ -734,11 +734,11 @@ export default {
     },
     //替换文件资源网址
     getReplaceUrl(url){
-      return url.replace(this.webProtocol+this.baseHost, "");
+      return url.replace(this.webProtocol+"//"+this.baseHost, "");
     },
     //拼接文件资源网址
     getServerUrl(url){
-      return this.webProtocol+this.baseHost+url;
+      return this.webProtocol+"//"+this.baseHost+url;
     },
     //检测是否是网址URL的样式结构，并没有详细检测是否规范化，例如www.fff，/file/xx/xx.img等也会被认为是一个url
     isValidUrl(url) {

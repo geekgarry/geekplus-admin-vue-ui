@@ -1,8 +1,8 @@
 <template>
   <div class="navbar">
-    <hamburger 
-      :is-active="sidebar.opened" 
-      class="hamburger-container" 
+    <hamburger
+      :is-active="sidebar.opened"
+      class="hamburger-container"
       @toggleClick="toggleSideBar"
     />
 

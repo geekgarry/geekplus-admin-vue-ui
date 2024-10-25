@@ -6,7 +6,7 @@ import Cookies from 'js-cookie'
 const { showSettings, switchLangs, tagsView, fixedHeader, sidebarLogo } = defaultSettings
 
 const state = {
-  theme: Cookies.get("theme-color") || variables.theme,
+  theme: localStorage.getItem("theme-color") || variables.theme,
   showSettings: showSettings,
   switchLangs: switchLangs,
   tagsView: tagsView,
