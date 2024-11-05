@@ -6,7 +6,7 @@
       @toggleClick="toggleSideBar"
     />
 
-    <breadcrumb class="breadcrumb-container" />
+    <breadcrumb class="breadcrumb-container hidden-xs-only" />
 
     <div class="right-menu">
       <!-- <div class="right-menu-item hover-effect hidden-xs-only" @click="showNotice">
@@ -27,16 +27,16 @@
 
         <screenfull id="screenfull" class="right-menu-item hover-effect" />
 
-        <el-tooltip content="布局大小" effect="dark" placement="bottom">
+        <el-tooltip :content="$t('navbarTip.elementSize') || 布局大小" effect="dark" placement="bottom">
           <size-select id="size-select" class="right-menu-item hover-effect" />
         </el-tooltip>
-        <langs class="right-menu-item hover-effect" />
         <!-- <div class="right-menu-item">
           <span class="avatar-wrapper-span">在线人数:{{ onlineUserCount }}</span>
         </div> -->
       </template>
+      <langs class="right-menu-item hover-effect" />
       <div class="right-menu-item hidden-xs-only">
-        <span class="avatar-wrapper-span">{{ nickName }}:{{ userName }}</span>
+        <span class="avatar-wrapper-span">{{ nickName }}</span>
       </div>
       <el-dropdown class="avatar-container" trigger="click">
         <el-tooltip class="item" effect="dark" :content="userName" placement="bottom-end">
@@ -49,12 +49,12 @@
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
             <el-dropdown-item>
-              <i class="el-icon-house"></i>首页
+              <i class="el-icon-house"></i>{{ $t('navbar.dashboard') || '首页'}}
             </el-dropdown-item>
           </router-link>
           <router-link to="/user/profile">
             <el-dropdown-item>
-              <i class="el-icon-user"></i>个人中心
+              <i class="el-icon-user"></i>{{ $t('navbar.profile') || '个人中心'}}
             </el-dropdown-item>
           </router-link>
           <a target="_blank" href="https://github.com/geekgarry">
@@ -63,19 +63,19 @@
               <i><svg-icon icon-class="github"/></i>Github</el-dropdown-item>
           </a>
           <a target="_blank" href="https://github.com/geekgarry">
-            <el-dropdown-item><i class="el-icon-document"></i>Docs</el-dropdown-item>
+            <el-dropdown-item><i class="el-icon-document"></i>{{ $t('navbar.document') || 'Docs'}}</el-dropdown-item>
           </a>
           <el-dropdown-item @click.native="setting = true">
-            <span><i class="el-icon-magic-stick"></i>布局设置</span>
+            <span><i class="el-icon-magic-stick"></i>{{ $t('navbar.layoutSettings') || '布局设置'}}</span>
           </el-dropdown-item>
           <!-- <el-dropdown-item @click.native="lang = true">
             <span>语言设置</span>
           </el-dropdown-item> -->
           <el-dropdown-item @click.native="onAiChatBot=true">
-            <span><i class="el-icon-chat-dot-round"></i>AI助手</span>
+            <span><i class="el-icon-chat-dot-round"></i>AI</span>
           </el-dropdown-item>
           <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;"><i class="el-icon-switch-button"></i>退出</span>
+            <span style="display:block;"><i class="el-icon-switch-button"></i>{{ $t('navbar.logOut') || '退出' }}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>

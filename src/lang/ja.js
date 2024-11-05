@@ -1,4 +1,25 @@
 export default {
+  lang: {
+    en: '英語',
+    es: 'スペイン語',
+    ja: '日本語',
+    tw: '繁体字中国語',
+    zh: '簡体字中国語',
+    ko: '韓国語'
+  },
+  switchLangMsg: '多言語切り替え成功',
+  message: {
+    systemNotice: 'システム通知',
+    operationRecord: '操作記録',
+    onlineUser: 'オンラインユーザー'
+  },
+  navbarTip: {
+    message: 'メッセージ',
+    search: '検索',
+    screenFull: 'フルスクリーン',
+    elementSize: 'レイアウトサイズ',
+    language: '言語',
+  },
   route: {
     dashboard: 'トップ',
     documentation: 'ドキュメント',
@@ -65,6 +86,8 @@ export default {
     profile: 'プロフィール'
   },
   navbar: {
+    layoutSettings: 'レイアウト設定',
+    document: 'ドキュメント',
     dashboard: 'トップ',
     github: 'GitHub',
     logOut: 'ログアウト',
@@ -72,6 +95,12 @@ export default {
     theme: 'テーマ変更',
     size: '画面サイズ'
   },
+  sizeOptions: [
+    { label: 'デフォルト', value: 'default' },
+    { label: 'ミディアム', value: 'medium' },
+    { label: '小型', value: 'small' },
+    { label: 'ミニ', value: 'mini' },
+  ],
   login: {
     title: 'ユーザログイン',
     logIn: 'ログイン',

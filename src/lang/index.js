@@ -1,20 +1,24 @@
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
 import Cookies from 'js-cookie'
+import store from '@/store'
 
 // ElementUI 国际化
-import element_locale from 'element-ui/lib/locale'
+import elementLocale from 'element-ui/lib/locale'
 import elementEnLocale from 'element-ui/lib/locale/lang/en' // element-ui lang
 import elementZhLocale from 'element-ui/lib/locale/lang/zh-CN'// element-ui lang
-import elementEsLocale from 'element-ui/lib/locale/lang/es'// element-ui lang
-import elementJaLocale from 'element-ui/lib/locale/lang/ja'// element-ui lang
-import elementTwLocale from 'element-ui/lib/locale/lang/zh-TW'// element-ui lang
+import elementEsLocale from 'element-ui/lib/locale/lang/es'
+import elementJaLocale from 'element-ui/lib/locale/lang/ja'
+import elementKoLocale from 'element-ui/lib/locale/lang/ko'
+import elementTwLocale from 'element-ui/lib/locale/lang/zh-TW'
 
 // 工程本地 国际化
 import enLocale from './en'
 import zhLocale from './zh'
+import twLocale from './tw'
 import esLocale from './es'
 import jaLocale from './ja'
+import koLocale from './ko'
 
 Vue.use(VueI18n)
 
@@ -35,13 +39,17 @@ const messages = {
     ...jaLocale,
     ...elementJaLocale
   },
+  ko: {
+    ...koLocale,
+    ...elementKoLocale
+  },
   tw: {
-    ...zhLocale,
+    ...twLocale,
     ...elementTwLocale
   }
 }
 export function getLanguage() {
-  const chooseLanguage = Cookies.get('language')
+  const chooseLanguage = store.state.app.language
   if (chooseLanguage) return chooseLanguage
 
   // if has not choose language
@@ -59,8 +67,9 @@ const i18n = new VueI18n({
   // options: en | zh | es
   locale: getLanguage(),
   // set locale messages
-  messages
+  messages,
+  globalInjection: true
 })
 // 为了实现element插件的多语言切换
-element_locale.i18n((key, value) => i18n.t(key, value))
+elementLocale.i18n((key, value) => i18n.t(key, value))
 export default i18n

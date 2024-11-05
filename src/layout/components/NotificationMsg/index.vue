@@ -55,7 +55,7 @@
             is-dot
             v-if="systemNotice != undefined"
           ></el-badge>
-          系统通知</el-dropdown-item
+          {{$t('message.systemNotice') || 系统通知}}</el-dropdown-item
         >
       </router-link>
       <router-link to="/system/log/operLog" v-if="checkHasPermi(['system:operLog:list'])">
@@ -69,7 +69,7 @@
             is-dot
             v-if="operationLog !=undefined"
           ></el-badge>
-          操作日志</el-dropdown-item
+          {{$t('message.operationRecord') || 操作日志}}</el-dropdown-item
         >
       </router-link>
       <router-link to="/monitor/online" v-if="checkHasPermi(['monitor:online:list'])">
@@ -83,7 +83,7 @@
             is-dot
             v-if="notifyMsg != undefined"
           ></el-badge>
-          在线用户</el-dropdown-item
+          {{$t('message.onlineUser') || 在线用户}}</el-dropdown-item
         >
       </router-link>
     </el-dropdown-menu>

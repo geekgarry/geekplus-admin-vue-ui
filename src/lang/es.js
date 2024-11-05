@@ -1,4 +1,25 @@
 export default {
+  lang: {
+    en: 'inglés',
+    es: 'español',
+    ja: 'japonés',
+    tw: 'chino tradicional',
+    zh: "chino simplificado",
+    ko: 'Coreano'
+  },
+  switchLangMsg: 'Cambio exitoso de multilingüismo',
+  message: {
+    systemNotice: 'notificación del sistema',
+    operationRecord: 'operation record',
+    onlineUser: "usuario en línea"
+  },
+  navbarTip: {
+    message: 'mensaje',
+    search: 'búsqueda',
+    screenFull: 'pantalla completa',
+    elementSize: 'tamaño del diseño',
+    language: 'idioma',
+  },
   route: {
     dashboard: 'Panel de control',
     documentation: 'Documentación',
@@ -65,13 +86,21 @@ export default {
     profile: 'Profile'
   },
   navbar: {
+    layoutSettings: 'Configuración del diseño',
     logOut: 'Salir',
+    document: 'Documentos',
     dashboard: 'Panel de control',
     github: 'Github',
     theme: 'Tema',
     size: 'Tamaño global',
     profile: 'Profile'
   },
+  sizeOptions: [
+    { label: 'Predeterminado', value: 'default' },
+    { label: 'Moderado', value: 'medium' },
+    { label: 'Pequeño', value: 'small' },
+    { label: 'Mini', value: 'mini' },
+  ],
   login: {
     title: 'Formulario de acceso',
     logIn: 'Acceso',

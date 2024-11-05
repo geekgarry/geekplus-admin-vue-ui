@@ -1,4 +1,25 @@
 export default {
+  lang: {
+    en: '英文',
+    es: '西班牙语',
+    ja: '日本语',
+    tw: '繁体中文',
+    zh: '简体中文',
+    ko: '韩语'
+  },
+  switchLangMsg: '切换多语言成功',
+  message: {
+    systemNotice: '系统通知',
+    operationRecord: '操作记录',
+    onlineUser: '在线用户'
+  },
+  navbarTip: {
+    message: '消息',
+    search: '搜索',
+    screenFull: '全屏',
+    elementSize: '布局大小',
+    language: '语言',
+  },
   route: {
     dashboard: '首页',
     documentation: '文档',
@@ -65,6 +86,8 @@ export default {
     profile: '个人中心'
   },
   navbar: {
+    layoutSettings: '布局设置',
+    document: '文档',
     dashboard: '首页',
     github: '项目地址',
     logOut: '退出登录',
@@ -72,6 +95,12 @@ export default {
     theme: '换肤',
     size: '布局大小'
   },
+  sizeOptions: [
+    { label: '默认', value: 'default' },
+    { label: '中等', value: 'medium' },
+    { label: '小型', value: 'small' },
+    { label: '迷你', value: 'mini' },
+  ],
   login: {
     title: '系统登录',
     logIn: '登录',

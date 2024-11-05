@@ -16,7 +16,7 @@ module.exports = {
    * 是否显示 tagsView
    */
   tagsView: true,
-  
+
   /**
    * @type {boolean} true | false
    * @description Whether fix the header

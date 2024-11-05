@@ -1,7 +1,6 @@
 import defaultSettings from '@/settings'
 import variables from '@/assets/styles/element-variables.scss'
 import sidebarVariables from '@/assets/styles/variables.scss'
-import Cookies from 'js-cookie'
 
 const { showSettings, switchLangs, tagsView, fixedHeader, sidebarLogo } = defaultSettings
 
@@ -19,6 +18,7 @@ const mutations = {
     // eslint-disable-next-line no-prototype-builtins
     if (state.hasOwnProperty(key)) {
       state[key] = value
+      localStorage.setItem(key,value)
     }
   },
   SWITCH_LANG: (state, { key, value }) => {

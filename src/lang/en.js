@@ -1,4 +1,25 @@
 export default {
+  lang: {
+    en: 'English',
+    es: 'Spanish',
+    ja: 'Japanese',
+    tw: 'Chinese-Traditional',
+    zh: 'Chinese-Simplified',
+    ko: 'Korean'
+  },
+  switchLangMsg: 'Successfully switched to multiple languages',
+  message: {
+    systemNotice: 'System Notification',
+    operaRecord: 'Operation Record',
+    onlineUser: 'Online User'
+  },
+  navbarTip: {
+    message: 'Message',
+    search: 'Search',
+    screenFull: 'Full Screen',
+    elementSize: 'Layout size',
+    language: 'Language',
+  },
   route: {
     dashboard: 'Dashboard',
     documentation: 'Documentation',
@@ -65,6 +86,8 @@ export default {
     profile: 'Profile'
   },
   navbar: {
+    layoutSettings: 'Layout Settings',
+    document: 'Docs',
     dashboard: 'Dashboard',
     github: 'Github',
     logOut: 'Log Out',
@@ -72,6 +95,12 @@ export default {
     theme: 'Theme',
     size: 'Global Size'
   },
+  sizeOptions: [
+    { label: 'Default', value: 'default' },
+    { label: 'Medium', value: 'medium' },
+    { label: 'Small', value: 'small' },
+    { label: 'Mini', value: 'mini' }
+  ],
   login: {
     title: 'Login Form',
     logIn: 'Login',

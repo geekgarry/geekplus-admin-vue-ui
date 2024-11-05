@@ -77,7 +77,8 @@ export default {
       if (!this.isActive(tag)) return {};
       return {
         "background-color": this.theme,
-        "border-color": this.theme
+        "border-color": this.theme,
+        "border-radius": "2px"
       };
     },
     isAffix(tag) {
@@ -220,20 +221,24 @@ export default {
       display: inline-block;
       position: relative;
       cursor: pointer;
-      height: 26px;
-      line-height: 26px;
-      border: 1px solid #d8dce5;
+      height: 28px;
+      line-height: 28px;
+      //border: 1px solid #d8dce5;
+      border-radius: 2px;
       color: #495060;
       background: #fff;
       padding: 0 8px;
-      font-size: 12px;
+      font-size: 13px;
       margin-left: 5px;
-      margin-top: 4px;
+      margin-top: 3px;
       &:first-of-type {
         margin-left: 15px;
       }
       &:last-of-type {
         margin-right: 15px;
+      }
+      &:hover {
+        background: rgba(115, 151, 201, 0.234)
       }
       &.active {
         background-color: #42b983;
@@ -283,13 +288,19 @@ export default {
     .el-icon-close {
       width: 16px;
       height: 16px;
-      vertical-align: 2px;
+      /* vertical-align: 2px; */
       border-radius: 50%;
       text-align: center;
       transition: all .3s cubic-bezier(.645, .045, .355, 1);
       transform-origin: 100% 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-wrap: nowrap;
+      flex-direction: row;
       &:before {
-        transform: scale(.6);
+        transform: scale(.8);
+        font-weight: bold;
         display: inline-block;
         vertical-align: -3px;
       }
