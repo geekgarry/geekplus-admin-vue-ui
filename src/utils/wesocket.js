@@ -5,8 +5,8 @@ import store from '@/store';
 //var url =  'wss://' + location.host + '/websocket/'
 //两种连接地址ws和wss，正式上线申请证书后使用域名作为连接地址
 //利用userAgent判断浏览器使用不同连接协议
-var urls = "wss://xxx.xxxx.xxx:1443/websocket/";
-var url = "ws://xxx.xxxx.xxx:1000/websocket/";
+var urls = "wss://127.0.0.1:8443/websocket/";
+var url = "ws://127.0.0.1:9002/websocket/";
 var ws;
 var tt;
 var lockReconnect = false;//避免重复连接
@@ -53,7 +53,7 @@ const websocket = {
     }
     // else if ("MozWebSocket" in window) {
     //   ws = new MozWebSocket(url + clientId);
-    // } 
+    // }
     else {
       console.log("您的浏览器不支持 WebSocket!");
       return;
@@ -77,7 +77,7 @@ const websocket = {
       console.log("当前连接已关闭,还有 %d 个连接", count)
       // localStorage.clear()
       //console.log(count)
-      // if (count > 0) {//count <= 3 && 
+      // if (count > 0) {//count <= 3 &&
       //   reconnect(store.getters.userId);
       // } else {
       //   Notification({

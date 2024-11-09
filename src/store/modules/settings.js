@@ -2,15 +2,15 @@ import defaultSettings from '@/settings'
 import variables from '@/assets/styles/element-variables.scss'
 import sidebarVariables from '@/assets/styles/variables.scss'
 
-const { showSettings, switchLangs, tagsView, fixedHeader, sidebarLogo } = defaultSettings
+const { showSettings, topMenuBar, tagsView, fixedHeader, sidebarLogo } = defaultSettings
 
 const state = {
-  theme: localStorage.getItem("theme-color") || variables.theme,
+  themeColor: localStorage.getItem('themeColor') || variables.themeColor,
   showSettings: showSettings,
-  switchLangs: switchLangs,
-  tagsView: tagsView,
-  fixedHeader: fixedHeader,
-  sidebarLogo: sidebarLogo
+  topMenuBar: topMenuBar ? '1' : '0',
+  tagsView: localStorage.getItem('tagsView') || (tagsView ? '1' : '0'),
+  fixedHeader: localStorage.getItem('fixedHeader') || (fixedHeader ? '1' : '0'),
+  sidebarLogo: localStorage.getItem('sidebarLogo') || (sidebarLogo ? '1' : '0')
 }
 
 const mutations = {
@@ -19,9 +19,10 @@ const mutations = {
     if (state.hasOwnProperty(key)) {
       state[key] = value
       localStorage.setItem(key,value)
+      //使用浏览器本地存储保存设置，你也可以使用后端redis等缓存保存设置
     }
   },
-  SWITCH_LANG: (state, { key, value }) => {
+  SWITCH_MENU_BAR: (state, { key, value }) => {
     if (state.hasOwnProperty(key)){
       state[key] = value
     }
@@ -32,8 +33,8 @@ const actions = {
   changeSetting({ commit }, data) {
     commit('CHANGE_SETTING', data)
   },
-  switchLang({ commit }, data) {
-    commit('SWITCH_LANG', data)
+  switchMenuBar({ commit }, data) {
+    commit('SWITCH_MENU_BAR', data)
   }
 }
 

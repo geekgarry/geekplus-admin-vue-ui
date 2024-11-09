@@ -35,9 +35,7 @@ export default {
     changeLanguage(lang) {
       this.$i18n.locale = lang // 设置给本地的i18n插件
       this.SET_LANGUAGE(lang);
-      this.$message.success(this.$t('switchLangMsg') || '切换多语言成功')
-      // 触发重新加载事件
-      // this.$emit('handerevent')
+      this.$message.success(this.$t('switchLangMsg') || '切换多语言成功');//this.msgSuccess
     }
   },
   computed: {

@@ -1,6 +1,6 @@
 <template>
   <el-color-picker
-    v-model="theme"
+    v-model="themeColor"
     @change="changeThemeColor"
     :predefine="['#409EFF', '#1890ff', '#304156','#212121','#11a983', '#13c2c2', '#6959CD', '#f5222d', ]"
     class="theme-picker"
@@ -17,29 +17,29 @@ export default {
   data() {
     return {
       chalk: '', // content of theme-chalk css
-      theme: ''
+      themeColor: ''
     }
   },
   computed: {
     defaultTheme() {
-      return this.$store.state.settings.theme
+      return this.$store.state.settings.themeColor
     }
   },
   watch: {
     defaultTheme: {
       handler: function(val, oldVal) {
-        this.theme = val
+        this.themeColor = val
       },
       immediate: true
     },
-    async theme(val) {
-      const oldVal = this.chalk ? this.theme : ORIGINAL_THEME
+    async themeColor(val) {
+      const oldVal = this.chalk ? this.themeColor : ORIGINAL_THEME
       if (typeof val !== 'string') return
       const themeCluster = this.getThemeCluster(val.replace('#', ''))
       const originalCluster = this.getThemeCluster(oldVal.replace('#', ''))
       // console.log(themeCluster, originalCluster)
       const $message = this.$message({
-        message: '  Compiling the theme',
+        message: this.$t('theme.changeColor') || 'Compiling the theme',
         customClass: 'theme-message',
         type: 'success',
         duration: 0,
@@ -96,10 +96,7 @@ export default {
       return newStyle
     },
 
-    changeThemeColor(val){
-      // Cookies.set("theme-color",val);
-      localStorage.setItem("theme-color", val);
-    },
+    changeThemeColor(val){},
 
     getCSSString(url, variable) {
       return new Promise(resolve => {

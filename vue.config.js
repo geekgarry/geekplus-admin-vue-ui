@@ -41,7 +41,7 @@ module.exports = {
     proxy: {
       // detail: https://cli.vuejs.org/config/#devserver-proxy
       [process.env.VUE_APP_BASE_API]: {
-        target: `http://127.0.0.1:8081`,//后端URI地址
+        target: `http://127.0.0.1:9002`,//后端URI地址，https端口8443
         ws: false, // 这里把ws代理给关闭
         changeOrigin: true,
         // proxyTimeout: 11000,
@@ -53,7 +53,7 @@ module.exports = {
       // 配置了之后就不用在访问后端文件资源是需要带上之前配置的process.env.VUE_APP_BASE_API代理api头
       // 我这里是跟随我后端的WebMVC配置的静态资源映射里的统一的资源访问地址
       '/profile': {
-        target: `http://127.0.0.1:8081`,//后端URI地址
+        target: `http://127.0.0.1:9002`,//后端URI地址，https端口8443
         changeOrigin: true,
         pathRewrite: {
           '^/profile': '/profile'
@@ -67,7 +67,6 @@ module.exports = {
       //     }
       // }
     },
-    // before: require('./mock/mock-server.js') //mock数据，模拟api请求的数据
   },
   css: {
     loaderOptions: {
@@ -92,7 +91,23 @@ module.exports = {
         'window.Quill': 'quill/dist/quill.js',
         'Quill': 'quill/dist/quill.js'
       })
-    ]
+    ],
+    //1.关闭webpack的性能提示
+    // performance : {
+    //   hints : false
+    // },
+    //2.通过改变入口和生成文件的大小来解决,这种最好
+    performance: {
+      hints: 'warning',
+      // 入口起点的最大体积
+      maxEntrypointSize: 50000000,
+      // 生成文件的最大体积
+      maxAssetSize: 30000000,
+      // 只给出 js 文件的性能提示
+      assetFilter: function(assetFilename) {
+        return assetFilename.endsWith('.js') || assetFilename.endsWith('.css');
+      }
+    }
   },
   chainWebpack(config) {
     // it can improve the speed of the first screen, it is recommended to turn on preload

@@ -8,7 +8,7 @@
         :background-color="variables.menuBg"
         :text-color="variables.menuText"
         :unique-opened="false"
-        :active-text-color="theme||variables.menuActiveText"
+        :active-text-color="themeColor||variables.menuActiveText"
         :collapse-transition="false"
         mode="vertical" >
         <sidebar-item v-for="route in permission_routes" :key="route.path" :item="route" :base-path="route.path" />
@@ -44,7 +44,7 @@ export default {
       return path
     },
     showLogo() {
-      return this.$store.state.settings.sidebarLogo
+      return this.$store.state.settings.sidebarLogo == '1' ? true : false
     },
     variables() {
       return variables
@@ -52,8 +52,8 @@ export default {
     isCollapse() {
       return !this.sidebar.opened
     },
-    theme() {
-      return this.$store.state.settings.theme;
+    themeColor() {
+      return this.$store.state.settings.themeColor;
     }
   }
 }

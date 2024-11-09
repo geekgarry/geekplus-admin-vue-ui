@@ -68,21 +68,18 @@
           <el-dropdown-item @click.native="setting = true">
             <span><i class="el-icon-magic-stick"></i>{{ $t('navbar.layoutSettings') || '布局设置'}}</span>
           </el-dropdown-item>
-          <!-- <el-dropdown-item @click.native="lang = true">
-            <span>语言设置</span>
-          </el-dropdown-item> -->
-          <el-dropdown-item @click.native="onAiChatBot=true">
+          <!-- <el-dropdown-item @click.native="onAiChatBot=true">
             <span><i class="el-icon-chat-dot-round"></i>AI</span>
-          </el-dropdown-item>
+          </el-dropdown-item> -->
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;"><i class="el-icon-switch-button"></i>{{ $t('navbar.logOut') || '退出' }}</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
-    <el-dialog :visible.sync="onAiChatBot" title="AI聊天助手" width="85%" append-to-body>
-      <chatbot></chatbot>
-    </el-dialog>
+    <!-- <el-dialog :visible.sync="onAiChatBot" title="AI聊天助手" width="85%" append-to-body>
+      <chat-bot></chat-bot>
+    </el-dialog> -->
   </div>
 </template>
 
@@ -98,7 +95,6 @@ import NotificationMsg from "./NotificationMsg"
 import ChatBot from "@/views/tool/chatbot"//引入AI助手组件
 import headPic from "@/assets/image/profile/mai.png";
 import { getOnlineUserCount } from "@/api/monitor/online"
-import chatbot from './../../views/tool/chatbot/index.vue'
 //权限检查js方法
 import {checkPermi, checkRole} from "@/utils/permission"
 
@@ -111,8 +107,7 @@ export default {
     Search,
     Langs,
     NotificationMsg,
-    ChatBot,
-    chatbot
+    ChatBot
   },
   data() {
     return {
@@ -125,7 +120,7 @@ export default {
       baseHost: window.location.host,
       baseApi: process.env.VUE_APP_BASE_API,
       prefixUrl: process.env.VUE_APP_BASE_API,
-      onAiChatBot: false,
+      onAiChatBot: false,//AI助手显示
     };
   },
   created: function () {
@@ -175,18 +170,7 @@ export default {
           value: val,
         });
       },
-    },
-    lang: {
-      get() {
-        return this.$store.state.settings.switchLangs;
-      },
-      set(val) {
-        this.$store.dispatch("settings/switchLang", {
-          key: "switchLangs",
-          value: val,
-        });
-      },
-    },
+    }
   },
   methods: {
     toggleSideBar() {
@@ -205,10 +189,6 @@ export default {
       })
       // await this.$store.dispatch('user/logout')
       // this.$router.push(`/login?redirect=${this.$route.fullPath}`)
-    },
-    changeLanguage(lang) {
-      this.$i18n.locale = lang; // 设置给本地的i18n插件
-      this.msgSuccess("切换多语言成功");
     },
     async showNotice() {
       console.log(this.notifyMsg);

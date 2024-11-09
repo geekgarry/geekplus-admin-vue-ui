@@ -48,8 +48,8 @@ export default {
     routes() {
       return this.$store.state.permission.permission_routes
     },
-    theme() {
-      return this.$store.state.settings.theme;
+    themeColor() {
+      return this.$store.state.settings.themeColor;
     }
   },
   watch: {
@@ -76,9 +76,9 @@ export default {
     activeStyle(tag) {
       if (!this.isActive(tag)) return {};
       return {
-        "background-color": this.theme,
-        "border-color": this.theme,
-        "border-radius": "2px"
+        "background-color": this.themeColor,
+        "border-color": this.themeColor,
+        "border-radius": "3px"
       };
     },
     isAffix(tag) {
@@ -224,7 +224,7 @@ export default {
       height: 28px;
       line-height: 28px;
       //border: 1px solid #d8dce5;
-      border-radius: 2px;
+      border-radius: 3px;
       color: #495060;
       background: #fff;
       padding: 0 8px;

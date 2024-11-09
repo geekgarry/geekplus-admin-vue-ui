@@ -119,6 +119,7 @@
       v-loading="loading"
       :data="roleList"
       @selection-change="handleSelectionChange"
+      highlight-current-row
     >
       <el-table-column type="selection" width="55" align="center" />
       <el-table-column
@@ -199,6 +200,8 @@
     </el-table>
 
     <pagination
+      hide-on-single-page
+      :small="true"
       v-show="total > 0"
       :total="total"
       :page.sync="queryParams.pageNum"
@@ -746,7 +749,7 @@ export default {
         });
       }
     },
-    
+
     changeMenuDataScope(value) {
     },
 

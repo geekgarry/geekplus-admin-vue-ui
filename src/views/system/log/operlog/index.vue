@@ -197,6 +197,7 @@
     </el-table>
 
     <pagination
+      hide-on-single-page
       v-show="total > 0"
       :total="total"
       :page.sync="queryParams.pageNum"

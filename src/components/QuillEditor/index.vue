@@ -62,11 +62,13 @@
 
 <script>
 import Quill from "quill";
-import "quill/dist/quill.core.css";
 import "quill/dist/quill.snow.css";
-import "quill/dist/quill.bubble.css";
-import hljs from 'highlight.js'
-import 'highlight.js/styles/monokai-sublime.css'
+// import "quill/dist/quill.bubble.css";
+// import "quill/dist/quill.core.css";
+import hljs from 'highlight.js';
+import 'highlight.js/styles/monokai-sublime.css';
+// import 'highlight.js/styles/stackoverflow-light.css'// 导入高亮主题样式
+
 //视频处理
 const BlockEmbed = Quill.import("blots/block/embed");
 class VideoBlot extends BlockEmbed {

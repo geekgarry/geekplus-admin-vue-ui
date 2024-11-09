@@ -186,6 +186,7 @@ const tw = {
   },
   theme: {
     change: '換膚',
+    changeColor: '編譯主題顏色',
     documentation: '換膚文檔',
     tips: 'Tips: 它區別於 navbar 上的 theme-pick, 是兩種不同的換膚方法，各自有不同的應用場景，具體請參考文檔。'
   },

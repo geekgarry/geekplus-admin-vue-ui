@@ -185,6 +185,7 @@ export default {
   },
   theme: {
     change: '체인지',
+    changeColor: '테마 색상 컴파일하기',
     documentation: '피팅 문서',
     tips: 'Tips: navbar의 theme-pick과 구별되는 두 가지 다른 스킨 교환 방법입니다. 각각 다른 응용 장면이 있습니다. 구체적으로 문서를 참고하십시오',
   },

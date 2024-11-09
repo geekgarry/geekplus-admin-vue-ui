@@ -10,8 +10,6 @@ import 'element-ui/lib/theme-chalk/index.css'
 import 'element-ui/lib/theme-chalk/display.css';
 // import locale from 'element-ui/lib/locale/lang/zh-CN' // lang i18n，使用element-ui的默认中文包
 
-import './assets/styles/element-variables.scss'
-
 import '@/assets/styles/index.scss' // global css
 import '@/assets/styles/geekplusadmin.scss' // geekplusadmin css
 import App from './App'
@@ -28,8 +26,6 @@ import RightToolbar from "@/components/RightToolbar"
 import i18n from './lang/index' // Internationalization
 
 // import 'default-passive-events'
-import * as echarts from 'echarts'
-Vue.prototype.$echarts = echarts;
 
 //引入一些通用工具js类
 import { parseTime, dateFormat, resetForm, addDateRange, selectDictLabel, selectDictLabels, download, handleTree, firstUpperCase } from "@/utils/gputil";
@@ -59,8 +55,9 @@ Vue.use(ElementUI, {
 import websocket from './utils/wesocket'
 
 Vue.config.productionTip = false
-// Vue.prototype.$echarts = echarts
 
+import * as echarts from 'echarts'
+Vue.prototype.$echarts = echarts;
 Vue.prototype.parseTime = parseTime
 Vue.prototype.dateFormat = dateFormat
 Vue.prototype.resetForm = resetForm

@@ -185,6 +185,7 @@ export default {
   },
   theme: {
     change: 'テーマ切替',
+    changeColor: 'コンパイルテーマの色',
     documentation: 'ドキュメント',
     tips: 'Tips: テーマの切り替え方法はnavbarのtheme-pickと異なります、使い方はドキュメントを確認してください。'
   },

@@ -10,17 +10,17 @@
 
       <div class="drawer-item">
         <span>{{ $t("settings.tagsView") }}</span>
-        <el-switch v-model="tagsView" class="drawer-switch" />
+        <el-switch active-value="1" inactive-value="0" v-model="tagsView" class="drawer-switch" />
       </div>
 
       <div class="drawer-item">
         <span>{{ $t("settings.fixedHeader") }}</span>
-        <el-switch v-model="fixedHeader" class="drawer-switch" />
+        <el-switch active-value="1" inactive-value="0" v-model="fixedHeader" class="drawer-switch" />
       </div>
 
       <div class="drawer-item">
         <span>{{ $t("settings.sidebarLogo") }}</span>
-        <el-switch v-model="sidebarLogo" class="drawer-switch" />
+        <el-switch active-value="1" inactive-value="0" v-model="sidebarLogo" class="drawer-switch" />
       </div>
 
     </div>
@@ -81,7 +81,7 @@ export default {
   methods: {
     themeChange(val) {
       this.$store.dispatch('settings/changeSetting', {
-        key: 'theme',
+        key: 'themeColor',
         value: val
       })
     }

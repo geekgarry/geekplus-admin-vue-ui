@@ -8,9 +8,9 @@ module.exports = {
   showSettings: false,
 
   /**
-   * 切换语言
+   * 切换顶部导航菜单布局
    */
-  switchLangs: false,
+  topMenuBar: false,
 
   /**
    * 是否显示 tagsView

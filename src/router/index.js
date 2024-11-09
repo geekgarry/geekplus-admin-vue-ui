@@ -48,6 +48,11 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    path:'/register',
+    component: (resolve) => require(['@/views/register/index'], resolve),
+    hidden: true
+  },
+  {
     path: '/resumeGenerate',
     component: (resolve) => require(['@/views/resumeGenerate'], resolve),
     hidden: true
