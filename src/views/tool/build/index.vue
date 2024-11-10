@@ -4,7 +4,7 @@
       <el-col :xs="24" :sm="8" :md="8" :lg="6" :xl="4">
         <div class="left-board">
           <div class="logo-wrapper">
-            <div class="logo">
+            <div class="logo" :style="activeStyle()">
               <img :src="logo" alt="logo"> Form Generator
             </div>
           </div>
@@ -200,6 +200,9 @@ export default {
     }
   },
   computed: {
+    themeColor() {
+      return this.$store.state.settings.themeColor;
+    }
   },
   watch: {
     // eslint-disable-next-line func-names
@@ -237,6 +240,12 @@ export default {
     })
   },
   methods: {
+    activeStyle() {
+      if (!this.themeColor) return {};
+      return {
+        "color": this.themeColor,
+      };
+    },
     activeFormItem(element) {
       this.activeData = element
       this.activeId = element.formId
@@ -761,7 +770,7 @@ $lighterBlue: #409EFF;
   & > .drawing-item-copy, & > .drawing-item-delete{
     display: none;
     position: absolute;
-    top: -10px;
+    top: -11px;
     width: 22px;
     height: 22px;
     line-height: 22px;
@@ -771,26 +780,33 @@ $lighterBlue: #409EFF;
     border: 1px solid;
     cursor: pointer;
     z-index: 1;
+    .el-button {
+      display: block;
+      width: 20px;
+      height: 20px;
+      padding: 0;
+      margin: 0;
+    }
   }
   & > .drawing-item-copy{
     right: 56px;
     border-color: $lighterBlue;
-    color: $lighterBlue;
-    background: #fff;
-    &:hover{
+    /* color: $lighterBlue;
+    background: #fff; */
+    /* &:hover{
       background: $lighterBlue;
       color: #fff;
-    }
+    } */
   }
   & > .drawing-item-delete{
     right: 24px;
     border-color: #F56C6C;
-    color: #F56C6C;
-    background: #fff;
-    &:hover{
+    /* color: #F56C6C;
+    background: #fff; */
+    /* &:hover{
       background: #F56C6C;
       color: #fff;
-    }
+    } */
   }
 }
 

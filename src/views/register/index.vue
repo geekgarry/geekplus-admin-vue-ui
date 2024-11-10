@@ -225,7 +225,7 @@
 @import "~@/assets/styles/variables.scss";
   .register-container {
     height: 100vh;
-    background: url('~@/assets/image/bg.jpeg') center center fixed
+    background: url('~@/assets/image/bg1.jpeg') center center fixed
       no-repeat;
     background-size: cover;
 
@@ -314,7 +314,7 @@
         margin: 0 auto 40px auto;
         font-size: 26px;
         font-weight: bold;
-        color: $base-color-gray;
+        color: $base-color-white;
         text-align: center;
       }
     }
@@ -386,10 +386,10 @@
           height: 47px;
           padding-left: 45px;
           font-size: $base-font-size-default;
-          color: $base-font-color;
-          caret-color: $base-font-color;
+          color: #d7dee3;
+          caret-color: #d7dee3;
           line-height: 47px;
-          background: #f6f4fc;
+          background: #11101179;
           border: 0;
         }
       }

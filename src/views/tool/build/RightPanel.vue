@@ -5,7 +5,7 @@
       <el-tab-pane label="表单属性" name="form" />
     </el-tabs>
     <div class="field-box">
-      <a class="document-link" target="_blank" :href="documentLink" title="查看组件文档">
+      <a class="document-link" target="_blank" :style="activeStyle()" :href="documentLink" title="查看组件文档">
         <i class="el-icon-link" />
       </a>
       <el-scrollbar class="right-scrollbar">
@@ -700,6 +700,9 @@ export default {
         || 'https://element.eleme.cn/#/zh-CN/component/installation'
       )
     },
+    themeColor() {
+      return this.$store.state.settings.themeColor;
+    },
     dateOptions() {
       if (
         this.activeData.type !== undefined
@@ -726,6 +729,12 @@ export default {
     }
   },
   methods: {
+    activeStyle() {
+      if (!this.themeColor) return {};
+      return {
+        "background-color": this.themeColor,
+      };
+    },
     addReg() {
       this.activeData.regList.push({
         pattern: '',
