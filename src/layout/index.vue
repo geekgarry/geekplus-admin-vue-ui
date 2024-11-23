@@ -4,7 +4,7 @@
     <!--当 leftMenuBar===true，左菜单栏显示,顶部隐藏-->
     <sidebar class="sidebar-container" v-if="device==='mobile'||leftMenuBar" />
     <div :class="{hasTagsView:needTagsView, 'main-container':leftMenuBar}">
-      <div :class="{'fixed-header':fixedHeader && leftMenuBar}">
+      <div :class="{'fixed-header':fixedHeader, topMenuBar: !leftMenuBar}">
         <navbar />
         <tags-view v-if="needTagsView" />
       </div>
@@ -107,6 +107,10 @@ export default {
     z-index: 9;
     width: calc(100% - #{$sideBarWidth});
     transition: width 0.28s;
+  }
+
+  .fixed-header.topMenuBar {
+    width: 100%;
   }
 
   .hideSidebar .fixed-header {
