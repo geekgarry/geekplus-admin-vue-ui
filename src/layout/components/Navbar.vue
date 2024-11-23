@@ -1,12 +1,17 @@
 <template>
-  <div class="navbar">
+  <div class="navbar" :class="{showTopMenuBar: device!=='mobile'&&!leftMenuBar}">
+    <!--注释 侧边栏展开关闭按钮-->
     <hamburger
+      v-if="device==='mobile'||leftMenuBar"
       :is-active="sidebar.opened"
       class="hamburger-container"
       @toggleClick="toggleSideBar"
     />
 
-    <breadcrumb class="breadcrumb-container hidden-xs-only" />
+    <breadcrumb v-if="leftMenuBar" class="breadcrumb-container hidden-xs-only" />
+
+    <!--当 leftMenuBar===false，左菜单栏隐藏，顶部显示-->
+    <topbar v-if="device!=='mobile' && !leftMenuBar" class="left-menu" />
 
     <div class="right-menu">
       <!-- <div class="right-menu-item hover-effect hidden-xs-only" @click="showNotice">
@@ -84,13 +89,14 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex'
+import { mapGetters, mapState } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import Search from '@/components/HeaderSearch'
 import Langs from "./Lang"
+import Topbar from "./Topbar"
 import NotificationMsg from "./NotificationMsg"
 import ChatBot from "@/views/tool/chatbot"//引入AI助手组件
 import headPic from "@/assets/image/profile/mai.png";
@@ -106,6 +112,7 @@ export default {
     SizeSelect,
     Search,
     Langs,
+    Topbar,
     NotificationMsg,
     ChatBot
   },
@@ -150,6 +157,13 @@ export default {
       "nickName",
       "userName"
     ]),
+    // ...mapState({
+    //   leftMenuBar: state => state.settings.leftMenuBar == '1' ? true : false
+    // }),
+    //获取menuInLeft值
+    leftMenuBar() {
+      return this.$store.state.settings.leftMenuBar == '1' ? true : false
+    },
     userAvatar:{
       get() {
         return this.$store.state.user.avatar;
@@ -263,6 +277,18 @@ export default {
     float: left;
   }
 
+  // 左侧菜单样式
+  .left-menu{
+    float: left;
+    height: 100%;
+    line-height: normal;
+    flex: 1 0 auto;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+
   .right-menu {
     float: right;
     height: 100%;
@@ -320,5 +346,12 @@ export default {
       }
     }
   }
+}
+.navbar.showTopMenuBar {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  background: #f7f6f5;
 }
 </style>

@@ -201,7 +201,8 @@ const tw = {
     theme: '主題色',
     tagsView: '開啓 Tags-View',
     fixedHeader: '固定 Header',
-    sidebarLogo: '側邊欄 Logo'
+    sidebarLogo: '側邊欄 Logo',
+    leftMenuBar: '左側功能表列佈局'
   }
 }
 

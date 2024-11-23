@@ -2,12 +2,12 @@ import defaultSettings from '@/settings'
 import variables from '@/assets/styles/element-variables.scss'
 import sidebarVariables from '@/assets/styles/variables.scss'
 
-const { showSettings, topMenuBar, tagsView, fixedHeader, sidebarLogo } = defaultSettings
+const { showSettings, leftMenuBar, tagsView, fixedHeader, sidebarLogo } = defaultSettings
 
 const state = {
   themeColor: localStorage.getItem('themeColor') || variables.themeColor,
   showSettings: showSettings,
-  topMenuBar: topMenuBar ? '1' : '0',
+  leftMenuBar: localStorage.getItem('leftMenuBar') || (leftMenuBar ? '1' : '0'),
   tagsView: localStorage.getItem('tagsView') || (tagsView ? '1' : '0'),
   fixedHeader: localStorage.getItem('fixedHeader') || (fixedHeader ? '1' : '0'),
   sidebarLogo: localStorage.getItem('sidebarLogo') || (sidebarLogo ? '1' : '0')

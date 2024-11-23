@@ -10,7 +10,7 @@ module.exports = {
   /**
    * 切换顶部导航菜单布局
    */
-  topMenuBar: false,
+  leftMenuBar: true,
 
   /**
    * 是否显示 tagsView

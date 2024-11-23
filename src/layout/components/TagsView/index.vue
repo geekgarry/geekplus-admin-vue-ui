@@ -74,11 +74,14 @@ export default {
       return route.path === this.$route.path
     },
     activeStyle(tag) {
-      if (!this.isActive(tag)) return {};
+      if (!this.isActive(tag)) return {
+        "--theme-main-color": this.themeColor
+      };
       return {
         "background-color": this.themeColor,
         "border-color": this.themeColor,
-        "border-radius": "3px"
+        "border-radius": "3px",
+        "--theme-main-color": this.themeColor,
       };
     },
     isAffix(tag) {
@@ -231,6 +234,8 @@ export default {
       font-size: 13px;
       margin-left: 5px;
       margin-top: 3px;
+      transition: all .3s cubic-bezier(.645, .045, .355, 1);
+      transform-origin: 100% 50%;
       &:first-of-type {
         margin-left: 15px;
       }
@@ -238,13 +243,15 @@ export default {
         margin-right: 15px;
       }
       &:hover {
-        background: rgba(115, 151, 201, 0.234)
+        background: var(--theme-main-color, #1890ff);
+        color: var(--font-main-color, #f5f5f5);
+        border-color: var(--theme-main-color, #1890ff);
       }
       &.active {
         background-color: #42b983;
         color: #fff;
         border-color: #42b983;
-        &::before {
+        /* &::before {
           content: '';
           background: #fff;
           display: inline-block;
@@ -253,7 +260,7 @@ export default {
           border-radius: 50%;
           position: relative;
           margin-right: 2px;
-        }
+        } */
       }
     }
   }
@@ -291,8 +298,6 @@ export default {
       /* vertical-align: 2px; */
       border-radius: 50%;
       text-align: center;
-      transition: all .3s cubic-bezier(.645, .045, .355, 1);
-      transform-origin: 100% 50%;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -305,7 +310,7 @@ export default {
         vertical-align: -3px;
       }
       &:hover {
-        background-color: #b4bccc;
+        background-color: #b4bccc93;
         color: #fff;
       }
     }

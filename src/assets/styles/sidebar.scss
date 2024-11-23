@@ -91,6 +91,89 @@
     }
   }
 
+  .showTopMenuBar {
+    .el-menu.el-menu--horizontal {
+      border: none;
+      height: 100%;
+      width: 100% !important;
+      display: flex;
+      min-height: 0;
+      overflow-y: hidden;
+    }
+
+    .el-menu--horizontal {
+      .el-menu.el-menu--popup.el-menu--popup-bottom-start {
+        .el-menu-item {
+          height: 50px;
+          line-height: 50px;
+          padding: 0 5px !important;
+          vertical-align: middle;
+          .svg-icon {
+            margin-right: 3px;
+          }
+
+          .sub-el-icon {
+            margin-right: 3px;
+          }
+        }
+      }
+    }
+
+    .el-menu-item {
+      height: 50px;
+      line-height: 50px;
+      padding: 0 5px !important;
+      vertical-align: middle;
+      .svg-icon {
+        margin-right: 3px;
+      }
+
+      .sub-el-icon {
+        margin-right: 3px;
+      }
+    }
+
+    .submenu-title-noDropdown {
+      height: 50px;
+      line-height: 50px;
+      padding: 0 5px !important;
+      position: relative;
+
+      .svg-icon {
+        margin-right: 3px;
+      }
+
+      .sub-el-icon {
+        margin-right: 3px;
+      }
+
+      .el-tooltip {
+        padding: 0 !important;
+      }
+    }
+
+    .el-submenu {
+      overflow: hidden;
+
+      &>.el-submenu__title {
+        height: 50px;
+        line-height: 50px;
+        padding: 0 5px !important;
+
+        .svg-icon {
+          margin-right: 3px;
+        }
+
+        .sub-el-icon {
+          margin-right: 3px;
+        }
+
+        .el-submenu__icon-arrow {
+          display: none;
+        }
+      }
+    }
+  }
   .hideSidebar {
     .sidebar-container {
       width: 54px !important;

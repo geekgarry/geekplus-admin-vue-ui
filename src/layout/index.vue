@@ -1,9 +1,10 @@
 <template>
   <div :class="classObj" class="app-wrapper">
     <div v-if="device==='mobile'&&sidebar.opened" class="drawer-bg" @click="handleClickOutside" />
-    <sidebar class="sidebar-container" />
-    <div :class="{hasTagsView:needTagsView}" class="main-container">
-      <div :class="{'fixed-header':fixedHeader}">
+    <!--当 leftMenuBar===true，左菜单栏显示,顶部隐藏-->
+    <sidebar class="sidebar-container" v-if="device==='mobile'||leftMenuBar" />
+    <div :class="{hasTagsView:needTagsView, 'main-container':leftMenuBar}">
+      <div :class="{'fixed-header':fixedHeader && leftMenuBar}">
         <navbar />
         <tags-view v-if="needTagsView" />
       </div>
@@ -18,7 +19,7 @@
 </template>
 
 <script>
-import { Navbar, Sidebar, AppMain, TagsView, Settings } from './components'
+import { Navbar, Sidebar, Topbar, AppMain, TagsView, Settings } from './components'
 import ResizeMixin from './mixin/ResizeHandler'
 import RightPanel from '@/components/RightPanel'
 
@@ -27,6 +28,7 @@ export default {
   components: {
     Navbar,
     Sidebar,
+    Topbar,
     AppMain,
     RightPanel,
     TagsView,
@@ -52,9 +54,14 @@ export default {
     fixedHeader() {
       return this.$store.state.settings.fixedHeader == '1' ? true : false
     },
+    //获取menuInLeft值
+    leftMenuBar() {
+      return this.$store.state.settings.leftMenuBar == '1' ? true : false
+    },
     classObj() {
       return {
-        hideSidebar: !this.sidebar.opened,
+        showTopMenuBar: this.device!=='mobile'&&!this.leftMenuBar, //显示顶部菜单的样式
+        hideSidebar: !this.sidebar.opened && (this.device==='mobile' || this.leftMenuBar),
         openSidebar: this.sidebar.opened,
         withoutAnimation: this.sidebar.withoutAnimation,
         mobile: this.device === 'mobile'

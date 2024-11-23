@@ -14,7 +14,6 @@
 </template>
 
 <script>
-//'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
 import logo from "@/assets/image/logo/geekplus.png"
 export default {
   name: 'SidebarLogo',
@@ -55,10 +54,10 @@ export default {
 
 .sidebar-logo-container {
   position: relative;
-  width: 100%;
+  width: 200px;
   height: 50px;
   line-height: 50px;
-  background: #2b2f3a;
+  background: var(--theme-main-color, #f0f0f0);
   text-align: center;
   overflow: hidden;
 
@@ -67,7 +66,7 @@ export default {
     width: 100%;
 
     & .sidebar-logo {
-      width: 32px;
+      width: auto;
       height: 32px;
       vertical-align: middle;
       margin-right: 12px;
@@ -76,7 +75,7 @@ export default {
     & .sidebar-title {
       display: inline-block;
       margin: 0;
-      color: #fff;
+      color: #252525;
       font-weight: 600;
       line-height: 50px;
       font-size: 14px;

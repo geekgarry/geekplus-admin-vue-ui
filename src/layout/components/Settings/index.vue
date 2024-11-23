@@ -23,6 +23,11 @@
         <el-switch active-value="1" inactive-value="0" v-model="sidebarLogo" class="drawer-switch" />
       </div>
 
+      <!--增加切换按钮-->
+      <div class="drawer-item hidden-sm-and-down">
+        <span>{{ $t("settings.leftMenuBar") }}</span>
+        <el-switch active-value="1" inactive-value="0" v-model="leftMenuBar" class="drawer-switch" />
+      </div>
     </div>
   </div>
 </template>
@@ -73,6 +78,18 @@ export default {
       set(val) {
         this.$store.dispatch('settings/changeSetting', {
           key: 'sidebarLogo',
+          value: val
+        })
+      }
+    },
+    // 增加绑定的leftMenuBar值
+    leftMenuBar: {
+      get() {
+        return this.$store.state.settings.leftMenuBar
+      },
+      set(val) {
+        this.$store.dispatch('settings/changeSetting', {
+          key: 'leftMenuBar',
           value: val
         })
       }

@@ -17,9 +17,13 @@ export default {
     };
   },
   created(){
-    var lcThemeColor = localStorage.getItem("themeColor");
-    if(lcThemeColor) {
-      this.themeColor = lcThemeColor;
+    if(this.storageThemeColor) {
+      this.themeColor = this.storageThemeColor;
+    }
+  },
+  computed: {
+    storageThemeColor() {
+      return localStorage.getItem("themeColor");
     }
   },
   watch: {
@@ -64,7 +68,6 @@ export default {
         style.innerText = this.updateStyle(innerText, originalCluster, themeCluster)
       })
 
-      this.$emit('change', val)
     }
   },
   methods: {
@@ -75,6 +78,7 @@ export default {
       })
       return newStyle
     },
+
     getCSSString(url, variable) {
       return new Promise(resolve => {
         const xhr = new XMLHttpRequest()

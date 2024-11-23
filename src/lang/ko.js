@@ -200,6 +200,7 @@ export default {
     theme: '주제색',
     tagsView: 'Tags-View 열기',
     fixedHeader: '고정 Header',
-    sidebarLogo: '사이드바 Logo'
+    sidebarLogo: '사이드바 Logo',
+    leftMenuBar: '왼쪽 메뉴 표시줄 레이아웃'
   }
 }
