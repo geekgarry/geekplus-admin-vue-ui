@@ -68,6 +68,8 @@ export default {
         style.innerText = this.updateStyle(innerText, originalCluster, themeCluster)
       })
 
+      //把更换的颜色设置为全局css变量
+      document.documentElement.style.setProperty('--theme-main-color', val);
     }
   },
   methods: {

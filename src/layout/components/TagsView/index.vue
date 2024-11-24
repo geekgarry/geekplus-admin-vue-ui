@@ -74,14 +74,11 @@ export default {
       return route.path === this.$route.path
     },
     activeStyle(tag) {
-      if (!this.isActive(tag)) return {
-        "--theme-main-color": this.themeColor
-      };
+      if (!this.isActive(tag)) return {};
       return {
         "background-color": this.themeColor,
         "border-color": this.themeColor,
         "border-radius": "3px",
-        "--theme-main-color": this.themeColor,
       };
     },
     isAffix(tag) {
@@ -244,7 +241,7 @@ export default {
       }
       &:hover {
         background: var(--theme-main-color, #1890ff);
-        color: var(--font-main-color, #f5f5f5);
+        color: #f5f5f5;
         border-color: var(--theme-main-color, #1890ff);
       }
       &.active {

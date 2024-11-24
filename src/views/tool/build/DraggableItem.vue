@@ -9,12 +9,12 @@ const components = {
       <span class="drawing-item-copy" title="复制" onClick={event => {
         copyItem(element, parent); event.stopPropagation()
       }}>
-        <el-button size="mini" type="primary" icon="el-icon-copy-document" circle></el-button>
+        <i class="el-icon-copy-document"></i>
       </span>,
       <span class="drawing-item-delete" title="删除" onClick={event => {
         deleteItem(index, parent); event.stopPropagation()
       }}>
-        <el-button size="mini" type="danger" icon="el-icon-delete" circle></el-button>
+        <i class="el-icon-delete"></i>
       </span>
     ]
   }

@@ -101,28 +101,10 @@
       overflow-y: hidden;
     }
 
-    .el-menu--horizontal {
-      .el-menu.el-menu--popup.el-menu--popup-bottom-start {
-        .el-menu-item {
-          height: 50px;
-          line-height: 50px;
-          padding: 0 5px !important;
-          vertical-align: middle;
-          .svg-icon {
-            margin-right: 3px;
-          }
-
-          .sub-el-icon {
-            margin-right: 3px;
-          }
-        }
-      }
-    }
-
     .el-menu-item {
       height: 50px;
       line-height: 50px;
-      padding: 0 5px !important;
+      padding: 0 6px !important;
       vertical-align: middle;
       .svg-icon {
         margin-right: 3px;
@@ -136,7 +118,7 @@
     .submenu-title-noDropdown {
       height: 50px;
       line-height: 50px;
-      padding: 0 5px !important;
+      padding: 0 6px !important;
       position: relative;
 
       .svg-icon {
@@ -158,7 +140,7 @@
       &>.el-submenu__title {
         height: 50px;
         line-height: 50px;
-        padding: 0 5px !important;
+        padding: 0 6px !important;
 
         .svg-icon {
           margin-right: 3px;
@@ -174,6 +156,7 @@
       }
     }
   }
+
   .hideSidebar {
     .sidebar-container {
       width: 54px !important;
@@ -264,6 +247,18 @@
     .main-container,
     .sidebar-container {
       transition: none;
+    }
+  }
+}
+
+.el-menu--horizontal {
+  &>.el-menu {
+    .svg-icon {
+      margin-right: 3px;
+    }
+
+    .sub-el-icon {
+      margin-right: 3px;
     }
   }
 }

@@ -1,13 +1,13 @@
 <template>
-  <div class="sidebar-logo-container" :class="{'collapse':collapse}">
-    <transition name="sidebarLogoFade">
-      <router-link v-if="collapse" key="collapse" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 v-else class="sidebar-title">{{ title }} </h1>
+  <div class="topbar-logo-container" :class="{'collapse':collapse}">
+    <transition name="topbarLogoFade">
+      <router-link v-if="collapse" key="collapse" class="topbar-logo-link" to="/">
+        <img v-if="logo" :src="logo" class="topbar-logo">
+        <h1 v-else class="topbar-title">{{ title }} </h1>
       </router-link>
-      <router-link v-else key="expand" class="sidebar-logo-link" to="/">
-        <img v-if="logo" :src="logo" class="sidebar-logo">
-        <h1 class="sidebar-title">{{ title }} </h1>
+      <router-link v-else key="expand" class="topbar-logo-link" to="/">
+        <img v-if="logo" :src="logo" class="topbar-logo">
+        <h1 class="topbar-title">{{ title }} </h1>
       </router-link>
     </transition>
   </div>
@@ -43,36 +43,36 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.sidebarLogoFade-enter-active {
+.topbarLogoFade-enter-active {
   transition: opacity 1.5s;
 }
 
-.sidebarLogoFade-enter,
-.sidebarLogoFade-leave-to {
+.topbarLogoFade-enter,
+.topbarLogoFade-leave-to {
   opacity: 0;
 }
 
-.sidebar-logo-container {
+.topbar-logo-container {
   position: relative;
   width: 200px;
   height: 50px;
   line-height: 50px;
-  background: var(--theme-main-color, #f0f0f0);
+  background: #f0f0f0;
   text-align: center;
   overflow: hidden;
 
-  & .sidebar-logo-link {
+  & .topbar-logo-link {
     height: 100%;
     width: 100%;
 
-    & .sidebar-logo {
+    & .topbar-logo {
       width: auto;
       height: 32px;
       vertical-align: middle;
       margin-right: 12px;
     }
 
-    & .sidebar-title {
+    & .topbar-title {
       display: inline-block;
       margin: 0;
       color: #252525;
@@ -85,7 +85,7 @@ export default {
   }
 
   &.collapse {
-    .sidebar-logo {
+    .topbar-logo {
       margin-right: 0px;
     }
   }

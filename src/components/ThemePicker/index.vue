@@ -83,6 +83,9 @@ export default {
 
       this.$emit('change', val)
 
+      //把更换的颜色设置为全局css变量
+      document.documentElement.style.setProperty('--theme-main-color', val);
+
       $message.close()
     }
   },

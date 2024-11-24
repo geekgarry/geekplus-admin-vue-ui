@@ -530,7 +530,7 @@ input, textarea{
 }
 
 $selectedColor: #f6f7ff;
-$lighterBlue: #409EFF;
+$lighterBlue: var(--theme-main-color, #409EFF);
 
 .container {
   /* position: relative; */
@@ -791,22 +791,22 @@ $lighterBlue: #409EFF;
   & > .drawing-item-copy{
     right: 56px;
     border-color: $lighterBlue;
-    /* color: $lighterBlue;
-    background: #fff; */
-    /* &:hover{
+    color: $lighterBlue;
+    background: #fff;
+    &:hover{
       background: $lighterBlue;
       color: #fff;
-    } */
+    }
   }
   & > .drawing-item-delete{
     right: 24px;
     border-color: #F56C6C;
-    /* color: #F56C6C;
-    background: #fff; */
-    /* &:hover{
+    color: #F56C6C;
+    background: #fff;
+    &:hover{
       background: #F56C6C;
       color: #fff;
-    } */
+    }
   }
 }
 
