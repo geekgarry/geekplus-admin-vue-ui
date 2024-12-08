@@ -72,11 +72,8 @@ const actions = {
     return new Promise((resolve, reject) => {
       login(userInfo).then(response => {
         const { data } = response
-        // commit('SET_USERID', data.userId)
-        commit('SET_USERNAME', data.userName)
-        commit('SET_NICKNAME', data.nickName)
-        commit('SET_TOKEN', data.token)
         setToken(data.token)
+        commit('SET_TOKEN', data.token)
         // console.log(data);
         resolve()
       }).catch(error => {
@@ -85,7 +82,7 @@ const actions = {
     })
   },
 
-  // get user info
+  // 此处没有使用，而是直接用getMenu获取所有路由信息和权限
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo(state.token).then(response => {

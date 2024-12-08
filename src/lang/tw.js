@@ -94,7 +94,9 @@ const tw = {
     logOut: '退出登錄',
     profile: '个人中心',
     theme: '換膚',
-    size: '布局大小'
+    size: '布局大小',
+    refreshPerms: '刷新權限',
+    refresh: '刷新'
   },
   sizeOptions: [
     { label: '默認', value: 'default' },

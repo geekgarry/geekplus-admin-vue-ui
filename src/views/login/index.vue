@@ -14,7 +14,7 @@
 
       <el-form-item prop="userName">
         <span class="svg-container">
-          <svg-icon 
+          <svg-icon
           slot="prefix"
           icon-class="user"
           class="el-input__icon input-icon" />
@@ -32,7 +32,7 @@
 
       <el-form-item prop="password">
         <span class="svg-container">
-          <svg-icon 
+          <svg-icon
           slot="prefix"
           icon-class="password"
           class="el-input__icon input-icon" />
@@ -134,7 +134,7 @@ export default {
       },
       rememberPwd: false,
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        userName: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }],
         validateCode: [{ required: true, trigger: "blur", message: "验证码不能为空" }],
       },

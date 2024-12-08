@@ -93,7 +93,9 @@ export default {
     logOut: '로그인 종료',
     profile: '개인 센터',
     theme: '스킨 체인지',
-    size: '레이아웃 크기'
+    size: '레이아웃 크기',
+    refreshPerms: '권한 새로 고침',
+    refresh: '새로 고침'
   },
   sizeOptions: [
     { label: '기본값', value: 'default' },

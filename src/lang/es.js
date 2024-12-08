@@ -93,7 +93,9 @@ export default {
     github: 'Github',
     theme: 'Tema',
     size: 'Tamaño global',
-    profile: 'Profile'
+    profile: 'Profile',
+    refreshPerms: 'Actualizar permisos',
+    refresh: 'Refrescar'
   },
   sizeOptions: [
     { label: 'Predeterminado', value: 'default' },

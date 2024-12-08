@@ -93,7 +93,9 @@ export default {
     logOut: '退出登录',
     profile: '个人中心',
     theme: '换肤',
-    size: '布局大小'
+    size: '布局大小',
+    refreshPerms: '刷新权限',
+    refresh: '刷新'
   },
   sizeOptions: [
     { label: '默认', value: 'default' },

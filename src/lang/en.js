@@ -93,7 +93,9 @@ export default {
     logOut: 'Log Out',
     profile: 'Profile',
     theme: 'Theme',
-    size: 'Global Size'
+    size: 'Global Size',
+    refreshPerms: 'Refresh permissions',
+    refresh: 'Refresh'
   },
   sizeOptions: [
     { label: 'Default', value: 'default' },

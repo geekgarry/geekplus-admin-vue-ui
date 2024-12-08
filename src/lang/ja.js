@@ -93,7 +93,9 @@ export default {
     logOut: 'ログアウト',
     profile: 'プロフィール',
     theme: 'テーマ変更',
-    size: '画面サイズ'
+    size: '画面サイズ',
+    refreshPerms: 'アクセス権の更新',
+    refresh: 'リフレッシュ'
   },
   sizeOptions: [
     { label: 'デフォルト', value: 'default' },

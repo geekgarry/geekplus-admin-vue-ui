@@ -8,6 +8,12 @@ export function login(data) {
     data
   })
 }
+export function refreshUserAuth() {
+  return request({
+    url: '/sys/user/refreshUserAuth',
+    method: 'get',
+  })
+}
 //获取菜单树
 export function getMenuTree() {
   return request({

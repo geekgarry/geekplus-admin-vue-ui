@@ -48,7 +48,7 @@
           <div class="avatar-wrapper">
             <img :src="avatar" class="user-avatar">
             <!-- <el-avatar shape="square" :src="avatar ? prefixUrl+avatar : mePic"></el-avatar> -->
-            <i class="el-icon-caret-bottom" />
+            <!-- <i class="el-icon-caret-bottom" /> -->
           </div>
         </el-tooltip>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -62,6 +62,9 @@
               <i class="el-icon-user"></i>{{ $t('navbar.profile') || '个人中心'}}
             </el-dropdown-item>
           </router-link>
+          <el-dropdown-item>
+            <span @click="refreshUserPerms"><i class="el-icon-refresh"></i>{{ $t('navbar.refreshPerms') || '刷新权限'}}</span>
+          </el-dropdown-item>
           <a target="_blank" href="https://github.com/geekgarry">
             <el-dropdown-item>
               <!-- <i class="el-icon-fork-spoon"></i> -->
@@ -101,6 +104,7 @@ import NotificationMsg from "./NotificationMsg"
 import ChatBot from "@/views/tool/chatbot"//引入AI助手组件
 import headPic from "@/assets/image/profile/mai.png";
 import { getOnlineUserCount } from "@/api/monitor/online"
+import { refreshUserAuth } from '@/api/system/user'
 //权限检查js方法
 import {checkPermi, checkRole} from "@/utils/permission"
 
@@ -207,6 +211,11 @@ export default {
     async showNotice() {
       console.log(this.notifyMsg);
       this.msgSuccess(this.notifyMsg);
+    },
+    refreshUserPerms(){
+      refreshUserAuth().then((res) => {
+        this.msgSuccess(res.msg);
+      })
     },
     //调用方法
     initWebsocket(tokenId){
@@ -323,7 +332,7 @@ export default {
     }
 
     .avatar-container {
-      margin-right: 30px;
+      margin-right: 10px;
 
       .avatar-wrapper {
         margin-top: 5px;
@@ -333,7 +342,7 @@ export default {
           cursor: pointer;
           width: 40px;
           height: 40px;
-          border-radius: 10px;
+          border-radius: 3px;
         }
 
         .el-icon-caret-bottom {
