@@ -142,6 +142,7 @@ export default {
     if (hasSomePerms) {
       let userId=this.$store.getters.userId;
       if (null != userId) {
+        //这里是websocket开启，如果不需要可以注释
         this.initWebsocket(userId);
       }
     }
@@ -149,7 +150,7 @@ export default {
     //this.getOnlineUser();
   },
   mounted(){
-    // 添加socket通知监听
+    // 添加socket通知监听，根据需要去做修改，不需要就注释
     window.addEventListener('onmessageWS', this.getSocketData)
   },
   computed: {
