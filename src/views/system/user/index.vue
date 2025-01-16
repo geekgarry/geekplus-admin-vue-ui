@@ -7,9 +7,9 @@
       v-show="showSearch"
       label-width="68px"
     >
-      <el-form-item label="用户名称" prop="userName">
+      <el-form-item label="用户名称" prop="username">
         <el-input
-          v-model="queryParams.userName"
+          v-model="queryParams.username"
           placeholder="请输入用户名称"
           clearable
           size="small"
@@ -85,7 +85,7 @@
       <el-col :span="4" :xs="24">
         <!-- <div class="head-container">
           <el-input
-            v-model="nickName"
+            v-model="nickname"
             placeholder="请输入部门名称"
             clearable
             size="small"
@@ -177,12 +177,12 @@
       ></el-table-column>
       <el-table-column label="用户名" align="center">
         <template slot-scope="scope">
-          {{ scope.row.userName }}
+          {{ scope.row.username }}
         </template>
       </el-table-column>
       <el-table-column label="用户昵称" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.nickName }}</span>
+          <span>{{ scope.row.nickname }}</span>
         </template>
       </el-table-column>
       <el-table-column label="用户类型" width="110" align="center" prop="userType" :formatter="userTypeFormat">
@@ -296,8 +296,8 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px" :disabled="isUpdate && form.userId === 1 && loginUserId !== 1">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="用户昵称" prop="nickName">
-              <el-input v-model="form.nickName" placeholder="请输入用户昵称" />
+            <el-form-item label="用户昵称" prop="nickname">
+              <el-input v-model="form.nickname" placeholder="请输入用户昵称" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -337,9 +337,9 @@
             <el-form-item
               v-if="form.userId == undefined"
               label="用户名称"
-              prop="userName"
+              prop="username"
             >
-              <el-input v-model="form.userName" placeholder="请输入用户名称" />
+              <el-input v-model="form.username" placeholder="请输入用户名称" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -524,7 +524,7 @@ export default {
       queryParams: {
         pageNum: 1,
         pageSize: 10,
-        userName: undefined,
+        username: undefined,
         phoneNumber: undefined,
         status: undefined,
         email: undefined
@@ -547,10 +547,10 @@ export default {
       menuOpen: false,
       // 表单校验
       rules: {
-        userName: [
+        username: [
           { required: true, message: "用户名称不能为空", trigger: "blur" }
         ],
-        nickName: [
+        nickname: [
           { required: true, message: "用户昵称不能为空", trigger: "blur" }
         ],
         groupId: [
@@ -658,8 +658,8 @@ export default {
       this.form = {
         userId: undefined,
         groupId: undefined,
-        userName: undefined,
-        nickName: undefined,
+        username: undefined,
+        nickname: undefined,
         password: undefined,
         userType: undefined,
         phoneNumber: undefined,
@@ -676,7 +676,7 @@ export default {
     // 角色状态修改
     handleStatusChange(row) {
       let text = row.status === "0" ? "重启" : "封禁";
-      this.$confirm('确认要"' + text + '""' + row.userName + '"用户吗?', "警告", {
+      this.$confirm('确认要"' + text + '""' + row.username + '"用户吗?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
@@ -747,7 +747,7 @@ export default {
     },
     /** 重置密码按钮操作 */
     handleResetPwd(row) {
-      this.$prompt('请输入"' + row.userName + '"的新密码', "提示", {
+      this.$prompt('请输入"' + row.username + '"的新密码', "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消"
       }).then(({ value }) => {

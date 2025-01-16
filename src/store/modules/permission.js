@@ -45,7 +45,7 @@ const permission = {
     //       })
     //     })
     //   }
-    generateRoutes({ commit }, {routes}) {
+    generateRoutes({ commit }, { routes }) {
       return new Promise(resolve => {
         let permissionRoutes = generaMenu(routes);
         //console.log(permissionRoutes);
@@ -109,30 +109,22 @@ function hasPermission(roles, route) {
 
 /**
  * 后台查询的菜单数据拼装成路由格式的数据
- * @param routes (resolve: any) => require([`@/views/${view}.vue`], resolve)
+ * @param routes (resolve: any) => require([`@/views/${view}.vue`], resolve), 路由懒加载：() => import(`@/views${item.component}`)
  */
 export function generaMenu(data) {
-  const routes=[]
+  const routes = []
   data.forEach(item => {
-    //alert(JSON.stringify(item))
-    var hasChildren=item.children.length>0
-    var redirectPath=item.path+'/'
-    //const component = item.route? asnycRouteMeun[`${item.route}`] : Layout;
+    var hasChildren = item.children.length > 0
+    var redirectPath = item.path + '/'
     const menu = {
-      path: item.path == '#' ? item.menuId + '_key' : (item.parentId == 0?'/'+item.path : item.path),
-      // component: item.component === '#' ? Layout : () => import(`@/views${item.component}`),
-      component: item.component ? (resolve) => require([`@/views/${item.component}`], resolve): Layout,
-      //component: item.component ? () => import(`@/views${item.component}`) : Layout,
+      path: item.path == '#' ? item.menuId + '_key' : (item.parentId == 0 ? '/' + item.path : item.path),
+      component: item.component ? loadView(item.component) : Layout,
       hidden: (item.visible == 0 ? false : true),
-      redirect: (item.parentId == 0?'/'+item.path+'/'+item.children[0].path:''),
+      redirect: (item.parentId == 0 ? '/' + item.path + '/' + item.children[0].path : ''),
       children: item.children && item.children.length > 0 ? generaMenu(item.children) : [],
       name: firstUpperCase(item.path),//item.menuName,由于要和vue页面的name匹配，所以要首字母转换大写
-      //meta: item.meta
-      meta: { title: item.menuName, icon: item.icon, noCache: (item.isCache==0?false:true), id: item.menuId }
+      meta: { title: item.menuName, icon: item.icon, noCache: (item.isCache == 0 ? false : true), id: item.menuId }
     }
-    // if (item.children&&item.children.length > 0) {
-    //   generaMenu(menu.children, item.children)
-    // }
     routes.push(menu)
   })
   return routes
@@ -170,7 +162,7 @@ export function generaMenu(data) {
 //   return res
 // }
 
-//这是另一种将菜单数据拼装成路由信息的方法
+//这是另一种将菜单数据拼装成路由信息的递归方法，此处可以根据自己的数据库的信息做修改适配
 export function makeRoutes(routes) {
   const res = []
   routes.forEach(route => {
@@ -206,13 +198,13 @@ export function makeRoutes(routes) {
   return res
 }
 
-export const loadView = (view) => { // 路由懒加载
+export const loadView = (view) => { // 路由地址组件加载
   return (resolve) => require([`@/views/${view}`], resolve)
 }
 
 // 字符串首字母大写，其余不变
 export function firstUpperCase(str) {
-	return str.slice(0,1).toUpperCase() +str.slice(1);
+  return str.slice(0, 1).toUpperCase() + str.slice(1);
 }
 
 export default permission

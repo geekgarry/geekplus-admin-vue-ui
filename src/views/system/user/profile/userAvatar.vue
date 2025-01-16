@@ -64,13 +64,13 @@
       <el-row :gutter="20" >
         <el-col :span="6" v-for="avatarImg in allAvatarImg" :key="avatarImg">
           <div style="text-align: -webkit-center;">
-            <!-- <el-image 
+            <!-- <el-image
               style="width: 100px; height: 100px"
               :src="carouselImg"
               :fit="fit"></el-image> -->
-            <el-image 
+            <el-image
               style="width: 100px; height: 100px; "
-              :src="baseApi+avatarImg" 
+              :src="baseApi+avatarImg"
               fit="contain"
               :preview-src-list="localImgToWebImg(allAvatarImg)"
               lazy >

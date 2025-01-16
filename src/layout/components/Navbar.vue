@@ -41,10 +41,10 @@
       </template>
       <langs class="right-menu-item hover-effect" />
       <div class="right-menu-item hidden-xs-only">
-        <span class="avatar-wrapper-span">{{ nickName }}</span>
+        <span class="avatar-wrapper-span">{{ nickname }}</span>
       </div>
       <el-dropdown class="avatar-container" trigger="click">
-        <el-tooltip class="item" effect="dark" :content="userName" placement="bottom-end">
+        <el-tooltip class="item" effect="dark" :content="username" placement="bottom-end">
           <div class="avatar-wrapper">
             <img :src="avatar" class="user-avatar">
             <!-- <el-avatar shape="square" :src="avatar ? prefixUrl+avatar : mePic"></el-avatar> -->
@@ -123,7 +123,6 @@ export default {
   data() {
     return {
       mePic: headPic,
-      //userName:'',
       notifyMsg: undefined,
       operationLog: undefined,
       systemNotice: undefined,
@@ -159,8 +158,8 @@ export default {
       'avatar',
       "device",
       "userId",
-      "nickName",
-      "userName"
+      "nickname",
+      "username"
     ]),
     // ...mapState({
     //   leftMenuBar: state => state.settings.leftMenuBar == '1' ? true : false
@@ -176,7 +175,7 @@ export default {
     },
     nkName: {
       get() {
-        return this.$store.getters.nickName;
+        return this.$store.getters.nickname;
       },
     },
     setting: {

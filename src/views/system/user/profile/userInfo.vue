@@ -1,7 +1,7 @@
 <template>
   <el-form ref="form" :model="user" :rules="rules" label-width="80px">
-    <el-form-item label="用户昵称" prop="nickName">
-      <el-input v-model="user.nickName" />
+    <el-form-item label="用户昵称" prop="nickname">
+      <el-input v-model="user.nickname" />
     </el-form-item>
     <el-form-item label="所属部门" prop="deptId">
       <treeselect
@@ -52,7 +52,7 @@ export default {
       deptOptions:[],
       // 表单校验
       rules: {
-        nickName: [
+        nickname: [
           { required: true, message: "用户昵称不能为空", trigger: "blur" }
         ],
         email: [

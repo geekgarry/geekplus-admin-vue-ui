@@ -12,7 +12,7 @@
         <h3 class="title">GEEKPLUS ADMIN</h3>
       </div>
 
-      <el-form-item prop="userName">
+      <el-form-item prop="username">
         <span class="svg-container">
           <svg-icon
           slot="prefix"
@@ -20,10 +20,10 @@
           class="el-input__icon input-icon" />
         </span>
         <el-input
-          ref="userName"
-          v-model="loginForm.userName"
-          placeholder="userName"
-          name="userName"
+          ref="username"
+          v-model="loginForm.username"
+          placeholder="Username"
+          name="username"
           type="text"
           tabindex="1"
           auto-complete="on"
@@ -126,7 +126,7 @@ export default {
     }
     return {
       loginForm: {
-        userName: '',
+        username: '',
         password: '',
         validateCode: '',
         validateKey: '',
@@ -134,7 +134,7 @@ export default {
       },
       rememberPwd: false,
       loginRules: {
-        userName: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }],
         validateCode: [{ required: true, trigger: "blur", message: "验证码不能为空" }],
       },
@@ -165,11 +165,11 @@ export default {
       });
     },
     getCookie() {
-      const userName = Cookies.get("userName");
+      const username = Cookies.get("username");
       const password = Cookies.get("password");
       const rememberMe = Cookies.get("rememberPwd")
       this.loginForm = {
-        userName: userName === undefined ? this.loginForm.userName : userName,
+        username: username === undefined ? this.loginForm.username : username,
         password: password === undefined ? this.loginForm.password : decrypt(password),
         rememberMe: rememberMe === undefined ? false : Boolean(rememberMe)
       };
@@ -192,11 +192,11 @@ export default {
         if (valid) {
           this.loading = true;
           if (this.loginForm.rememberMe) {
-            Cookies.set("userName", this.loginForm.userName, { expires: 30 });
+            Cookies.set("username", this.loginForm.username, { expires: 30 });
             Cookies.set("password", encrypt(this.loginForm.password), { expires: 30 });
             Cookies.set("rememberPwd", this.loginForm.rememberMe, { expires: 30 });
           } else {
-            Cookies.remove("userName");
+            Cookies.remove("username");
             Cookies.remove("password");
             Cookies.remove("rememberPwd");
           }

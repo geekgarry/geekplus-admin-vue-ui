@@ -10,9 +10,9 @@
           @keyup.enter.native="handleQuery"
         />
       </el-form-item>
-      <el-form-item label="用户名称" prop="userName">
+      <el-form-item label="用户名称" prop="username">
         <el-input
-          v-model="queryParams.userName"
+          v-model="queryParams.username"
           placeholder="请输入用户名称"
           clearable
           size="small"
@@ -35,19 +35,19 @@
           <span>{{(pageNum - 1) * pageSize + scope.$index + 1}}</span>
         </template>
       </el-table-column>
-      <el-table-column label="会话编号" align="center" prop="tokenId" :show-overflow-tooltip="true" />
-      <el-table-column label="登录名称" align="center" prop="userName" :show-overflow-tooltip="true" />
-      <el-table-column label="部门名称" align="center" prop="deptName" />
-      <el-table-column label="登录地址" align="center" prop="ipaddr" :show-overflow-tooltip="true" />
-      <el-table-column label="登录地点" align="center" prop="loginLocation" :show-overflow-tooltip="true" />
-      <el-table-column label="浏览器" align="center" prop="browser" />
-      <el-table-column label="操作系统" align="center" prop="os" />
-      <el-table-column label="登录时间" align="center" prop="loginTime" width="180">
+      <el-table-column label="会话编号" align="center" prop="tokenId" width="150" :show-overflow-tooltip="true" />
+      <el-table-column label="登录名称" align="center" prop="username" width="110" :show-overflow-tooltip="true" />
+      <el-table-column label="部门名称" align="center" prop="deptName" width="110" show-overflow-tooltip />
+      <el-table-column label="登录地址" align="center" prop="ipaddr" width="110" :show-overflow-tooltip="true" />
+      <el-table-column label="登录地点" align="center" prop="loginLocation" width="120" :show-overflow-tooltip="true" />
+      <el-table-column label="浏览器" align="center" prop="browser" width="120" show-overflow-tooltip />
+      <el-table-column label="操作系统" align="center" prop="os" width="120" show-overflow-tooltip />
+      <el-table-column label="登录时间" align="center" prop="loginTime" width="180" show-overflow-tooltip>
         <template slot-scope="scope">
           <span>{{ parseTime(scope.row.loginTime) }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
+      <el-table-column label="操作" align="center" class-name="small-padding fixed-width" fixed="right" width="100">
         <template slot-scope="scope">
           <el-button
             size="mini"
@@ -81,7 +81,7 @@ export default {
       // 查询参数
       queryParams: {
         ipaddr: undefined,
-        userName: undefined
+        username: undefined
       }
     };
   },
@@ -110,7 +110,7 @@ export default {
     },
     /** 强退按钮操作 */
     handleForceLogout(row) {
-      this.$confirm('是否确认强退名称为"' + row.userName + '"的数据项?', "警告", {
+      this.$confirm('是否确认强退名称为"' + row.username + '"的数据项?', "警告", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"

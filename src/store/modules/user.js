@@ -8,8 +8,8 @@ const getDefaultState = () => {
     token: getToken(),
     name: '',
     avatar: '',
-    userName:'',
-    nickName:'',
+    username:'',
+    nickname:'',
     userId:'',
     sysUser:{},
     sysRole:{},
@@ -33,11 +33,11 @@ const mutations = {
   SET_NAME: (state, name) => {
     state.name = name
   },
-  SET_USERNAME: (state, userName) => {
-    state.userName = userName
+  SET_USERNAME: (state, username) => {
+    state.username = username
   },
-  SET_NICKNAME: (state, nickName) => {
-    state.nickName = nickName
+  SET_NICKNAME: (state, nickname) => {
+    state.nickname = nickname
   },
   SET_USERID: (state, userId) => {
     state.userId = userId
@@ -116,15 +116,15 @@ const actions = {
         const avatar = data.avatar == "" ? require("@/assets/image/profile/mai.png") : process.env.VUE_APP_BASE_API + data.avatar;
         commit('SET_MENUS', menus)
         commit('SET_PERMISSIONS', data.permsSet)
-        commit('SET_USERNAME', data.userName)
-        commit('SET_NICKNAME', data.nickName)
+        commit('SET_USERNAME', data.username)
+        commit('SET_NICKNAME', data.nickname)
         commit('SET_USERID', data.userId)
         commit('SET_AVATAR', avatar)
         //let onlineUser = localStorage.getItem("onlineUser");
         //console.log(onlineUser)
         // if (onlineUser) {
           //let tokenId = localStorage.getItem("tokenId");
-          // let tokenId=store.state.user.token+":"+store.state.user.userName
+          // let tokenId=store.state.user.token+":"+store.state.user.username
           //console.log(tokenId);
           // if (null != tokenId) {
           //   this.websocket.Init(tokenId);

@@ -10,9 +10,9 @@
           v-show="showSearch"
           label-width="68px"
         >
-          <el-form-item label="用户名称" prop="userName">
+          <el-form-item label="用户名称" prop="username">
             <el-input
-              v-model="queryParams.userName"
+              v-model="queryParams.username"
               placeholder="请输入用户名称"
               clearable
               size="small"
@@ -144,12 +144,12 @@
       ></el-table-column>
       <el-table-column label="用户名" align="center">
         <template slot-scope="scope">
-          {{ scope.row.userName }}
+          {{ scope.row.username }}
         </template>
       </el-table-column>
       <el-table-column label="用户昵称" align="center">
         <template slot-scope="scope">
-          <span>{{ scope.row.nickName }}</span>
+          <span>{{ scope.row.nickname }}</span>
         </template>
       </el-table-column>
       <!-- <el-table-column label="用户类型" width="110" align="center">
@@ -232,8 +232,8 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
           <el-col :span="12">
-            <el-form-item label="用户昵称" prop="nickName">
-              <el-input v-model="form.nickName" placeholder="请输入用户昵称" />
+            <el-form-item label="用户昵称" prop="nickname">
+              <el-input v-model="form.nickname" placeholder="请输入用户昵称" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -272,9 +272,9 @@
             <el-form-item
               v-if="form.userId == undefined"
               label="用户名称"
-              prop="userName"
+              prop="username"
             >
-              <el-input v-model="form.userName" placeholder="请输入用户名称" />
+              <el-input v-model="form.username" placeholder="请输入用户名称" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
