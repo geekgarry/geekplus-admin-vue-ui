@@ -120,6 +120,7 @@ const actions = {
         commit('SET_NICKNAME', data.nickname)
         commit('SET_USERID', data.userId)
         commit('SET_AVATAR', avatar)
+        commit('SET_ROLES', data.roles)
         //let onlineUser = localStorage.getItem("onlineUser");
         //console.log(onlineUser)
         // if (onlineUser) {

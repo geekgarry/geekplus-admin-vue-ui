@@ -134,7 +134,7 @@ export default {
   },
   methods: {
     getAvatarList(){
-      let queryParams = { fileFolder: "avatar" };
+      let queryParams = { fileFolder: store.getters.username };
       getAvatarImageList(queryParams).then((response)=>{
         this.displayAvatar=true;
         this.allAvatarImg=response.data;//this.localImgToWebImg(response.data);
@@ -231,7 +231,8 @@ export default {
     uploadImg() {
       this.$refs.cropper.getCropBlob(data => {
         let formData = new FormData();
-        formData.append("avatarfile", data);
+        formData.append("avatarFile", data);
+        formData.append("fileFolder", store.getters.username);
         uploadAvatar(formData).then(response => {
           this.open = false;
           this.options.img = process.env.VUE_APP_BASE_API + response.imgUrl;
