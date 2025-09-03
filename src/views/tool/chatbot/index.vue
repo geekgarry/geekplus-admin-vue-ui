@@ -43,7 +43,7 @@
                             <el-row type="flex" :gutter="5" justify="center">
                                 <el-col :span="24">
                                     <div class="chatBoxFooterBtn">
-                                        <span><el-button 
+                                        <span><el-button
                                               type="primary"
                                               @click="startAndStopRecording" >{{recordingTxt}}
                                             </el-button>
@@ -58,7 +58,7 @@
                                               @click="handleMsg"
                                               >发送</el-button
                                             ></span>
-    
+
                                     </div>
                                 </el-col>
                             </el-row>
@@ -154,13 +154,13 @@ export default {
             isTextVoice: false, //是否语音朗读
             isHistory: true, //是否采用有历史记忆的聊天
             openAiKey: '',
-            userName: "guest"
+            username: "guest"
         };
     },
     //data:{},
     created: function() {
-        if (this.$store.state.user.userName) {
-            this.userName = this.$store.state.user.userName;
+        if (this.$store.state.user.username) {
+            this.username = this.$store.state.user.username;
         }
         this.getHistoryMag();
         //this.startTTS("你好！请问现在是什么时间！");
@@ -346,9 +346,9 @@ export default {
                   });
                 } */
             // axios.post("/AIBot/getGeminiContent", //google gemini
-            let chatPrompt = { username: this.userName, chatMsg: this.inputChat };
+            let chatPrompt = { username: this.username, chatMsg: this.inputChat };
             if (this.isHistory === false) {
-                geminiAI({ username: this.userName, chatMsg: this.inputChat })
+                geminiAI({ username: this.username, chatMsg: this.inputChat })
                     .then(async (response) => {
                         //console.log(response);
                         //if (response.code == 200) {
@@ -392,7 +392,7 @@ export default {
                         this.loading = false;
                     });
             } else {
-                geminiAIChat({ username: this.userName, chatMsg: this.inputChat, historyChatData: this.historyMsgData })
+                geminiAIChat({ username: this.username, chatMsg: this.inputChat, historyChatData: this.historyMsgData })
                     .then(async (response) => {
                         //console.log(response);
                         //if (response.code == 200) {
@@ -444,7 +444,7 @@ export default {
         //获取用户的历史聊天记录
         getHistoryMag() {
             //axios.get("/AIBot/getHistoryMessage?username=You")
-            getHistoryMessage({ username: this.userName })
+            getHistoryMessage({ username: this.username })
                 .then(async (response) => {
                     //console.log(response.data)
                     let msglist = response.data;
@@ -700,7 +700,7 @@ export default {
             msg.text = txt
             msg.volume = 1 //音量
             msg.rate = 1 //语速
-            //msg.voice = 
+            //msg.voice =
             msg.lang = 'zh-cn'
             speechSynthesis.speak(msg);
         },

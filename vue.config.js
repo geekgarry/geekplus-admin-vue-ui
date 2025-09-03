@@ -7,6 +7,10 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
+const CompressionPlugin = require("compression-webpack-plugin");
+const productionGzipExtensions = /\.(js|css|txt|html|ico|svg)(\?.*)?$/i;
+const TerserPlugin = require('terser-webpack-plugin');
+
 const name = defaultSettings.title || 'geekplus-admin' // page title
 
 // If your port is set to 80,
@@ -34,6 +38,11 @@ module.exports = {
     host: '0.0.0.0',
     port: port,
     open: true,
+    client: {
+      // webSocketURL: 'ws://0.0.0.0:8898/ws',
+      progress: true,
+      overlay: false,
+    },
     // overlay: {
     //   warnings: false,
     //   errors: true
@@ -69,6 +78,8 @@ module.exports = {
     },
   },
   css: {
+    sourceMap: true,
+    extract: false,
     loaderOptions: {
       sass: {
         sassOptions: {
@@ -90,8 +101,47 @@ module.exports = {
       new webpack.ProvidePlugin({
         'window.Quill': 'quill/dist/quill.js',
         'Quill': 'quill/dist/quill.js'
-      })
+      }),
     ],
+    //使用TerserPlugin做压缩
+    optimization: {
+      minimize: true,
+      minimizer: [
+        new TerserPlugin({
+          parallel: true,
+          extractComments: false,
+          terserOptions: {
+            parse: {
+              ecma: 2020, // 允许解析 ES2020+ 语法
+            },
+            compress: {
+              ecma: 2015, // 压缩时转成 ES2015
+              drop_console: true,
+              drop_debugger: true,
+              // 防止URL被压缩
+              unsafe: false,
+              // 防止URL中的特殊字符被转义
+              unsafe_regexp: false,
+              // 防止URL中的查询参数被优化
+              unsafe_methods: false
+            },
+            format: {
+              ecma: 2015, // 输出 ES2015
+            },
+            mangle: {
+              // 保留属性名
+              properties: false,
+              // 保留函数名
+              keep_fnames: true
+            },
+            // 保留原始字符串格式
+            format: {
+              quote_style: 3 // 使用原始引号
+            }
+          },
+        }),
+      ],
+    },
     //1.关闭webpack的性能提示
     // performance : {
     //   hints : false
@@ -167,13 +217,25 @@ module.exports = {
                   priority: 20, // the weight needs to be larger than libs and app or it will be packaged into libs or app
                   test: /[\\/]node_modules[\\/]_?element-ui(.*)/ // in order to adapt to cnpm
                 },
+                common: {
+                  minChunks: 2, // 至少被引用2次
+                  priority: -20,
+                  reuseExistingChunk: true // 复用已有chunk
+                },
                 commons: {
                   name: 'chunk-commons',
                   test: resolve('src/components'), // can customize your rules
                   minChunks: 3, //  minimum common number
                   priority: 5,
                   reuseExistingChunk: true
-                }
+                },
+                echarts: {
+                  name: "chunk-echarts",
+                  test: /[\\/]node_modules[\\/]echarts[\\/]/,
+                  priority: 9,
+                  chunks: 'initial', // only package third parties that are initially dependent
+                  // enforce: true,
+                },
               }
             })
           // https:// webpack.js.org/configuration/optimization/#optimizationruntimechunk
@@ -181,6 +243,27 @@ module.exports = {
             from: path.resolve(__dirname, './public/robots.txt'), //防爬虫文件
             to: './', //到根目录下
           }
+
+          /* *******************************************
+          *
+          * 开启GZIP压缩
+          * 压缩前：4.4MB
+          * 压缩后：1.7MB
+          * @Author: geekcpp
+          * @Date: 2020-09-02 19:55:13
+          *
+          ********************************************/
+          config.plugin("compression").use(
+            new CompressionPlugin({
+              // filename: "[path][base].gz",
+              filename: '[path][base].gz[query]', //  使得多个.gz文件合并成一个文件，这种方式压缩后的文件少，建议使用
+              algorithm: "gzip",
+              test: productionGzipExtensions, // 使用正则给匹配{RegExp}到的文件/资产做压缩
+              threshold: 102400, // 只处理大于此大小的资产。以字节为单位
+              minRatio: 0.8, //只有压缩好这个比率的资产才能被处理
+              deleteOriginalAssets: false, //是否删除原资源
+            })
+          );
         }
       )
   }
