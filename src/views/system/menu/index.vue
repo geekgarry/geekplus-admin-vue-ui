@@ -18,8 +18,8 @@
             :label="dict.dictLabel"
             :value="dict.dictValue"
           /> -->
-          <el-option label="正常" value="0"></el-option>
-          <el-option label="停用" value="1"></el-option>
+          <el-option label="正常" :value="0"></el-option>
+          <el-option label="停用" :value="1"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -59,6 +59,13 @@
           <span>{{ scope.row.icon }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="类型" align="center" width="100" show-overflow-tooltip>
+        <template slot-scope="scope">
+          <span v-show="scope.row.menuType=='C'" style="color: #a11e1e;">菜单目录</span>
+          <span v-show="scope.row.menuType=='M'" style="color: #1b941d;">功能菜单</span>
+          <span v-show="scope.row.menuType=='B'" style="color: #3f81c7;">权限功能</span>
+        </template>
+      </el-table-column>
       <el-table-column label="排序" align="center" show-overflow-tooltip>
         <template slot-scope="scope">
           {{ scope.row.orderNum }}
@@ -93,17 +100,18 @@
       </el-table-column>
       <el-table-column label="操作" align="center" fixed="right" width="170" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button size="mini" type="text" icon="el-icon-edit" 
+          <el-button size="mini" type="text" icon="el-icon-edit"
           @click="handleUpdate(scope.row)" >修改</el-button>
-          <el-button 
-            size="mini" 
-            type="text" 
-            icon="el-icon-plus" 
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-plus"
+            :disabled="scope.row.menuType == 'B'"
             @click="handleAdd(scope.row)"
           >新增</el-button>
-          <el-button v-if="scope.row.userId !== 1" size="mini" type="text" icon="el-icon-delete" 
+          <el-button v-if="scope.row.userId !== 1" size="mini" type="text" icon="el-icon-delete"
             @click="handleDelete(scope.row)" >删除</el-button>
-          <!-- <el-button size="mini" type="text" icon="el-icon-key" 
+          <!-- <el-button size="mini" type="text" icon="el-icon-key"
           @click="handleResetPwd(scope.row)" >重置</el-button> -->
         </template>
       </el-table-column>
@@ -121,24 +129,24 @@
       <el-form ref="form" :model="form" :rules="rules" label-width="80px">
         <el-row>
           <el-col :span="24">
-            <el-form-item label="上级菜单" prop="parentId" v-if="form.parentId!=0">
-              <!-- <treeselect
+            <el-form-item label="上级菜单" prop="parentId">
+              <treeselect
                 v-model="form.parentId"
                 :options="menuOptions"
                 :normalizer="normalizer"
                 :show-count="true"
                 placeholder="选择上级菜单"
-              /> -->
-              <el-select 
+              />
+              <!-- <el-select
                 placeholder="选择上级菜单"
-                v-model="form.parentId" 
+                v-model="form.parentId"
                 clearable >
-                <el-option v-for="menu in menuOptions" 
-                  :key="menu.menuId" 
-                  :label="menu.menuName+(menu.parentId==0 ? '（目录）' :'')" 
+                <el-option v-for="menu in menuOptions"
+                  :key="menu.menuId"
+                  :label="menu.menuName+(menu.parentId==0 ? '（目录）' :'')"
                   :value="menu.menuId">
                 </el-option>
-              </el-select>
+              </el-select> -->
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -185,8 +193,8 @@
           <el-col :span="12">
             <el-form-item v-if="form.menuType != 'B'" label="是否外链">
               <el-radio-group v-model="form.isFrame">
-                <el-radio label="0">是</el-radio>
-                <el-radio label="1">否</el-radio>
+                <el-radio :label="0">是</el-radio>
+                <el-radio :label="1">否</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -213,8 +221,8 @@
                   :key="dict.dictValue"
                   :label="dict.dictValue"
                 >{{dict.dictLabel}}</el-radio> -->
-                <el-radio label="0">显示</el-radio>
-                <el-radio label="1">隐藏</el-radio>
+                <el-radio :label="0">显示</el-radio>
+                <el-radio :label="1">隐藏</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -226,16 +234,16 @@
                   :key="dict.dictValue"
                   :label="dict.dictValue"
                 >{{dict.dictLabel}}</el-radio> -->
-                <el-radio key="0" label="0">正常</el-radio>
-                <el-radio key="1" label="1">停用</el-radio>
+                <el-radio :label="0">正常</el-radio>
+                <el-radio :label="1">停用</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item v-if="form.menuType == 'M'" label="是否缓存" prop="isCache">
               <el-radio-group v-model="form.isCache">
-                <el-radio key="0" label="0">缓存</el-radio>
-                <el-radio key="1" label="1">不缓存</el-radio>
+                <el-radio :label="0">缓存</el-radio>
+                <el-radio :label="1">不缓存</el-radio>
               </el-radio-group>
             </el-form-item>
           </el-col>
@@ -252,6 +260,8 @@
 <script>
 import { getMenu, getMenuDetail, listMenu, listAllMenu, addMenu, updateMenu } from '@/api/system/menu'
 import IconSelect from "@/components/IconSelect";
+import Treeselect from "@riophae/vue-treeselect";
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
 export default {
   name:"MenuManage",
@@ -305,7 +315,7 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      listAllMenu(this.queryParams).then(response => {
+      listAllMenu().then(response => {
         this.list = this.handleTree(response.rows, "menuId");
         // console.log(response)
         // this.total=response.total
@@ -315,11 +325,11 @@ export default {
     /** 查询菜单下拉树结构 */
     getTreeselect() {
       //this.queryParams.parentId=0;
-      listAllMenu(this.queryParams).then(response => {
-        this.menuOptions = response.rows;
-        // const menu = { menuId: 0, menuName: '主类目', children: [] };
-        // menu.children = this.handleTree(response.data, "menuId");
-        // this.menuOptions.push(menu);
+      listAllMenu().then(response => {
+        this.menuOptions = [];
+        const menu = { menuId: 0, menuName: '主类目', children: [] };
+        menu.children = this.handleTree(response.rows, "menuId");
+        this.menuOptions.push(menu);
       });
     },
     cancel() {
@@ -335,10 +345,10 @@ export default {
         icon: undefined,
         menuType: "C",
         orderNum: undefined,
-        isFrame: "1",
-        isCache: "0",
-        visible: "0",
-        status: "0"
+        isFrame: 1,
+        isCache: 0,
+        visible: 0,
+        status: 0
       };
       this.resetForm("form");
     },

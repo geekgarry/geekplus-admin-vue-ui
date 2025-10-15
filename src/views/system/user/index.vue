@@ -41,8 +41,8 @@
                 :label="dict.dictLabel"
                 :value="dict.dictValue"
               /> -->
-          <el-option label="正常" value="0"></el-option>
-          <el-option label="禁用" value="1"></el-option>
+          <el-option label="正常" :value="0"></el-option>
+          <el-option label="禁用" :value="1"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="创建时间">
@@ -200,15 +200,15 @@
       </el-table-column>
       <el-table-column label="性别" align="center">
         <template slot-scope="scope">
-          <!-- {{ scope.row.gender == 1 ? "男" : "女" }} -->
-          <span v-if="scope.row.gender == 1">男</span>
-          <span v-if="scope.row.gender == 2">女</span>
-          <span v-if="scope.row.gender == 3">未知</span>
+          <!-- {{ scope.row.gender == 0 ? "男" : "女" }} -->
+          <span v-if="scope.row.gender == 0">男</span>
+          <span v-if="scope.row.gender == 1">女</span>
+          <span v-if="scope.row.gender == 2">未知</span>
         </template>
       </el-table-column>
       <el-table-column
         class-name="status-col"
-        label="账号禁停"
+        label="停止使用"
         width="110"
         align="center"
       >
@@ -218,8 +218,8 @@
           <el-switch
             :disabled="scope.row.userId === 1 || scope.row.userId === loginUserId"
             v-model="scope.row.status"
-            active-value="0"
-            inactive-value="1"
+            :active-value="1"
+            :inactive-value="0"
             @change="handleStatusChange(scope.row)"
           ></el-switch>
         </template>
@@ -675,7 +675,7 @@ export default {
     },
     // 角色状态修改
     handleStatusChange(row) {
-      let text = row.status === "0" ? "重启" : "封禁";
+      let text = row.status === 0 ? "解禁" : "禁用";
       this.$confirm('确认要"' + text + '""' + row.username + '"用户吗?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -686,7 +686,7 @@ export default {
       }).then(() => {
         this.msgSuccess(text + "成功");
       }).catch(function () {
-        row.status = row.status === "0" ? "1" : "0";
+        row.status = row.status === 0 ? 1 : 0;
       });
     },
     // 多选框选中数据

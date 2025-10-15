@@ -40,8 +40,8 @@
             :label="dict.dictLabel"
             :value="dict.dictValue"
           /> -->
-          <el-option label="正常" value="0"></el-option>
-          <el-option label="禁用" value="1"></el-option>
+          <el-option label="正常" :value="0"></el-option>
+          <el-option label="禁用" :value="1"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="创建时间">
@@ -150,8 +150,8 @@
         <template slot-scope="scope">
           <el-switch
             v-model="scope.row.status"
-            active-value="0"
-            inactive-value="1"
+            :active-value="0"
+            :inactive-value="1"
             @change="handleStatusChange(scope.row)"
           ></el-switch>
         </template>
@@ -232,8 +232,8 @@
               :key="dict.dictValue"
               :label="dict.dictValue"
             >{{dict.dictLabel}}</el-radio> -->
-            <el-radio label="0">正常</el-radio>
-            <el-radio label="1">禁用</el-radio>
+            <el-radio :label="0">正常</el-radio>
+            <el-radio :label="1">禁用</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="菜单权限">
@@ -533,7 +533,7 @@ export default {
     // },
     // 角色状态修改
     handleStatusChange(row) {
-      let text = row.status === "0" ? "启用" : "停用";
+      let text = row.status === 0 ? "启用" : "停用";
       this.$confirm('确认要"' + text + '""' + row.roleName + '"角色吗?', "警告", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -544,7 +544,7 @@ export default {
       }).then(() => {
         this.msgSuccess(text + "成功");
       }).catch(function () {
-        row.status = row.status === "0" ? "1" : "0";
+        row.status = row.status === 0 ? 1 : 0;
       });
     },
     // 取消按钮
@@ -576,7 +576,7 @@ export default {
           roleName: undefined,
           roleKey: undefined,
           roleSort: 0,
-          status: "0",
+          status: 0,
           menuIds: [],
           deptIds: [],
           remark: undefined

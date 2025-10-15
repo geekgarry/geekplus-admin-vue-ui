@@ -18,6 +18,8 @@
             :label="dict.dictLabel"
             :value="dict.dictValue"
           /> -->
+          <el-option label="正常" :value="0"/>
+          <el-option label="停用" :value="1"/>
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -55,16 +57,16 @@
       </el-table-column>
       <el-table-column label="操作" align="center" fixed="right" min-width="120" class-name="small-padding fixed-width">
         <template slot-scope="scope">
-          <el-button 
-            size="mini" 
-            type="text" 
-            icon="el-icon-edit" 
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-edit"
             @click="handleUpdate(scope.row)"
           >修改</el-button>
-          <el-button 
-            size="mini" 
-            type="text" 
-            icon="el-icon-plus" 
+          <el-button
+            size="mini"
+            type="text"
+            icon="el-icon-plus"
             @click="handleAdd(scope.row)"
           >新增</el-button>
           <el-button
@@ -165,11 +167,11 @@ export default {
       open: false,
       // 状态数据字典
       statusOptions: [{
-        dictLabel:"禁用",
-        dictValue:"1"
+        dictLabel:"停用",
+        dictValue:1
       },{
         dictLabel:"正常",
-        dictValue:"0"
+        dictValue:0
       }],
       // 查询参数
       queryParams: {
@@ -256,7 +258,7 @@ export default {
         leader: undefined,
         phone: undefined,
         email: undefined,
-        status: "0"
+        status: 0
       };
       this.resetForm("form");
     },
@@ -286,7 +288,7 @@ export default {
       let deptOptions=[];
       list.forEach(item => {
         if(item.children !=null && item.children.length>0){
-          deptOptions.push({value: item.deptId, label: item.deptName, children: this.handleCascaderTree(item.children)})   
+          deptOptions.push({value: item.deptId, label: item.deptName, children: this.handleCascaderTree(item.children)})
         }else{
           deptOptions.push({value: item.deptId, label: item.deptName, children: null})
         }

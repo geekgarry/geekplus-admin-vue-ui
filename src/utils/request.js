@@ -44,7 +44,7 @@ service.interceptors.response.use(
    * If you want to get http information such as headers or status
    * Please return  response => response
   */
-  
+
   /**
    * Determine the request status by custom code
    * Here is just an example
@@ -79,7 +79,7 @@ service.interceptors.response.use(
           // location.href = '/index';
         })
       })
-    } else if (res.code === 400 || res.code === 404 || res.code === 209 || res.code === 409 || res.code === 415 || res.code === 500 || res.code=== 501) {
+    } else if (res.code === 400 || res.code === 404 || res.code === 203 || res.code === 409 || res.code === 415 || res.code === 500 || res.code=== 501) {
       // if the custom code is not 20000, it is judged as an error.
       Message({
         message: message,
